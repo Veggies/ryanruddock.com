@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ryan Ruddock</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐶</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+    :root {
+      --base: #1e1e2e;
+      --mantle: #181825;
+      --crust: #11111b;
+      --surface0: #313244;
+      --surface1: #45475a;
+      --overlay0: #6c7086;
+      --text: #cdd6f4;
+      --subtext: #a6adc8;
+      --lavender: #b4befe;
+      --blue: #89b4fa;
+      --sapphire: #74c7ec;
+      --sky: #89dceb;
+      --teal: #94e2d5;
+      --green: #a6e3a1;
+      --mauve: #cba6f7;
+      --pink: #f38ba8;
+      --yellow: #f9e2af;
+      --peach: #fab387;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--base);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(180, 190, 254, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(203, 166, 247, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(137, 180, 250, 0.05) 0%, transparent 50%);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background-color: var(--mantle);
+      border: 1px solid var(--surface0);
+      border-radius: 16px;
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 0 32px rgba(203, 166, 247, 0.2);
+    }
+
+    .hero-text .title {
+      font-size: 0.8rem;
+      color: var(--blue);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hero-text h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .hero-text h1 span { color: var(--mauve); }
+
+    .hero-text p {
+      color: var(--subtext);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    .badge.green  { background: rgba(166, 227, 161, 0.12); color: var(--green);  border: 1px solid rgba(166,227,161,0.25); }
+    .badge.yellow { background: rgba(249, 226, 175, 0.12); color: var(--yellow); border: 1px solid rgba(249,226,175,0.25); }
+    .badge.peach  { background: rgba(250, 179, 135, 0.12); color: var(--peach);  border: 1px solid rgba(250,179,135,0.25); }
+
+    /* ── Two column grid ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* ── Generic Card ── */
+    .card {
+      background-color: var(--mantle);
+      border: 1px solid var(--surface0);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .card h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--overlay0);
+      margin-bottom: 16px;
+    }
+
+    /* ── Tags ── */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background-color: var(--surface0);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      border: 1px solid var(--surface1);
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .tag:hover { transform: translateY(-1px); }
+
+    .tag.blue    { color: var(--blue);    } .tag.blue:hover    { border-color: var(--blue);    }
+    .tag.mauve   { color: var(--mauve);   } .tag.mauve:hover   { border-color: var(--mauve);   }
+    .tag.teal    { color: var(--teal);    } .tag.teal:hover    { border-color: var(--teal);    }
+    .tag.green   { color: var(--green);   } .tag.green:hover   { border-color: var(--green);   }
+    .tag.sky     { color: var(--sky);     } .tag.sky:hover     { border-color: var(--sky);     }
+    .tag.yellow  { color: var(--yellow);  } .tag.yellow:hover  { border-color: var(--yellow);  }
+    .tag.peach   { color: var(--peach);   } .tag.peach:hover   { border-color: var(--peach);   }
+    .tag.pink    { color: var(--pink);    } .tag.pink:hover    { border-color: var(--pink);    }
+    .tag.lavender{ color: var(--lavender);} .tag.lavender:hover{ border-color: var(--lavender);}
+
+    /* ── Experience List ── */
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .exp-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .exp-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .exp-dot.current  { background: var(--green); box-shadow: 0 0 8px rgba(166,227,161,0.5); }
+    .exp-dot.previous { background: var(--surface1); }
+
+    .exp-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .exp-sub {
+      font-size: 0.78rem;
+      color: var(--overlay0);
+      margin-top: 2px;
+    }
+
+    /* ── Links ── */
+    .links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .link-card {
+      flex: 1;
+      background-color: var(--mantle);
+      border: 1px solid var(--surface0);
+      border-radius: 16px;
+      padding: 22px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .github-card:hover   { border-color: var(--lavender); }
+    .linkedin-card:hover { border-color: var(--blue); }
+
+    .link-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background-color: var(--surface0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .link-icon svg { width: 20px; height: 20px; }
+    .github-card   .link-icon svg { fill: var(--lavender); }
+    .linkedin-card .link-icon svg { fill: var(--blue); }
+
+    .link-label {
+      font-size: 0.72rem;
+      color: var(--overlay0);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .link-name {
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      color: var(--surface1);
+      font-size: 0.78rem;
+      padding-top: 4px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 620px) {
+      .hero { flex-direction: column; text-align: center; padding: 32px 24px; }
+      .badge-row { justify-content: center; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .links { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <img class="avatar" src="dog.png" alt="Ryan Ruddock" />
+    <div class="hero-text">
+      <p class="title">IT Specialist &amp; DevOps Engineer</p>
+      <h1>Ryan <span>Ruddock</span></h1>
+      <p>Federal IT professional with a background in the U.S. Air Force and defense contracting. Focused on practical infrastructure, cloud systems, and making technology work reliably for the people who depend on it.</p>
+      <div class="badge-row">
+        <span class="badge green">@ Rise8</span>
+        <span class="badge yellow">Security+</span>
+        <span class="badge yellow">RHCSA</span>
+        <span class="badge peach">B.S. Cybersecurity · UMD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills grid -->
+  <div class="grid-2">
+
+    <div class="card">
+      <h2>Operating Systems</h2>
+      <div class="tags">
+        <span class="tag blue">Fedora</span>
+        <span class="tag blue">Ubuntu</span>
+        <span class="tag blue">Debian</span>
+        <span class="tag sky">Windows</span>
+        <span class="tag sky">macOS</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Cloud</h2>
+      <div class="tags">
+        <span class="tag peach">AWS</span>
+        <span class="tag blue">Azure</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>DevOps &amp; Tooling</h2>
+      <div class="tags">
+        <span class="tag green">Terraform</span>
+        <span class="tag mauve">GitHub</span>
+        <span class="tag peach">GitLab</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Homelab &amp; Infrastructure</h2>
+      <div class="tags">
+        <span class="tag teal">TrueNAS</span>
+        <span class="tag lavender">Self-Hosted</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Experience -->
+  <div class="card">
+    <h2>Experience</h2>
+    <div class="exp-list">
+      <div class="exp-item">
+        <div class="exp-dot current"></div>
+        <div>
+          <div class="exp-name">Rise8</div>
+          <div class="exp-sub">Current employer · IT / DevOps</div>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-dot previous"></div>
+        <div>
+          <div class="exp-name">Defense Unicorns</div>
+          <div class="exp-sub">Previous · Defense tech &amp; DevSecOps</div>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-dot previous"></div>
+        <div>
+          <div class="exp-name">ATA, LLC</div>
+          <div class="exp-sub">Previous · IT consulting</div>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-dot previous"></div>
+        <div>
+          <div class="exp-name">United States Air Force</div>
+          <div class="exp-sub">Active Duty · IT / Cyber</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://github.com/veggies" target="_blank" class="link-card github-card">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+      </div>
+      <div>
+        <div class="link-label">GitHub</div>
+        <div class="link-name">github.com/veggies</div>
+      </div>
+    </a>
+
+    <a href="https://www.linkedin.com/in/ryanruddock/" target="_blank" class="link-card linkedin-card">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="link-label">LinkedIn</div>
+        <div class="link-name">Ryan Ruddock</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="footer">Built with HTML &amp; CSS &nbsp;·&nbsp; Catppuccin Mocha</div>
+
+</div>
+</body>
+</html>
