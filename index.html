@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ryan Ruddock</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐶</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
@@ -128,14 +129,14 @@
     .badge.yellow { background: rgba(249, 226, 175, 0.12); color: var(--yellow); border: 1px solid rgba(249,226,175,0.25); }
     .badge.peach  { background: rgba(250, 179, 135, 0.12); color: var(--peach);  border: 1px solid rgba(250,179,135,0.25); }
 
-    /* ── Two column grid ── */
+    /* ── Grid ── */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
 
-    /* ── Generic Card ── */
+    /* ── Card ── */
     .card {
       background-color: var(--mantle);
       border: 1px solid var(--surface0);
@@ -149,41 +150,123 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--overlay0);
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
-    /* ── Tags ── */
-    .tags {
+    /* ── Skill Icons ── */
+    .skill-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 16px;
     }
 
-    .tag {
-      background-color: var(--surface0);
-      border-radius: 8px;
-      padding: 5px 12px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text);
-      border: 1px solid var(--surface1);
-      transition: all 0.2s ease;
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 64px;
       cursor: default;
     }
 
-    .tag:hover { transform: translateY(-1px); }
+    .skill-item .icon-wrap {
+      width: 48px;
+      height: 48px;
+      background-color: var(--surface0);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--surface1);
+      transition: all 0.2s ease;
+      font-size: 1.6rem;
+    }
 
-    .tag.blue    { color: var(--blue);    } .tag.blue:hover    { border-color: var(--blue);    }
-    .tag.mauve   { color: var(--mauve);   } .tag.mauve:hover   { border-color: var(--mauve);   }
-    .tag.teal    { color: var(--teal);    } .tag.teal:hover    { border-color: var(--teal);    }
-    .tag.green   { color: var(--green);   } .tag.green:hover   { border-color: var(--green);   }
-    .tag.sky     { color: var(--sky);     } .tag.sky:hover     { border-color: var(--sky);     }
-    .tag.yellow  { color: var(--yellow);  } .tag.yellow:hover  { border-color: var(--yellow);  }
-    .tag.peach   { color: var(--peach);   } .tag.peach:hover   { border-color: var(--peach);   }
-    .tag.pink    { color: var(--pink);    } .tag.pink:hover    { border-color: var(--pink);    }
-    .tag.lavender{ color: var(--lavender);} .tag.lavender:hover{ border-color: var(--lavender);}
+    .skill-item:hover .icon-wrap {
+      border-color: var(--mauve);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
 
-    /* ── Experience List ── */
+    .skill-item .icon-wrap i {
+      font-size: 1.6rem;
+    }
+
+    .skill-item .icon-wrap img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .skill-item span {
+      font-size: 0.7rem;
+      color: var(--subtext);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* Devicon colors */
+    .colored { color: inherit; }
+    .di-aws       { color: #FF9900; }
+    .di-azure     { color: #0089D6; }
+    .di-terraform { color: #7B42BC; }
+    .di-github    { color: var(--lavender); }
+    .di-gitlab    { color: #FC6D26; }
+    .di-cmake     { color: #064F8C; }
+    .di-cplusplus { color: #00599C; }
+
+    /* ── Full width card ── */
+    .card.full {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Homelab blurb ── */
+    .homelab-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .homelab-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .homelab-content p {
+      color: var(--subtext);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .homelab-content p span {
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    /* ── Currently Learning ── */
+    .learning-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .learning-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .learning-content p {
+      color: var(--subtext);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .learning-content p span {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    /* ── Experience ── */
     .exp-list {
       display: flex;
       flex-direction: column;
@@ -289,6 +372,7 @@
       .hero { flex-direction: column; text-align: center; padding: 32px 24px; }
       .badge-row { justify-content: center; }
       .grid-2 { grid-template-columns: 1fr; }
+      .card.full { grid-column: unset; }
       .links { flex-direction: column; }
     }
   </style>
@@ -298,7 +382,7 @@
 
   <!-- Hero -->
   <div class="hero">
-    <img class="avatar" src="dog.png" alt="Ryan Ruddock" />
+    <img class="avatar" src="dog.jpg" alt="Ryan Ruddock" />
     <div class="hero-text">
       <p class="title">IT Specialist &amp; DevOps Engineer</p>
       <h1>Ryan <span>Ruddock</span></h1>
@@ -312,42 +396,100 @@
     </div>
   </div>
 
-  <!-- Skills grid -->
+  <!-- Skills Grid -->
   <div class="grid-2">
 
-    <div class="card">
-      <h2>Operating Systems</h2>
-      <div class="tags">
-        <span class="tag blue">Fedora</span>
-        <span class="tag blue">Ubuntu</span>
-        <span class="tag blue">Debian</span>
-        <span class="tag sky">Windows</span>
-        <span class="tag sky">macOS</span>
-      </div>
-    </div>
-
+    <!-- Cloud -->
     <div class="card">
       <h2>Cloud</h2>
-      <div class="tags">
-        <span class="tag peach">AWS</span>
-        <span class="tag blue">Azure</span>
+      <div class="skill-list">
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-amazonwebservices-plain-wordmark di-aws"></i></div>
+          <span>AWS</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-azure-plain di-azure"></i></div>
+          <span>Azure</span>
+        </div>
       </div>
     </div>
 
+    <!-- DevOps & Tooling -->
     <div class="card">
       <h2>DevOps &amp; Tooling</h2>
-      <div class="tags">
-        <span class="tag green">Terraform</span>
-        <span class="tag mauve">GitHub</span>
-        <span class="tag peach">GitLab</span>
+      <div class="skill-list">
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-terraform-plain di-terraform"></i></div>
+          <span>Terraform</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-github-original di-github"></i></div>
+          <span>GitHub</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-gitlab-plain di-gitlab"></i></div>
+          <span>GitLab</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-cmake-plain di-cmake"></i></div>
+          <span>CMake</span>
+        </div>
       </div>
     </div>
 
+    <!-- Endpoint & Platform Management -->
     <div class="card">
-      <h2>Homelab &amp; Infrastructure</h2>
-      <div class="tags">
-        <span class="tag teal">TrueNAS</span>
-        <span class="tag lavender">Self-Hosted</span>
+      <h2>Endpoint &amp; Platform Management</h2>
+      <div class="skill-list">
+        <div class="skill-item">
+          <div class="icon-wrap">🪟</div>
+          <span>Intune</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap">🍎</div>
+          <span>Jamf</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap"><i class="devicon-google-plain" style="color:#4285F4"></i></div>
+          <span>Google Workspace</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap">📦</div>
+          <span>M365</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Tools -->
+    <div class="card">
+      <h2>AI Tools</h2>
+      <div class="skill-list">
+        <div class="skill-item">
+          <div class="icon-wrap">🤖</div>
+          <span>Claude</span>
+        </div>
+        <div class="skill-item">
+          <div class="icon-wrap">🌐</div>
+          <span>OpenWebUI</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Currently Learning -->
+    <div class="card full">
+      <h2>Currently Learning</h2>
+      <div class="learning-content">
+        <div class="learning-icon"><i class="devicon-cplusplus-plain di-cplusplus"></i></div>
+        <p>Working through <span>C++</span> by building a wizard game from scratch. Learning systems programming the fun way — spells, inventory systems, and all the memory management headaches that come with it.</p>
+      </div>
+    </div>
+
+    <!-- Homelab -->
+    <div class="card full">
+      <h2>Homelab</h2>
+      <div class="homelab-content">
+        <div class="homelab-icon">🏠</div>
+        <p>Running a personal <span>TrueNAS</span> setup at home for storage and self-hosted services. Nothing too crazy — just enough to scratch the itch of having something to tinker with after hours.</p>
       </div>
     </div>
 
@@ -361,7 +503,7 @@
         <div class="exp-dot current"></div>
         <div>
           <div class="exp-name">Rise8</div>
-          <div class="exp-sub">Current employer · IT / DevOps</div>
+          <div class="exp-sub">Current · IT / DevOps</div>
         </div>
       </div>
       <div class="exp-item">
