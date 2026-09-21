@@ -9,11 +9,14 @@ A personal site, styled like the web circa 1999.
 | `index.html`, `dog.png` | the site | yes |
 | `infra/` | Terraform for the guestbook + visitor counter | no |
 | `local/` | local dev backend | no |
+| `CONTEXT.md` | operational notes, gotchas, recovery steps | no |
 
 `.github/workflows/deploy.yml` syncs the repo root to S3 and invalidates
-CloudFront on every push to `main`. `infra/`, `local/`, `README.md` and
-`.gitignore` are excluded — without those excludes, Terraform state and the
-dev server would be published on the public site.
+CloudFront on every push to `main`. `infra/`, `local/`, `*.md` and `.gitignore`
+are excluded — without those excludes, Terraform state and the dev server would
+be published on the public site.
+
+Read `CONTEXT.md` before changing anything structural.
 
 ## Running it locally
 
@@ -55,6 +58,10 @@ Realistic cost is $0 — the free tier covers it. See `terraform output` for the
 re-arm command after a trip.
 
 ### Applying
+
+State lives in `s3://ryanruddock-com-tfstate` (private, versioned, encrypted),
+configured in `infra/backend.tf`. The bucket is bootstrapped outside Terraform —
+see `CONTEXT.md`.
 
 ```sh
 cd infra

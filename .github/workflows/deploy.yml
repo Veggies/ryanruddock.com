@@ -28,7 +28,7 @@ jobs:
             --exclude "infra/*" \
             --exclude "local/*" \
             --exclude ".gitignore" \
-            --exclude "README.md" \
+            --exclude "*.md" \
             --delete
 
       - name: Invalidate CloudFront
