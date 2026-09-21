@@ -1,0 +1,14 @@
+# Terraform
+infra/.terraform/
+# .terraform.lock.hcl IS committed on purpose: it pins provider versions
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
+
+# local dev server state
+local/counter.json
+local/guestbook.json
+
+.DS_Store
+tfplan
