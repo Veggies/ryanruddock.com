@@ -11,7 +11,8 @@ you need the account number.
 
 | Thing | Where |
 |---|---|
-| Site content | `index.html`, `dog.png` at the repo root |
+| Site content | `index.html`, `nexus.html`, `roadmap.html` at the repo root |
+| Page assets | `diagrams/`, `thumbs/`, `fonts/`, `dog.png` — all published |
 | Guestbook + counter infra | `infra/` (Terraform) |
 | Local dev backend | `local/server.py` |
 | Terraform state | `s3://ryanruddock-com-tfstate/ryanruddock.com/guestbook.tfstate` |
@@ -36,6 +37,18 @@ everything except what is explicitly excluded, so a new top-level directory is
 public the moment you push. `infra/`, `local/`, `*.md` and `.gitignore` are
 excluded — without those, Terraform state would be served from the website.
 **Add an exclude before adding a directory**, not after.
+
+**A CloudFront invalidation may not evict an object.** On 2026-09-22 two
+`/*` invalidations — one from the deploy, one from a re-run — left two SVGs
+under `diagrams/` serving the previous version at the edge for 20+ minutes,
+while `index.html` updated normally. The origin was correct throughout: a
+request with a `?cachebust=` query string returned the new file, which is the
+quickest way to tell a stale edge from a failed upload.
+
+The reliable fix is to change the filename. A new path has no cached object,
+so it serves correctly on the next request. Both files were renamed with a
+`-v2` suffix. If you hit this again, rename rather than wait — `max-age` is
+14400, so worst case is four hours.
 
 **State bucket is not managed by Terraform.** A backend cannot create the bucket
 holding its own state. It was bootstrapped with the CLI. If it is ever lost, the
@@ -100,6 +113,13 @@ Work out *why* it fired before re-arming — the alarm is 1000 invocations in 5
 minutes, which normal traffic will not reach.
 
 ## Loose ends
+
+- `.gitignore` and the deploy workflow still exclude `app-main/`,
+  `cmmc-gcp-assured-workloads/` and `gcp-assuredworkloads-boundary-main/`.
+  Those directories were employer material staged here for reference and have
+  since been removed. The excludes are left in place deliberately, so that
+  dropping any of them back in cannot publish them by accident.
+
 
 - The webring / "Prev · Random · Next" links in the footer are decorative
   `href="#"` props. Period-correct furniture, not real links.

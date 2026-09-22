@@ -6,7 +6,10 @@ A personal site, styled like the web circa 1999.
 
 | Path | What it is | Deployed? |
 |---|---|---|
-| `index.html`, `dog.png` | the site | yes |
+| `index.html` | the site | yes |
+| `nexus.html` | Project Nexus walkthrough (static, invented data) | yes |
+| `roadmap.html` | emulator learning roadmap | yes |
+| `diagrams/`, `thumbs/`, `fonts/`, `dog.png` | page assets | yes |
 | `infra/` | Terraform for the guestbook + visitor counter | no |
 | `local/` | local dev backend | no |
 | `CONTEXT.md` | operational notes, gotchas, recovery steps | no |
