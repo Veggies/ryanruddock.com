@@ -9,10 +9,11 @@
   <text x="24" y="48" font-size="11" fill="#666666">Built on an empty folder, before any workload existed. A constraint costs nothing until something is running under it.</text>
 
   <!-- org node -->
-  <rect x="300" y="64" width="300" height="46" fill="#f2f2f2" stroke="#888888" stroke-width="2"/>
-  <text x="450" y="84" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">ORGANISATION NODE</text>
-  <text x="450" y="101" font-size="10" fill="#666666" text-anchor="middle">5 pre-existing constraints — 4 inherit untouched, 1 overridden below</text>
-  <line x1="450" y1="110" x2="450" y2="140" stroke="#3366cc" stroke-width="2.5" marker-end="url(#a)"/>
+  <rect x="240" y="62" width="420" height="56" fill="#f2f2f2" stroke="#888888" stroke-width="2"/>
+  <text x="450" y="81" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">ORGANISATION NODE</text>
+  <text x="450" y="97" font-size="10" fill="#666666" text-anchor="middle">5 pre-existing constraints — 4 inherit untouched,</text>
+  <text x="450" y="111" font-size="10" fill="#666666" text-anchor="middle">1 overridden on the folder below</text>
+  <line x1="450" y1="118" x2="450" y2="140" stroke="#3366cc" stroke-width="2.5" marker-end="url(#a)"/>
 
   <!-- the folder -->
   <rect x="24" y="142" width="852" height="252" fill="#f7faff" stroke="#3366cc" stroke-width="3"/>
@@ -75,9 +76,9 @@
   <text x="487" y="456" font-size="10" font-weight="bold" fill="#8a0000" text-anchor="middle">apply identity</text>
   <text x="487" y="469" font-size="9" fill="#8a0000" text-anchor="middle">fenced to this folder</text>
 
-  <text x="38" y="496" font-size="9.5" fill="#444444">No credential is stored anywhere — service account keys are disabled org-wide, so the pipeline federates and every token lasts minutes.</text>
-  <text x="38" y="511" font-size="9.5" fill="#444444">The one org-level grant is bound by an IAM condition restricting it to this folder — verified by attempted violation, refused at the org node.</text>
-  <text x="38" y="526" font-size="9.5" fill="#8a0000">Not separation of duties: an author may approve their own change. Saying otherwise in an SSP would be a finding.</text>
+  <text x="38" y="494" font-size="9" fill="#444444">No credential is stored anywhere — the pipeline federates, and every token lasts minutes.</text>
+  <text x="38" y="507" font-size="9" fill="#444444">Its one org-level grant is fenced by an IAM condition to this folder, verified by attempted violation.</text>
+  <text x="38" y="520" font-size="9" fill="#8a0000">Not separation of duties — an author may approve their own change, and the SSP says so.</text>
 
   <!-- drift + audit -->
   <rect x="570" y="406" width="306" height="126" fill="#fff6f6" stroke="#cc0000" stroke-width="2"/>
