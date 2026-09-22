@@ -29,6 +29,9 @@ jobs:
             --exclude "local/*" \
             --exclude ".gitignore" \
             --exclude "*.md" \
+            --exclude "app-main/*" \
+            --exclude "cmmc-gcp-assured-workloads/*" \
+            --exclude "gcp-assuredworkloads-boundary-main/*" \
             --delete
 
       - name: Invalidate CloudFront

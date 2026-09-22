@@ -83,14 +83,6 @@ a:hover { color: #ff0000; }
   text-shadow: 1px 1px 0 #002266;
 }
 
-.banner .est {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 9px;
-  color: #cce4ff;
-  font-family: "Courier New", monospace;
-}
 
 /* ---- scrolling news ticker ---- */
 .ticker {
@@ -313,13 +305,180 @@ table.jobs tr:nth-child(even) td { background: #f2f7ff; }
 .job-title { font-weight: bold; color: #003399; }
 .job-dates { color: #666666; font-size: 10px; white-space: nowrap; }
 
-/* ============== PROJECT CARDS (also collapsible) ============ */
-.proj {
-  border: 2px ridge #99bbdd;
-  background: #f7faff;
-  margin-bottom: 6px;
+.fam.dec > summary { background-image: linear-gradient(#c68ab5, #97407f 55%, #74275f); }
+.fam.dec .ctitle { color: #6b1450; font-weight: bold; }
+
+/* ---- tools + clickable architecture diagram ---- */
+.toolrow { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 9px; }
+.tool {
+  display: inline-block; border: 2px outset #cfd9e6;
+  background: linear-gradient(#ffffff, #dde6f2);
+  padding: 2px 7px; font-size: 10px; font-weight: bold; color: #113366; white-space: nowrap;
 }
-.proj:last-child { margin-bottom: 0; }
+.tool.t-j { border-color: #b8d4b8; background: linear-gradient(#ffffff, #d8ecd8); color: #14521a; }
+.tool.t-i { border-color: #e6cfe0; background: linear-gradient(#ffffff, #f2dcec); color: #6b1450; }
+.tool.t-w { border-color: #e8d9b0; background: linear-gradient(#ffffff, #f7ecd0); color: #6b5010; }
+
+.statusflag {
+  display: inline-block; border: 2px outset #ffd94d;
+  background: linear-gradient(#ffe680, #ffcc00 55%, #e6a700);
+  color: #663300; font-family: "Comic Sans MS", cursive; font-size: 10px;
+  padding: 0 6px; margin-left: 6px; vertical-align: middle;
+}
+
+.diagram { display: block; border: 3px double #3366cc; background: #ffffff; padding: 4px; text-decoration: none; }
+.diagram:hover, .diagram:focus-visible { border-color: #cc0000; }
+.diagram img { display: block; width: 100%; height: auto; }
+.diagram .cap {
+  display: block; font-size: 9px; letter-spacing: 0.5px; font-weight: bold;
+  color: #336699; background: #eef4ff; padding: 3px 4px; text-align: center; margin-top: 4px;
+}
+.diagram:hover .cap, .diagram:focus-visible .cap { color: #cc0000; }
+
+/* full-size diagram lightbox, :target only, no script */
+.lb { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(8,4,30,0.88); padding: 14px; }
+.lb:target { display: flex; flex-direction: column; }
+.lb-back { position: absolute; inset: 0; z-index: 0; display: block; cursor: default; }
+.lb-frame {
+  position: relative; z-index: 1; max-width: 1140px; width: 100%; margin: 0 auto;
+  background: #ffffff; border: 4px ridge #ffcc00; padding: 4px;
+  display: flex; flex-direction: column; min-height: 0; flex: 1;
+}
+.lb-bar {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  background-image: linear-gradient(#5588dd, #3366cc 60%, #224499); padding: 4px 6px;
+}
+.lb-title { font-family: "Comic Sans MS", cursive; font-size: 12px; color: #ffffff; text-shadow: 1px 1px 0 #113377; margin-right: auto; }
+.lb-btn {
+  border: 2px outset #dddddd; background: linear-gradient(#ffffff, #cccccc);
+  color: #000000 !important; font-family: "MS Sans Serif", Verdana, sans-serif;
+  font-size: 10px; font-weight: bold; text-decoration: none; padding: 1px 8px; line-height: 15px;
+}
+.lb-btn:hover { border-style: inset; color: #cc0000 !important; }
+.lb-scroll { flex: 1; overflow: auto; background: #ffffff; min-height: 0; display: flex; }
+.lb-scroll img { margin: auto; max-width: 100%; height: auto; }
+.lb-hint { position: relative; z-index: 1; text-align: center; font-size: 10px; color: #ccddff; padding-top: 8px; flex-shrink: 0; pointer-events: none; }
+.lb-hint a { color: #ffff99; pointer-events: auto; }
+
+/* ---- screenshot thumbnails on a project card ---- */
+.shots { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 4px; }
+.shot {
+  flex: 1 1 210px;
+  min-width: 0;
+  display: block;
+  text-decoration: none;
+  border: 3px double #3366cc;
+  background: #131414;
+  padding: 3px;
+}
+.shot:hover, .shot:focus-visible { border-color: #cc0000; }
+.shot img { display: block; width: 100%; height: auto; aspect-ratio: 640 / 500; }
+.shot span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: #336699;
+  background: #eef4ff;
+  padding: 3px 4px;
+  text-align: center;
+  font-weight: bold;
+}
+.shot:hover span, .shot:focus-visible span { color: #cc0000; }
+.shotnote { font-size: 9px; color: #777777; margin: 0 0 9px; }
+
+/* ---- in-page demo viewer, opened by :target, no script needed ---- */
+.viewer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(8, 4, 30, 0.86);
+  padding: 14px;
+}
+.viewer:target { display: flex; flex-direction: column; }
+
+/* a full-bleed link behind the window: clicking anywhere outside closes it */
+.viewer-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  cursor: default;
+}
+.viewer-frame {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 4px ridge #ffcc00;
+  padding: 4px;
+  min-height: 0;
+}
+.viewer-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #3366cc;
+  background-image: linear-gradient(#5588dd, #3366cc 60%, #224499);
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+.viewer-title {
+  font-family: "Comic Sans MS", cursive;
+  font-size: 12px;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #113377;
+  margin-right: auto;
+}
+.viewer-btn {
+  border: 2px outset #dddddd;
+  background: linear-gradient(#ffffff, #cccccc);
+  color: #000000;
+  font-family: "MS Sans Serif", Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 1px 8px;
+  line-height: 15px;
+}
+.viewer-btn:hover { border-style: inset; color: #cc0000; }
+.viewer-btn:visited { color: #000000; }
+.viewer iframe {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #131414;
+  min-height: 0;
+}
+.viewer-hint {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-size: 10px;
+  color: #ccddff;
+  padding-top: 8px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.viewer-hint a { pointer-events: auto; }
+.viewer-hint a { color: #ffff99; }
+
+/* ============== PROJECT CARDS (also collapsible) ============ */
+/* each project is its own raised window: title bar, body, hard shadow.
+   with every card expanded you can still see where one ends and the
+   next one starts. */
+.proj {
+  border: 2px outset #c3d2e2;
+  background: #ffffff;
+  margin-bottom: 14px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 60, 0.22);
+}
+.proj:last-child { margin-bottom: 3px; }
 
 .proj > summary {
   display: block;
@@ -327,35 +486,53 @@ table.jobs tr:nth-child(even) td { background: #f2f7ff; }
   cursor: pointer;
   user-select: none;
   position: relative;
-  padding: 6px 28px 6px 8px;
-  background: linear-gradient(#ffffff, #e9f0fa);
-  border-bottom: 1px solid transparent;
+  padding: 6px 30px 6px 9px;
+  background: #40658a;
+  background-image: linear-gradient(#7d9dbd, #40658a 55%, #294a6b);
+  border-bottom: 2px solid #22405c;
 }
 .proj > summary::-webkit-details-marker { display: none; }
-.proj[open] > summary { border-bottom: 1px dotted #aaaaaa; }
-.proj > summary:hover { background: linear-gradient(#ffffff, #dbe7f7); }
-.proj > summary:focus-visible { outline: 2px dotted #cc0066; outline-offset: -4px; }
+.proj > summary:hover { filter: brightness(1.13); }
+.proj > summary:focus-visible { outline: 2px dotted #ffff00; outline-offset: -4px; }
 
+/* the open/close widget, drawn like an old window button */
 .proj > summary::after {
   content: "\25B8";                 /* right-pointing when closed */
   position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 12px;
-  color: #cc0066;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  line-height: 12px;
+  text-align: center;
+  font-size: 10px;
+  color: #000000;
+  text-shadow: none;
+  background: linear-gradient(#ffffff, #cccccc);
+  border: 2px outset #dddddd;
+  box-sizing: border-box;
 }
 .proj[open] > summary::after { content: "\25BE"; }
+.proj > summary:active::after { border-style: inset; }
 
 .p-title {
   display: block;
   font-family: "Comic Sans MS", cursive;
-  font-size: 14px;
-  color: #cc0066;
+  font-size: 13px;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #1c3a56;
   line-height: 1.25;
 }
-.p-where { display: block; font-size: 10px; color: #666666; margin-top: 2px; }
+.p-where {
+  display: block;
+  font-size: 10px;
+  color: #d3e3f2;
+  margin-top: 2px;
+  text-shadow: 1px 1px 0 #26455f;
+}
 
-.p-body { padding: 8px; }
+.p-body { padding: 10px; background: #f7faff; }
 .p-body .what { margin: 0 0 7px; line-height: 1.55; font-size: 11px; }
 .p-body .outcome {
   margin: 0 0 7px;
@@ -448,27 +625,6 @@ hr.fancy {
 }
 
 /* ---- 88x31 badges, the currency of the old web ---- */
-.badges { text-align: center; }
-.badge88 {
-  display: inline-block;
-  width: 88px;
-  height: 31px;
-  margin: 3px 2px;
-  border: 1px outset #999999;
-  font-family: "MS Sans Serif", Verdana, sans-serif;
-  font-size: 8px;
-  line-height: 1.15;
-  text-align: center;
-  padding-top: 5px;
-  box-sizing: border-box;
-  vertical-align: middle;
-  text-decoration: none;
-}
-.b-netscape { background: linear-gradient(#333366, #000000); color: #ffffff; }
-.b-claude   { background: linear-gradient(#e8a87c, #c1663a); color: #ffffff; }
-.b-800      { background: linear-gradient(#006600, #003300); color: #66ff66; }
-.b-tf       { background: linear-gradient(#7b42bc, #4b2277); color: #ffffff; }
-.b-nodog    { background: linear-gradient(#ffcc00, #cc8800); color: #000000; }
 
 /* ---- footer ---- */
 .footer {
@@ -519,7 +675,6 @@ hr.fancy {
 
   <!-- ===================== BANNER ===================== -->
   <div class="banner">
-    <div class="est">Est. 1999 &middot; v4.0</div>
     <h1>ryanruddock.com</h1>
     <p class="tag">A website about Ryan Ruddock's professional experience</p>
   </div>
@@ -587,8 +742,10 @@ hr.fancy {
           <p>When I get handed a tough problem, I plan, implement, and solve. When I see a process that happens often
           and takes too long, I automate it. I strive to make the company feel like IT <i>helps</i> them, not that IT
           is the thing impeding them.</p>
-          <p style="margin-bottom:0;"><span class="blink">&#9733;</span> Currently: <b>IT Specialist at Rise8</b>.
-          Previously U.S. Air Force. <span class="new-tag">NEW!</span></p>
+          <p><span class="blink">&#9733;</span> Currently: <b>IT Specialist at Rise8</b>.</p>
+          <p style="margin-bottom:0;"><span class="blink">&#9733;</span> Currently building:
+          <a href="./roadmap.html"><b>Chip8 Emulator in Python, then C++, then a Gameboy Emulator</b></a>.
+          <span class="new-tag">NEW!</span></p>
         </div>
       </details>
 
@@ -659,57 +816,40 @@ hr.fancy {
               an internal platform that pulls flagged apps out of Jamf, researches them automatically, and runs them
               through an approve/restrict decision that pushes back down to the devices.</p>
               <p class="outcome"><b>Outcome:</b> ad-hoc app requests became a monitored pipeline.</p>
+              <div class="shots">
+                <a class="shot" href="#demo-analytics">
+                  <img src="./thumbs/nexus-analytics.png" alt="Helpdesk analytics view: KPI cards, ticket volume chart, breakdown by ticket type" width="640" height="500" loading="lazy">
+                  <span>HELPDESK ANALYTICS</span>
+                </a>
+                <a class="shot" href="#demo-apps">
+                  <img src="./thumbs/nexus-apps.png" alt="App approval dashboard: risk summary pills and app cards with risk stripes" width="640" height="500" loading="lazy">
+                  <span>APP APPROVAL DASHBOARD</span>
+                </a>
+              </div>
+              <p class="shotnote">&#9656; screenshots of the demo. Click either to open it right here on the page &mdash;
+              or <a href="./nexus.html" target="_blank" rel="noopener">open it full screen</a>.</p>
               <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
               <div class="stack">
-                <span class="chip"><b>Jamf Pro</b></span>
-                <span class="chip"><b>Extension Attributes</b></span>
-                <span class="chip"><b>Jamf API</b></span>
+                <span class="chip"><b>Jamf Suite</b></span>
+                <span class="chip"><b>Wiki.js</b></span>
                 <span class="chip"><b>App Store API</b></span>
-                <span class="chip"><b>GitHub API</b></span>
-                <span class="chip"><b>ToSDR</b></span>
                 <span class="chip"><b>NIST CVE</b></span>
                 <span class="chip"><b>AI-assisted research</b></span>
               </div>
               <dl class="usage">
-                <dt>Jamf extension attribute &rarr; inventory</dt>
-                <dd>An EA reports non-baseline apps per device, turning "what is installed out there?" into a
-                queryable inventory instead of a guess.</dd>
-                <dt>App Store API, GitHub, ToSDR, NIST CVE &rarr; safety research</dt>
-                <dd>Each flagged app gets automated research across publisher reputation, source activity, terms of
-                service and known CVEs, so a decision is evidence-backed rather than a gut call.</dd>
-                <dt>Jamf API &rarr; enforcement</dt>
-                <dd>Approved apps get published to the internal app store; restricted apps get removed from the
-                device. The decision and the enforcement are the same action.</dd>
-              </dl>
-            </div>
-          </details>
-
-          <details class="proj" id="p-jamf">
-            <summary>
-              <span class="p-title">Rippling MDM &rarr; Jamf Migration</span>
-              <span class="p-where">Rise8 &middot; 2026 &middot; the reason I was hired</span>
-            </summary>
-            <div class="p-body">
-              <p class="what">Planned and executed a full macOS MDM migration, architecting and administering a Jamf
-              Suite baseline from zero rather than porting the old configuration across.</p>
-              <p class="outcome"><b>Outcome:</b> ~200 devices migrated in ~1 month, and new hires now land on the
-              baseline day one.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>Jamf Pro Suite</b></span>
-                <span class="chip"><b>Apple Business Manager</b></span>
-                <span class="chip"><b>DEP</b></span>
-                <span class="chip"><b>FileVault</b></span>
-                <span class="chip"><b>Configuration Profiles</b></span>
-                <span class="chip"><b>macOS</b></span>
-              </div>
-              <dl class="usage">
-                <dt>ABM + DEP &rarr; zero-touch enrollment</dt>
-                <dd>Devices enroll and configure themselves out of the box, which is what made a one-month migration
-                window realistic at that fleet size.</dd>
-                <dt>Configuration profiles &rarr; the baseline</dt>
-                <dd>FileVault enforcement, auto-logout controls and the rest of the security baseline live as policy,
-                not as a checklist someone remembers to run.</dd>
+                <dt>Jamf Suite &rarr; inventory</dt>
+                <dd>An extension attribute reports non-baseline apps per device, turning "what is installed
+                out there?" into a queryable inventory instead of a guess.</dd>
+                <dt>App Store API, NIST CVE, AI-assisted research &rarr; safety review</dt>
+                <dd>Each flagged app gets researched across publisher reputation and known CVEs, so a
+                decision is evidence-backed rather than a gut call.</dd>
+                <dt>Jamf Suite &rarr; enforcement</dt>
+                <dd>Approved apps get published to the internal app store; restricted apps get removed from
+                the device. The decision and the enforcement are the same action.</dd>
+                <dt>Wiki.js &rarr; the list people actually read</dt>
+                <dd>The approved software list lives on the company wiki. Nexus seeds from that page and
+                writes back to it, so the human-readable list and the list being enforced on devices never
+                drift apart.</dd>
               </dl>
             </div>
           </details>
@@ -717,33 +857,57 @@ hr.fancy {
           <details class="proj" id="p-cmmc">
             <summary>
               <span class="p-title">CMMC Level 2 &mdash; Endpoint &amp; Workspace Controls</span>
-              <span class="p-where">Rise8 &middot; 2026 &middot; owned the full control set through C3PAO assessment</span>
+              <span class="p-where">Rise8 &middot; 2026 &middot; owned the control set through C3PAO assessment</span>
             </summary>
             <div class="p-body">
-              <p class="what">Owned every CMMC Level 2 control satisfied by Jamf, macOS, iOS and Google Workspace
-              ahead of the C3PAO assessment &mdash; implementing the changes, producing assessor-ready evidence, and
-              giving live configuration demos during the assessment itself.</p>
-              <p class="outcome"><b>Outcome:</b> passed the assessment with <b>0 PO&amp;AMs</b>.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>CMMC L2</b></span>
-                <span class="chip"><b>NIST SP 800-171</b></span>
-                <span class="chip"><b>Jamf Pro</b></span>
-                <span class="chip"><b>Jamf Protect</b></span>
-                <span class="chip"><b>macOS / iOS</b></span>
-                <span class="chip"><b>Google Workspace</b></span>
+              <p class="what">A CMMC Level 2 assessment is a third party checking your NIST SP 800-171 implementation,
+              one control objective at a time. I owned the controls a managed Apple fleet and Google Workspace answer
+              for &mdash; 85 objectives across eight families &mdash; implementing the configuration, producing the
+              evidence, and demonstrating the running system to the assessor.</p>
+              <p class="outcome"><b>Outcome:</b> passed with <b>0 PO&amp;AMs</b> &mdash; nothing deferred to a
+              remediation plan.</p>
+              <p class="what">The architecture is two control planes. Identity enforces who and from where; device
+              management enforces what the endpoint is allowed to be. A screenshot proves a setting was true once on
+              one machine &mdash; an assessor wants to know it is enforced fleet-wide and what happens when a device
+              drifts, which is an answer only the management plane can give.</p>
+              <div class="toolrow">
+                <span class="tool t-j">Jamf Pro</span><span class="tool t-j">Jamf Protect</span>
+                <span class="tool t-m">macOS</span><span class="tool t-i">iOS / iPadOS</span>
+                <span class="tool t-w">Google Workspace</span><span class="tool">NIST SP 800-171</span>
               </div>
-              <dl class="usage">
-                <dt>Jamf + macOS/iOS &rarr; technical control implementation</dt>
-                <dd>Control requirements were mapped to real enforceable MDM configuration, so the evidence was the
-                running system rather than a written intention.</dd>
-                <dt>Google Workspace &rarr; identity and access controls</dt>
-                <dd>Access, session and account controls configured and evidenced on the Workspace side of the same
-                control set.</dd>
-                <dt>Live demos &rarr; assessment</dt>
-                <dd>Walked the assessor through configuration in real time, which is where assessor-ready evidence
-                either holds up or does not.</dd>
-              </dl>
+              <a class="diagram" href="#d-cmmc">
+                <img src="./diagrams/cmmc-endpoint.svg" alt="Architecture: identity and device control planes enforcing onto a managed fleet, reporting evidence upward" width="900" height="520" loading="lazy">
+                <span class="cap">&#9656; ARCHITECTURE &mdash; CLICK TO ENLARGE</span>
+              </a>
+            </div>
+          </details>
+
+          <details class="proj" id="p-awboundary">
+            <summary>
+              <span class="p-title">GCP Assured Workloads &mdash; CUI Boundary as Code</span>
+              <span class="p-where">Rise8 &middot; 2026 &middot; designed and written solo</span>
+            </summary>
+            <div class="p-body">
+              <p class="what">A CMMC Level 2 / FedRAMP Moderate data boundary in Google Cloud, written as Terraform.
+              Scope is one folder: everything regulated lives there and nothing outside it does. The folder carries 54
+              org policy constraints, a service-controls perimeter and a deny-by-default firewall, and a project
+              inside it cannot widen that envelope.</p>
+              <p class="outcome"><b>Outcome:</b> the boundary exists as code &mdash; reviewable, reproducible, and enforcing before anything regulated landed in it.</p>
+              <p class="what">Two choices shaped it. It was built on an <b>empty</b> folder &mdash; a constraint costs
+              nothing until something runs under it, and the same constraint over a live workload needs an impact
+              assessment and a change window. And the pipeline is the change process: the identity that reviews cannot
+              write, the identity that applies is fenced to this folder by an IAM condition, and no credential is
+              stored anywhere.</p>
+              <div class="toolrow">
+                <span class="tool t-j">Terraform</span><span class="tool t-w">Assured Workloads</span>
+                <span class="tool t-w">Org Policy</span><span class="tool t-i">VPC Service Controls</span>
+                <span class="tool t-m">Hierarchical Firewall</span><span class="tool t-m">Cloud KMS</span>
+                <span class="tool t-j">GitLab CI</span>
+              </div>
+              <a class="diagram" href="#d-aw">
+                <img src="./diagrams/gcp-boundary.svg" alt="Architecture: org node inheritance into a constrained CUI folder, with perimeter, firewall, pipeline and drift detection" width="900" height="560" loading="lazy">
+                <span class="cap">&#9656; ARCHITECTURE &mdash; CLICK TO ENLARGE</span>
+              </a>
             </div>
           </details>
 
@@ -753,55 +917,25 @@ hr.fancy {
               <span class="p-where">ATA, LLC &middot; 2025&ndash;2026</span>
             </summary>
             <div class="p-body">
-              <p class="what">Configuration drift across cloud environments was an unmanaged risk. Built Azure dev,
-              test and prod environments in Terraform, with a pipeline that makes review a required step rather than
-              a courtesy.</p>
-              <p class="outcome"><b>Outcome:</b> environments became reproducible and every change became
-              reviewable.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>Terraform</b></span>
-                <span class="chip"><b>Azure</b></span>
-                <span class="chip"><b>GitHub Actions</b></span>
-                <span class="chip"><b>CODEOWNERS</b></span>
-                <span class="chip"><b>Shell</b></span>
-                <span class="chip"><b>Azure RBAC</b></span>
+              <p class="what">Configuration drift across cloud environments was an unmanaged risk. Built dev, test and
+              prod in Terraform from one codebase, with a pipeline that makes review a required step rather than a
+              courtesy &mdash; a plan posts on every pull request, code-owner approval is required, and apply happens
+              on merge.</p>
+              <p class="outcome"><b>Outcome:</b> environments became reproducible, and a difference between them
+              became a diff instead of something discovered during an incident.</p>
+              <p class="what">Each environment gets its own scoped service principal, so separation of duties is
+              enforced by credential rather than by naming convention &mdash; a mistake or a stolen token is bounded
+              by the environment it belongs to. I wrote the provisioning scripts the customer's own Azure admins ran,
+              so the privileged step stayed on their side of the boundary.</p>
+              <div class="toolrow">
+                <span class="tool t-j">Terraform</span><span class="tool t-w">Azure</span>
+                <span class="tool t-m">GitHub Actions</span><span class="tool">CODEOWNERS</span>
+                <span class="tool t-i">Azure RBAC</span><span class="tool">Shell</span>
               </div>
-              <dl class="usage">
-                <dt>Terraform &rarr; the environments themselves</dt>
-                <dd>Dev, test and prod defined as code, so drift becomes a visible diff instead of an undocumented
-                difference someone discovers during an incident.</dd>
-                <dt>GitHub Actions + CODEOWNERS &rarr; the guardrail</dt>
-                <dd>A plan posts automatically on merge request, CODEOWNERS approval is required, and apply happens
-                on merge. Nobody applies from a laptop.</dd>
-                <dt>Shell + scoped service principals &rarr; least privilege</dt>
-                <dd>Wrote the scripts the customer's Azure admins ran to provision three service principals scoped
-                per environment, enforcing separation of duties across dev, test and prod.</dd>
-              </dl>
-            </div>
-          </details>
-
-          <details class="proj" id="p-autopilot">
-            <summary>
-              <span class="p-title">Zero-Touch Device Enrollment</span>
-              <span class="p-where">ATA, LLC &middot; 2025</span>
-            </summary>
-            <div class="p-body">
-              <p class="what">Device onboarding was manual and error-prone. Designed and implemented a zero-touch
-              enrollment pipeline so provisioning stopped depending on who happened to be doing it.</p>
-              <p class="outcome"><b>Outcome:</b> consistent, auditable provisioning for every new hire and device.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>Microsoft Autopilot</b></span>
-                <span class="chip"><b>Intune</b></span>
-                <span class="chip"><b>Entra / Azure AD</b></span>
-                <span class="chip"><b>Windows</b></span>
-              </div>
-              <dl class="usage">
-                <dt>Autopilot through Intune &rarr; provisioning</dt>
-                <dd>Devices configure themselves against policy on first boot, which is what makes the result
-                auditable &mdash; there is a defined expected state to audit against.</dd>
-              </dl>
+              <a class="diagram" href="#d-azure">
+                <img src="./diagrams/azure-iac.svg" alt="Architecture: one Terraform codebase, a review pipeline, and three environments each with its own scoped credential" width="900" height="470" loading="lazy">
+                <span class="cap">&#9656; ARCHITECTURE &mdash; CLICK TO ENLARGE</span>
+              </a>
             </div>
           </details>
 
@@ -828,95 +962,6 @@ hr.fancy {
                 version control and compliance gap.</dd>
                 <dt>Self Service+ &rarr; the front door</dt>
                 <dd>Users get a branded portal they will actually use, so the compliant path is also the easy path.</dd>
-              </dl>
-            </div>
-          </details>
-
-          <details class="proj" id="p-mfa">
-            <summary>
-              <span class="p-title">Device-Level MFA at the macOS Login Window</span>
-              <span class="p-where">Defense Unicorns &middot; 2024&ndash;2025</span>
-            </summary>
-            <div class="p-body">
-              <p class="what">macOS login authentication was a security gap with no MFA enforced at the device level.
-              Deployed IdP-based MFA at the login window, then wrote the documentation and recorded the guides that
-              made a company-wide rollout possible.</p>
-              <p class="outcome"><b>Outcome:</b> MFA enforced before the desktop loads, not just at the app layer.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>Jamf Connect Login</b></span>
-                <span class="chip"><b>SSO / IdP</b></span>
-                <span class="chip"><b>MFA</b></span>
-                <span class="chip"><b>Technical writing</b></span>
-              </div>
-              <dl class="usage">
-                <dt>Jamf Connect Login &rarr; IdP-backed login window</dt>
-                <dd>Device login authenticates against the IdP with MFA, closing the gap between "logged into the
-                Mac" and "authenticated to the company."</dd>
-                <dt>Docs + recorded video guides &rarr; rollout</dt>
-                <dd>Wrote the IT-facing technical documentation and recorded end-user guides, because a login-screen
-                change fails on the support load if you skip that part.</dd>
-              </dl>
-            </div>
-          </details>
-
-          <details class="proj" id="p-wiki">
-            <summary>
-              <span class="p-title">The IT Wiki &amp; "Document Everything"</span>
-              <span class="p-where">Rise8 &middot; 2026 &middot; self-initiated</span>
-            </summary>
-            <div class="p-body">
-              <p class="what">Found a complete absence of IT operational documentation. Ran self-initiated audits and
-              stakeholder interviews to extract institutional knowledge out of people's heads, then built the wiki
-              and its contents from scratch.</p>
-              <p class="outcome"><b>Outcome:</b> config changes, ADRs and SOPs became part of every task's definition
-              of done &mdash; documentation stopped being a cleanup task.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>SOPs</b></span>
-                <span class="chip"><b>ADRs</b></span>
-                <span class="chip"><b>Continuity procedures</b></span>
-                <span class="chip"><b>Onboarding / Offboarding</b></span>
-                <span class="chip"><b>Stakeholder interviews</b></span>
-              </div>
-              <dl class="usage">
-                <dt>Audits + interviews &rarr; source material</dt>
-                <dd>Institutional knowledge existed only in people. Audits and interviews were the extraction
-                method.</dd>
-                <dt>Definition of done &rarr; the part that lasts</dt>
-                <dd>Wiring docs into the definition of done is what keeps a wiki from going stale the month after it
-                is written.</dd>
-              </dl>
-            </div>
-          </details>
-
-          <details class="proj" id="p-offboard">
-            <summary>
-              <span class="p-title">Automated Offboarding Pipeline</span>
-              <span class="p-where">Rise8 &middot; 2026</span>
-            </summary>
-            <div class="p-body">
-              <p class="what">Offboarding was inconsistent. Built a workflow that starts itself from the HR event and
-              carries all the way through to account archival, including the parts that need a human.</p>
-              <p class="outcome"><b>Outcome:</b> accurate license counts and repeatable offboarding.</p>
-              <span class="stack-label">&#9656; STACK &amp; HOW IT WAS USED</span>
-              <div class="stack">
-                <span class="chip"><b>Rippling</b></span>
-                <span class="chip"><b>Slack</b></span>
-                <span class="chip"><b>Unthread</b></span>
-                <span class="chip"><b>Google Workspace</b></span>
-                <span class="chip"><b>SaaS license mgmt</b></span>
-              </div>
-              <dl class="usage">
-                <dt>Rippling &rarr; Slack &rarr; help desk</dt>
-                <dd>A termination in Rippling posts to Slack, and the help desk parses it into an assigned ticket.
-                The process starts from the HR system of record instead of someone remembering to file it.</dd>
-                <dt>Ticket &rarr; the manual SaaS work</dt>
-                <dd>The ticket carries instructions and direct links for the SaaS that still need manual license
-                removal, so the un-automatable part is still consistent.</dd>
-                <dt>Timed reminder &rarr; Google Workspace archival</dt>
-                <dd>The ticket reminds IT after the defined 2 weeks post-suspension to archive the user, which is the
-                step that otherwise silently never happens.</dd>
               </dl>
             </div>
           </details>
@@ -978,16 +1023,75 @@ hr.fancy {
         <a href="https://www.linkedin.com/in/ryanruddock/" target="_blank" rel="noopener">&#128188; My LinkedIn</a>
       </div>
 
-      <div class="badges">
-        <span class="badge88 b-netscape">Best viewed in<br>NETSCAPE 4.0</span>
-        <span class="badge88 b-800">OPTIMIZED FOR<br>800 x 600</span>
-        <span class="badge88 b-claude">BUILT WITH<br>CLAUDE CODE</span>
-        <span class="badge88 b-tf">POWERED BY<br>TERRAFORM</span>
-        <span class="badge88 b-nodog">NO DOGS WERE<br>CONSULTED</span>
-      </div>
 
     </div><!-- /main -->
   </div><!-- /layout -->
+
+  <!-- in-page demo viewers. hidden until their #hash is targeted. -->
+  <div class="viewer" id="demo-analytics">
+    <a class="viewer-backdrop" href="#projects" aria-label="Close the demo"></a>
+    <div class="viewer-frame">
+      <div class="viewer-bar">
+        <span class="viewer-title">&#9670; Project Nexus &mdash; Helpdesk Analytics (demo)</span>
+        <a class="viewer-btn" href="./nexus.html#analytics" target="_blank" rel="noopener">Full screen</a>
+        <a class="viewer-btn" href="#projects">Close &#10005;</a>
+      </div>
+      <iframe src="./nexus.html#analytics" title="Project Nexus helpdesk analytics demo" loading="lazy"></iframe>
+    </div>
+    <p class="viewer-hint">Interactive demo with invented data &middot; <a href="#projects">click outside the window, or Close, to go back</a></p>
+  </div>
+
+  <div class="viewer" id="demo-apps">
+    <a class="viewer-backdrop" href="#projects" aria-label="Close the demo"></a>
+    <div class="viewer-frame">
+      <div class="viewer-bar">
+        <span class="viewer-title">&#9670; Project Nexus &mdash; App Approval Dashboard (demo)</span>
+        <a class="viewer-btn" href="./nexus.html#apps" target="_blank" rel="noopener">Full screen</a>
+        <a class="viewer-btn" href="#projects">Close &#10005;</a>
+      </div>
+      <iframe src="./nexus.html#apps" title="Project Nexus app approval demo" loading="lazy"></iframe>
+    </div>
+    <p class="viewer-hint">Interactive demo with invented data &middot; <a href="#projects">click outside the window, or Close, to go back</a></p>
+  </div>
+
+  <div class="lb" id="d-cmmc">
+    <a class="lb-back" href="#projects" aria-label="Close the diagram"></a>
+    <div class="lb-frame">
+      <div class="lb-bar">
+        <span class="lb-title">&#9670; CMMC L2 &mdash; Endpoint &amp; Workspace control architecture</span>
+        <a class="lb-btn" href="./diagrams/cmmc-endpoint.svg" target="_blank" rel="noopener">Open full size</a>
+        <a class="lb-btn" href="#projects">Close &#10005;</a>
+      </div>
+      <div class="lb-scroll"><img src="./diagrams/cmmc-endpoint.svg" alt="CMMC L2 - Endpoint and Workspace control architecture"></div>
+    </div>
+    <p class="lb-hint">Click outside the window, or Close, to go back</p>
+  </div>
+
+  <div class="lb" id="d-aw">
+    <a class="lb-back" href="#projects" aria-label="Close the diagram"></a>
+    <div class="lb-frame">
+      <div class="lb-bar">
+        <span class="lb-title">&#9670; GCP Assured Workloads &mdash; the CUI boundary</span>
+        <a class="lb-btn" href="./diagrams/gcp-boundary.svg" target="_blank" rel="noopener">Open full size</a>
+        <a class="lb-btn" href="#projects">Close &#10005;</a>
+      </div>
+      <div class="lb-scroll"><img src="./diagrams/gcp-boundary.svg" alt="GCP Assured Workloads - the CUI boundary"></div>
+    </div>
+    <p class="lb-hint">Click outside the window, or Close, to go back</p>
+  </div>
+
+  <div class="lb" id="d-azure">
+    <a class="lb-back" href="#projects" aria-label="Close the diagram"></a>
+    <div class="lb-frame">
+      <div class="lb-bar">
+        <span class="lb-title">&#9670; Azure IaC &mdash; one codebase, three environments</span>
+        <a class="lb-btn" href="./diagrams/azure-iac.svg" target="_blank" rel="noopener">Open full size</a>
+        <a class="lb-btn" href="#projects">Close &#10005;</a>
+      </div>
+      <div class="lb-scroll"><img src="./diagrams/azure-iac.svg" alt="Azure IaC - one codebase, three environments"></div>
+    </div>
+    <p class="lb-hint">Click outside the window, or Close, to go back</p>
+  </div>
 
   <div class="footer">
     &#9733; &nbsp; This page is part of the <b>IT WEBRING</b> &nbsp;
@@ -995,8 +1099,7 @@ hr.fancy {
     <a href="#guestbook">Sign my Guestbook</a> &nbsp;&middot;&nbsp;
     <a href="https://github.com/veggies" target="_blank" rel="noopener">GitHub</a> &nbsp;&middot;&nbsp;
     <a href="https://www.linkedin.com/in/ryanruddock/" target="_blank" rel="noopener">LinkedIn</a><br>
-    Last updated: 09/21/2026 &nbsp;&middot;&nbsp; &copy; Ryan Ruddock &nbsp;&middot;&nbsp;
-    No frames, no Java applets
+    Last updated: 09/22/2026 &nbsp;&middot;&nbsp; &copy; Ryan Ruddock
   </div>
 
 </div>

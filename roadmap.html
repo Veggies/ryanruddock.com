@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road to Nintendo :: ryanruddock.com</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+<style>
+/* ============================================================
+   ROAD TO NINTENDO  ::  a quest log  ::  best viewed at 800x600
+   Shares the house style with index.html. Single file, no deps.
+   ============================================================ */
+
+body {
+  margin: 0;
+  padding: 12px 8px 30px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  font-family: Verdana, Geneva, "MS Sans Serif", sans-serif;
+  font-size: 12px;
+  color: #000000;
+  background-color: #110033;
+  background-image:
+    radial-gradient(1.5px 1.5px at 18px 14px, #ffffff 99%, transparent 100%),
+    radial-gradient(1px 1px at 62px 40px, #ffff99 99%, transparent 100%),
+    radial-gradient(1px 1px at 34px 70px, #ccddff 99%, transparent 100%),
+    radial-gradient(2px 2px at 88px 86px, #ffffff 99%, transparent 100%),
+    radial-gradient(1px 1px at 8px 52px, #99bbff 99%, transparent 100%),
+    linear-gradient(#000055, #110033);
+  background-size: 110px 110px, 110px 110px, 110px 110px, 110px 110px, 110px 110px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, repeat, no-repeat;
+  background-attachment: scroll, scroll, scroll, scroll, scroll, fixed;
+}
+
+img { max-width: 100%; }
+
+a { color: #0000cc; }
+a:visited { color: #660099; }
+a:hover { color: #ff0000; }
+
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 4px ridge #ffcc00;
+  padding: 6px;
+}
+
+/* ============================ BANNER ======================== */
+.banner {
+  border: 3px outset #6699ff;
+  background: #3366cc;
+  background-image: linear-gradient(#66aaff, #3366cc 45%, #113388);
+  text-align: center;
+  padding: 14px 10px 10px;
+  position: relative;
+}
+.banner h1 {
+  margin: 0;
+  font-family: "Comic Sans MS", "Chalkboard SE", cursive;
+  font-size: 34px;
+  line-height: 1.1;
+  color: #ffdd00;
+  text-shadow: 3px 3px 0 #000066, -1px -1px 0 #000066, 1px -1px 0 #000066, -1px 1px 0 #000066;
+  letter-spacing: 1px;
+}
+.banner .tag {
+  margin: 6px 0 0;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 13px;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #002266;
+}
+.banner .home {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 9px;
+  font-family: "Courier New", monospace;
+  color: #cce4ff !important;
+  text-decoration: none;
+  font-weight: bold;
+}
+.banner .home:hover { color: #ffff00 !important; }
+
+/* ============ modules, same as the home page ============ */
+.mod {
+  border: 2px solid #3366cc;
+  border-radius: 10px;
+  background: #ffffff;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.mod > summary,
+.mod > h2 {
+  display: block;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  margin: 0;
+  font-family: "Comic Sans MS", cursive;
+  font-weight: bold;
+  font-size: 13px;
+  color: #ffffff;
+  background: #3366cc;
+  background-image: linear-gradient(#5588dd, #3366cc 60%, #224499);
+  padding: 4px 30px 4px 8px;
+  text-shadow: 1px 1px 0 #113377;
+}
+.mod > h2 { cursor: default; padding-right: 8px; }
+.mod > summary::-webkit-details-marker { display: none; }
+.mod > summary:hover { filter: brightness(1.12); }
+.mod > summary:focus-visible { outline: 2px dotted #ffff00; outline-offset: -4px; }
+.mod > summary::after {
+  content: "\2212";
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  line-height: 13px;
+  text-align: center;
+  font-family: "MS Sans Serif", Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+  text-shadow: none;
+  background: linear-gradient(#ffffff, #cccccc);
+  border: 2px outset #dddddd;
+  box-sizing: border-box;
+}
+.mod:not([open]) > summary::after { content: "+"; }
+.mod > summary:active::after { border-style: inset; }
+.mod > .body { padding: 8px; }
+
+.mod.gold { border-color: #e6a700; }
+.mod.gold > summary,
+.mod.gold > h2 {
+  background: #ffcc00;
+  background-image: linear-gradient(#ffe066, #ffcc00 60%, #e09900);
+  color: #663300;
+  text-shadow: 1px 1px 0 #ffeeaa;
+}
+.mod.pink  { border-color: #cc3399; }
+.mod.pink  > summary { background-image: linear-gradient(#ee77cc, #cc3399 60%, #99126f); }
+.mod.green { border-color: #339933; }
+.mod.green > summary { background-image: linear-gradient(#66cc66, #339933 60%, #1d6b1d); }
+
+/* ==================== THE QUEST TRACKER ===================== */
+.tracker { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.tracker .stat {
+  border: 2px inset #cccccc;
+  background: #eef4ff;
+  padding: 5px 8px;
+  text-align: center;
+  flex: 1;
+  min-width: 96px;
+}
+.tracker .stat b {
+  display: block;
+  font-family: "Courier New", monospace;
+  font-size: 21px;
+  color: #cc0066;
+  line-height: 1.15;
+}
+.tracker .stat small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: #444444;
+  margin-top: 2px;
+}
+
+/* ================= THE HORIZONTAL TIMELINE ================== */
+.railwrap { overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; }
+
+.rail {
+  display: flex;
+  align-items: flex-end;
+  padding: 40px 6px 8px;
+  min-width: max-content;
+}
+
+/* the connector segment between two nodes */
+.conn {
+  flex: 1 1 22px;
+  min-width: 14px;
+  height: 6px;
+  margin-bottom: 12px;
+  background: #dcdcdc;
+  border-top: 1px solid #bbbbbb;
+  border-bottom: 1px solid #ffffff;
+}
+.conn.on { background: linear-gradient(#5588dd, #113388); border-top-color: #113388; border-bottom-color: #6699ee; }
+
+/* a gate node on the rail */
+.node {
+  position: relative;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  background: linear-gradient(#ffffff, #e2e2e2);
+  border: 2px outset #cccccc;
+  color: #888888;
+  line-height: 1;
+  box-sizing: border-box;
+}
+.node:hover  { border-style: inset; color: #cc0000; }
+.node:focus-visible { outline: 2px dotted #cc0066; outline-offset: 2px; }
+
+.node.done {
+  background: linear-gradient(#66cc66, #1d6b1d);
+  border: 2px outset #66cc66;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #114411;
+}
+.node.now {
+  background: linear-gradient(#ffee55, #e09900);
+  border: 2px outset #ffdd55;
+  color: #663300;
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+  margin-bottom: -2px;
+}
+/* milestone gates wear a double ring */
+.node.star { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #cc0066; }
+.node.star.done { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #007700; }
+
+/* ---------------- the flag, planted on the current gate --------------- */
+.flagpin {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  margin-left: -1px;
+  margin-bottom: -2px;
+  width: 46px;
+  height: 40px;
+  pointer-events: none;
+}
+.flagpin svg { display: block; width: 46px; height: 40px; overflow: visible; }
+/* two-frame wave. the keyframes are complementary, so exactly one pennant is
+   ever painted - no overlap, no shape sitting inside the other one. */
+@keyframes flapA { 0%, 49.99% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes flapB { 0%, 49.99% { opacity: 0; } 50%, 100% { opacity: 1; } }
+.flagpin .wave1 { animation: flapA 0.86s linear infinite; }
+.flagpin .wave2 { opacity: 0; animation: flapB 0.86s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .flagpin .wave1 { animation: none; opacity: 1; }
+  .flagpin .wave2 { animation: none; opacity: 0; }
+}
+
+/* ---------------- the readout under each rail --------------- */
+.readout {
+  border: 2px inset #999999;
+  background: #000000;
+  color: #00ff00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 6px 8px;
+  min-height: 42px;
+  box-sizing: border-box;
+}
+.readout .r-num { color: #ffcc00; font-weight: bold; }
+.readout .r-state { float: right; font-size: 10px; }
+.readout .r-state.s-done { color: #66ff66; }
+.readout .r-state.s-now  { color: #ffcc00; }
+.readout .r-state.s-todo { color: #888888; }
+.readout b { color: #ffffff; }
+.readout code { color: #66ddff; font-family: inherit; }
+.readout .r-text { display: block; margin-top: 2px; }
+
+.railhint {
+  font-size: 9px;
+  color: #777777;
+  margin: 4px 0 0;
+  text-align: right;
+  letter-spacing: 0.5px;
+}
+
+.gatehead {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #336699;
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
+}
+.blurb {
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.55;
+  background: #ffffcc;
+  border-left: 4px solid #ffcc00;
+  padding: 5px 7px;
+}
+.blurb b { color: #663300; }
+.locked-note {
+  font-size: 10px;
+  color: #777777;
+  font-style: italic;
+  margin: 0 0 7px;
+}
+
+/* ====================== FURNITURE =========================== */
+hr.fancy {
+  height: 4px;
+  border: 0;
+  margin: 10px 0;
+  background: linear-gradient(90deg, #ffffff, #3366cc, #cc3399, #ffcc00, #3366cc, #ffffff);
+}
+
+.linkbar { text-align: center; margin-bottom: 6px; }
+.linkbar a {
+  display: inline-block;
+  border: 2px outset #99ccff;
+  background: linear-gradient(#ddeeff, #99ccff 55%, #6699cc);
+  color: #000066 !important;
+  font-weight: bold;
+  font-size: 12px;
+  text-decoration: none;
+  padding: 5px 14px;
+  margin: 2px;
+  font-family: "Comic Sans MS", cursive;
+}
+.linkbar a:hover { border-style: inset; color: #cc0000 !important; }
+
+
+
+@media (max-width: 640px) {
+  .banner h1 { font-size: 21px; }
+  .banner .home, .banner .est { position: static; display: inline-block; margin: 0 6px 4px; }
+  .leg { flex-wrap: wrap; }
+  .leg .legname { width: auto; flex: 1 0 100%; }
+  .tracker .stat { min-width: 72px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="banner">
+    <a class="home" href="./index.html">&laquo; HOME</a>
+    <h1>ryanruddock.com</h1>
+    <p class="tag">Road to Nintendo &mdash; three emulators, in order</p>
+  </div>
+
+
+  <!-- ==================== QUEST STATUS ==================== -->
+  <div class="mod gold">
+    <h2>&#9670; Quest Status</h2>
+    <div class="body">
+      <div class="tracker" id="tracker"></div>
+    </div>
+  </div>
+
+  <!-- project modules render here -->
+  <div id="projects"></div>
+
+  <hr class="fancy">
+
+  <div class="linkbar">
+    <a href="./index.html">&#127968; Back to Homepage</a>
+    <a href="https://github.com/veggies" target="_blank" rel="noopener">&#128187; My GitHub</a>
+  </div>
+
+
+
+</div>
+
+<script>
+/* ============================================================
+   >>>>>>>>>>>>>>>>  THE ONLY PART YOU EDIT  <<<<<<<<<<<<<<<<<<
+
+   To update progress:
+     1. Set  done:  to the number of gates you have PASSED.
+     2. Set  ACTIVE: to the project you are currently working in.
+     3. Save, commit, push. The deploy workflow does the rest.
+
+   The flag ("YOU ARE HERE") lands automatically on the gate
+   after the last one you passed, in the ACTIVE project.
+   ============================================================ */
+
+var ACTIVE = 1;   // 1 = CHIP-8 Python, 2 = CHIP-8 C++, 3 = Game Boy
+
+var ROADMAP = [
+  {
+    n: 1,
+    name: "CHIP-8 / PYTHON",
+    title: "Stage One &mdash; CHIP-8, in Python",
+    colour: "",
+    span: "~2 weeks",
+    blurb: "A virtual machine from 1977, small enough to hold entirely in your head. " +
+           "You write the machine; the ROMs supply the games, so nothing is drawn or designed. " +
+           "Teaches what memory <b>is</b> while the runtime still handles it for you.",
+    done: 0,
+    gates: [
+      "ROM loads into a 4096-byte array at 0x200",
+      "Instruction stream prints, matching a published disassembly",
+      "Pixels you set by hand appear on screen",
+      "<b>The IBM logo renders</b>",
+      "<b>Automated tests catch a break you introduced on purpose</b>",
+      "Subroutines nest three deep and return correctly",
+      "Every branch instruction takes the right path",
+      "<code>corax+</code> test ROM passes",
+      "<code>flags</code> passes &mdash; VF ordering is exact",
+      "Timers hold 60Hz regardless of CPU speed",
+      "All sixteen keys read; FX0A waits on release",
+      "BCD, font lookup, register dump/load",
+      "<code>quirks</code> passes, each quirk a toggle",
+      "<b>You play a real game to death</b>"
+    ]
+  },
+  {
+    n: 2,
+    name: "CHIP-8 / C++",
+    title: "Stage Two &mdash; CHIP-8, in C++",
+    colour: "green",
+    span: "~3-4 weeks",
+    blurb: "Same machine, same test ROMs, no new design work. The only new variable is the " +
+           "language &mdash; which is the one condition under which C++ is actually learnable. " +
+           "This is where <b>ownership</b> is learned.",
+    done: 0,
+    gates: [
+      "CMake builds a hello-world and you can explain every line",
+      "4KB of memory declared with fixed-width types, ROM loads",
+      "Fetch-decode-execute loop compiles and steps",
+      "<b>The IBM logo renders again</b>",
+      "Test harness ported &mdash; the same ROMs, run from one command",
+      "<code>corax+</code> and <code>flags</code> pass",
+      "Timers and input work",
+      "<code>quirks</code> passes",
+      "<b>Clean under a sanitiser &mdash; no leaks, no UB</b>",
+      "<b>A real game is playable, built from source on a cold clone</b>"
+    ]
+  },
+  {
+    n: 3,
+    name: "GAME BOY / C++",
+    title: "Stage Three &mdash; Game Boy, in C++",
+    colour: "pink",
+    span: "~6-9 months",
+    blurb: "Real Nintendo hardware, and the portfolio piece. A Sharp LR35902, a PPU locked to " +
+           "the CPU cycle-for-cycle, bank controllers and interrupts &mdash; documented " +
+           "exhaustively in Pan Docs, judged by test ROMs that are brutal about what you got wrong.",
+    done: 0,
+    gates: [
+      "CPU passes Blargg's <code>cpu_instrs</code> &mdash; all 11 ROMs",
+      "Timing passes <code>instr_timing</code>",
+      "<b>The boot ROM runs and the Nintendo logo scrolls down</b>",
+      "Background and window render from real tile data",
+      "Sprites, with the ten-per-line hardware limit respected",
+      "Interrupts: VBlank, LCD STAT, timer, joypad",
+      "MBC1 banking &mdash; larger cartridges load",
+      "<b>Tetris is playable start to finish</b>",
+      "<b>Link's Awakening boots and is playable</b>",
+      "Audio: four channels, recognisable music"
+    ]
+  }
+];
+
+/* ---------------- rendering, nothing to edit below ---------------- */
+
+(function () {
+  var FLAG =
+    '<span class="flagpin" aria-hidden="true"><svg viewBox="0 0 46 40">'
+  +   '<path class="wave1" d="M4,3.5 C15,1 27,6 40,7.5 C27,10 15,13 4,16.5 Z" fill="#cc0000" stroke="#800000" stroke-width="1.4" stroke-linejoin="round"/>'
+  +   '<path class="wave2" d="M4,3.5 C15,6 27,2 40,7.5 C27,14 15,10 4,16.5 Z" fill="#cc0000" stroke="#800000" stroke-width="1.4" stroke-linejoin="round"/>'
+  +   '<rect x="1" y="2" width="3.4" height="37" fill="#443322" stroke="#221100" stroke-width="1"/>'
+  +   '<rect x="1.7" y="2" width="1" height="37" fill="#8a7a66"/>'
+  +   '<circle cx="2.7" cy="2.2" r="2.2" fill="#ffcc00" stroke="#a37a00" stroke-width="1"/>'
+  + '</svg></span>';
+
+  var totalGates = 0, totalDone = 0;
+  ROADMAP.forEach(function (p) {
+    p.done = Math.max(0, Math.min(p.done, p.gates.length));
+    totalGates += p.gates.length;
+    totalDone  += p.done;
+  });
+
+  var pct = totalGates ? Math.round((totalDone / totalGates) * 100) : 0;
+  var activeProj = ROADMAP[ACTIVE - 1] || ROADMAP[0];
+  var nowIndex   = activeProj.done;
+  var onFinalRun = nowIndex >= activeProj.gates.length;
+
+  /* ---- stat boxes ---- */
+  function stat(big, label) {
+    return '<div class="stat"><b>' + big + '</b><small>' + label + '</small></div>';
+  }
+  document.getElementById("tracker").innerHTML =
+      stat(totalDone + "/" + totalGates, "GATES PASSED")
+    + stat(pct + "%", "OF THE ROAD")
+    + stat("#" + ACTIVE, "CURRENT STAGE")
+    + stat(onFinalRun ? "&mdash;" : ("#" + (nowIndex + 1)), "NEXT GATE");
+
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function stateOf(p, i) {
+    if (i < p.done) return "done";
+    if (p.n === ACTIVE && i === p.done) return "now";
+    return "todo";
+  }
+
+  /* ---- one horizontal rail per stage ---- */
+  var html = ROADMAP.map(function (p) {
+    var isActive = p.n === ACTIVE;
+    var complete = p.done >= p.gates.length;
+
+    var bits = [];
+    p.gates.forEach(function (text, i) {
+      if (i > 0) bits.push('<span class="conn' + (i <= p.done ? " on" : "") + '"></span>');
+      var st   = stateOf(p, i);
+      var star = /<b>/.test(text) ? " star" : "";
+      bits.push(
+        '<button type="button" class="node ' + st + star + '"'
+        + ' data-stage="' + p.n + '" data-idx="' + i + '"'
+        + ' title="Gate ' + pad(i + 1) + '">'
+        + pad(i + 1)
+        + (st === "now" ? FLAG : "")
+        + '</button>'
+      );
+    });
+
+    var badge = complete ? " &#10003; CLEARED" : (isActive ? " &laquo; IN PROGRESS" : "");
+    var note  = (!isActive && !complete && p.done === 0)
+      ? '<p class="locked-note">Not started &mdash; stage ' + (p.n - 1) + ' has to clear first.</p>'
+      : "";
+
+    return '<details class="mod ' + p.colour + '"' + (isActive ? " open" : "") + '>'
+         +   '<summary>&#9658; ' + p.title
+         +     ' &nbsp;<span style="font-size:11px;opacity:.85">(' + p.span + ')</span>' + badge
+         +   '</summary>'
+         +   '<div class="body">'
+         +     note
+         +     '<p class="blurb">' + p.blurb + '</p>'
+         +     '<span class="gatehead">&#9656; TIMELINE &mdash; ' + p.done + ' OF '
+         +        p.gates.length + ' GATES PASSED</span>'
+         +     '<div class="railwrap"><div class="rail" data-stage="' + p.n + '">'
+         +        bits.join("") + '</div></div>'
+         +     '<div class="readout" id="readout-' + p.n + '"></div>'
+         +     '<p class="railhint">&#9656; hover or click a gate to read it</p>'
+         +   '</div>'
+         + '</details>';
+  }).join("");
+  document.getElementById("projects").innerHTML = html;
+
+  /* ---- the readout under each rail ---- */
+  var LABEL = { done: "PASSED", now: "YOU ARE HERE", todo: "NOT YET" };
+
+  function show(stage, i) {
+    var p  = ROADMAP[stage - 1];
+    var st = stateOf(p, i);
+    document.getElementById("readout-" + stage).innerHTML =
+        '<span class="r-state s-' + st + '">' + LABEL[st] + '</span>'
+      + '<span class="r-num">GATE ' + pad(i + 1) + '/' + pad(p.gates.length) + '</span>'
+      + '<span class="r-text">' + p.gates[i] + '</span>';
+  }
+
+  /* default each rail to its most interesting gate */
+  ROADMAP.forEach(function (p) {
+    var i = (p.n === ACTIVE && !onFinalRun) ? p.done
+          : (p.done > 0 ? p.done - 1 : 0);
+    show(p.n, Math.min(i, p.gates.length - 1));
+  });
+
+  /* hover, focus and click all read the same node */
+  Array.prototype.forEach.call(document.querySelectorAll(".rail"), function (rail) {
+    function handler(e) {
+      var n = e.target.closest ? e.target.closest(".node") : null;
+      if (n) show(+n.getAttribute("data-stage"), +n.getAttribute("data-idx"));
+    }
+    rail.addEventListener("mouseover", handler);
+    rail.addEventListener("focusin", handler);
+    rail.addEventListener("click", handler);
+  });
+
+})();
+</script>
+
+</body>
+</html>

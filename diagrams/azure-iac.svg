@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" font-family="Verdana, Geneva, sans-serif" role="img" aria-label="One Terraform codebase defines dev, test and prod Azure environments. A pull request triggers an automatic plan, requires code-owner approval, and applies on merge. Each environment has its own scoped service principal, so no single credential can reach all three, and nobody applies from a laptop.">
+  <rect width="900" height="470" fill="#ffffff"/>
+  <defs><marker id="z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3366cc"/></marker></defs>
+
+  <text x="24" y="30" font-size="15" font-weight="bold" fill="#113366">Azure Infrastructure as Code — one codebase, three environments</text>
+  <text x="24" y="48" font-size="11" fill="#666666">Configuration drift was the problem. The fix is that a difference between environments becomes a diff, not a discovery during an incident.</text>
+
+  <!-- repo -->
+  <rect x="24" y="68" width="230" height="110" fill="#f7f7fb" stroke="#666699" stroke-width="2"/>
+  <rect x="24" y="68" width="230" height="22" fill="#666699"/>
+  <text x="34" y="84" font-size="12" font-weight="bold" fill="#ffffff">TERRAFORM — one codebase</text>
+  <text x="36" y="108" font-size="10.5" fill="#333366">Dev, test and prod defined as code,</text>
+  <text x="36" y="124" font-size="10.5" fill="#333366">differing by variables rather than</text>
+  <text x="36" y="140" font-size="10.5" fill="#333366">by whatever someone clicked in a portal.</text>
+  <text x="36" y="162" font-size="10" fill="#777777">Drift shows up as a diff on the next plan.</text>
+
+  <!-- pipeline -->
+  <rect x="284" y="68" width="592" height="110" fill="#eef4ff" stroke="#3366cc" stroke-width="2"/>
+  <rect x="284" y="68" width="592" height="22" fill="#3366cc"/>
+  <text x="294" y="84" font-size="12" font-weight="bold" fill="#ffffff">THE GUARDRAIL — review is a required step, not a courtesy</text>
+
+  <rect x="300" y="104" width="120" height="40" fill="#ffffff" stroke="#3366cc"/>
+  <text x="360" y="121" font-size="10.5" font-weight="bold" fill="#113366" text-anchor="middle">Pull request</text>
+  <text x="360" y="136" font-size="9.5" fill="#666666" text-anchor="middle">change proposed</text>
+  <line x1="420" y1="124" x2="446" y2="124" stroke="#3366cc" stroke-width="2" marker-end="url(#z)"/>
+
+  <rect x="448" y="104" width="120" height="40" fill="#ffffff" stroke="#3366cc"/>
+  <text x="508" y="121" font-size="10.5" font-weight="bold" fill="#113366" text-anchor="middle">Plan posts</text>
+  <text x="508" y="136" font-size="9.5" fill="#666666" text-anchor="middle">automatically, on the PR</text>
+  <line x1="568" y1="124" x2="594" y2="124" stroke="#3366cc" stroke-width="2" marker-end="url(#z)"/>
+
+  <rect x="596" y="104" width="120" height="40" fill="#fffbe6" stroke="#e6a700"/>
+  <text x="656" y="121" font-size="10.5" font-weight="bold" fill="#663300" text-anchor="middle">CODEOWNERS</text>
+  <text x="656" y="136" font-size="9.5" fill="#5a4600" text-anchor="middle">approval required</text>
+  <line x1="716" y1="124" x2="742" y2="124" stroke="#3366cc" stroke-width="2" marker-end="url(#z)"/>
+
+  <rect x="744" y="104" width="118" height="40" fill="#eef7ee" stroke="#339933"/>
+  <text x="803" y="121" font-size="10.5" font-weight="bold" fill="#14521a" text-anchor="middle">Apply on merge</text>
+  <text x="803" y="136" font-size="9.5" fill="#143d19" text-anchor="middle">from the pipeline only</text>
+
+  <text x="300" y="166" font-size="10.5" font-weight="bold" fill="#8a0000">Nobody applies from a laptop — the pipeline holds the only credentials that can.</text>
+
+  <line x1="254" y1="123" x2="280" y2="123" stroke="#3366cc" stroke-width="2" marker-end="url(#z)"/>
+
+  <!-- environments -->
+  <line x1="450" y1="178" x2="450" y2="212" stroke="#3366cc" stroke-width="2.5" marker-end="url(#z)"/>
+  <text x="460" y="200" font-size="10.5" fill="#3366cc" font-weight="bold">applies to exactly one environment at a time</text>
+
+  <rect x="24" y="214" width="852" height="150" fill="#fafcff" stroke="#3366cc" stroke-width="2"/>
+  <rect x="24" y="214" width="852" height="22" fill="#5588dd"/>
+  <text x="34" y="230" font-size="12" font-weight="bold" fill="#ffffff">THREE ENVIRONMENTS — separated by credential, not by convention</text>
+
+  <rect x="48" y="250" width="252" height="96" fill="#ffffff" stroke="#339933" stroke-width="2"/>
+  <rect x="48" y="250" width="252" height="20" fill="#66cc66"/>
+  <text x="174" y="265" font-size="11" font-weight="bold" fill="#14521a" text-anchor="middle">DEV</text>
+  <text x="174" y="290" font-size="10" fill="#333333" text-anchor="middle">own scoped service principal</text>
+  <text x="174" y="308" font-size="10" fill="#333333" text-anchor="middle">cannot reach test or prod</text>
+  <text x="174" y="332" font-size="9.5" fill="#777777" text-anchor="middle">fastest feedback, lowest blast radius</text>
+
+  <rect x="324" y="250" width="252" height="96" fill="#ffffff" stroke="#e6a700" stroke-width="2"/>
+  <rect x="324" y="250" width="252" height="20" fill="#ffcc00"/>
+  <text x="450" y="265" font-size="11" font-weight="bold" fill="#663300" text-anchor="middle">TEST</text>
+  <text x="450" y="290" font-size="10" fill="#333333" text-anchor="middle">own scoped service principal</text>
+  <text x="450" y="308" font-size="10" fill="#333333" text-anchor="middle">same code, different variables</text>
+  <text x="450" y="332" font-size="9.5" fill="#777777" text-anchor="middle">proves the change before prod sees it</text>
+
+  <rect x="600" y="250" width="252" height="96" fill="#ffffff" stroke="#cc0000" stroke-width="2"/>
+  <rect x="600" y="250" width="252" height="20" fill="#cc3333"/>
+  <text x="726" y="265" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">PROD</text>
+  <text x="726" y="290" font-size="10" fill="#333333" text-anchor="middle">own scoped service principal</text>
+  <text x="726" y="308" font-size="10" fill="#333333" text-anchor="middle">no standing human access</text>
+  <text x="726" y="332" font-size="9.5" fill="#777777" text-anchor="middle">reached only through a merged, approved PR</text>
+
+  <rect x="24" y="378" width="852" height="70" fill="#fffbe6" stroke="#e6a700" stroke-width="2"/>
+  <text x="36" y="398" font-size="11.5" font-weight="bold" fill="#663300">Why three credentials rather than one</text>
+  <text x="36" y="416" font-size="10.5" fill="#5a4600">A single principal that can reach all three environments makes separation of duties a naming convention. Three scoped principals make it enforceable:</text>
+  <text x="36" y="433" font-size="10.5" fill="#5a4600">a mistake, or a stolen credential, is bounded by the environment it belongs to. I wrote the provisioning scripts the customer's own Azure admins ran,</text>
+  <text x="36" y="443" font-size="10.5" fill="#5a4600">so the privileged step stayed on their side of the boundary.</text>
+</svg>

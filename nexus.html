@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Nexus :: ryanruddock.com</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22><circle cx=%2224%22 cy=%228%22 r=%225%22 fill=%22%23FF0000%22/><circle cx=%228%22 cy=%2232%22 r=%225%22 fill=%22%23FF0000%22/><circle cx=%2240%22 cy=%2232%22 r=%225%22 fill=%22%23FF0000%22/></svg>">
+<style>
+/* ===========================================================
+   PROJECT NEXUS — recreation of the internal tool's interface.
+   Fake data throughout. Styling follows the production app's
+   own design tokens so it reads the way it actually did.
+   =========================================================== */
+
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('fonts/Rajdhani-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('fonts/Rajdhani-SemiBold.ttf') format('truetype');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('fonts/Rajdhani-Bold.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('fonts/DMSans-Variable.ttf') format('truetype');
+  font-weight: 100 1000; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --r8-red: #FF0000;
+  --r8-black: #131414;
+  --r8-white: #F2F2F2;
+  --r8-gray-mid: #CACACA;
+  --r8-pure-white: #ffffff;
+  --r8-dark: #2B2C2C;
+  --r8-panel: #2B2C2C;
+  --r8-border: #3a3a3a;
+  --r8-border-hover: #4a4a4a;
+  --r8-text: #F2F2F2;
+  --r8-text-muted: #CACACA;
+  --r8-text-dim: #999999;
+  --risk-high: #FF0000;
+  --risk-med: #f6ad55;
+  --risk-low: #68d391;
+  --risk-unk: #CACACA;
+  --font-heading: 'Rajdhani', 'Arial Narrow', sans-serif;
+  --font-subhead: 'Rajdhani', 'Arial Narrow', sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--r8-black);
+  color: var(--r8-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+}
+
+/* ====================== HEADER ====================== */
+header {
+  background: var(--r8-white);
+  border-bottom: 2px solid var(--r8-red);
+  padding: 1.1rem 2rem;
+}
+.header-content {
+  max-width: 1000px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+}
+.header-left { display: flex; align-items: center; gap: 1rem; }
+.back-link {
+  color: var(--r8-black); text-decoration: none;
+  font-size: 0.9rem; font-weight: 700;
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-heading); letter-spacing: 0.06em;
+}
+.back-link:hover { opacity: 0.8; }
+.back-logo { width: 34px; height: 34px; flex-shrink: 0; }
+header h1 {
+  font-family: var(--font-heading);
+  font-size: 1.45rem; font-weight: 700;
+  color: var(--r8-black); letter-spacing: 0.1em;
+  line-height: 1.1;
+}
+.subtitle { font-size: 0.78rem; color: #666666; margin-top: 0.15rem; }
+.header-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+.toggle-group { display: flex; gap: 0.15rem; }
+.toggle-btn {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  color: #777777; font-family: var(--font-subhead);
+  font-size: 0.85rem; letter-spacing: 0.07em;
+  padding: 0.3rem 0.5rem; cursor: pointer;
+}
+.toggle-btn:hover { color: var(--r8-black); }
+.toggle-btn.active { color: var(--r8-black); border-bottom-color: var(--r8-red); font-weight: 700; }
+
+.btn-refresh {
+  background: none; color: var(--r8-black);
+  border: 1px solid var(--r8-black);
+  padding: 0.35rem 0.8rem; font-size: 0.78rem;
+  font-weight: 600; cursor: pointer; font-family: var(--font-body);
+}
+.btn-refresh:hover { opacity: 0.65; }
+.btn-refresh:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ================== DEMO DISCLOSURE ================== */
+.demobar {
+  background: #1b1c1c;
+  border-bottom: 1px solid var(--r8-border);
+  padding: 0.7rem 2rem;
+}
+.demobar-inner {
+  max-width: 1000px; margin: 0 auto;
+  display: flex; gap: 0.85rem; align-items: baseline; flex-wrap: wrap;
+}
+.demotag {
+  font-family: var(--font-subhead);
+  font-size: 0.68rem; letter-spacing: 0.16em;
+  color: var(--r8-red); border: 1px solid var(--r8-red);
+  padding: 0.12rem 0.5rem; white-space: nowrap; flex-shrink: 0;
+}
+.demobar p { font-size: 0.76rem; color: var(--r8-text-dim); line-height: 1.6; }
+.demobar a { color: var(--r8-text-muted); }
+
+/* ======================= MAIN ======================= */
+main { max-width: 1000px; margin: 0 auto; padding: 1.5rem 2rem 3rem; width: 100%; flex: 1; }
+
+.section-label {
+  font-family: var(--font-subhead);
+  font-size: 0.75rem; color: var(--r8-red);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 0.9rem;
+}
+
+/* view switch between the two tools */
+.toolbar { display: flex; gap: 0; border-bottom: 1px solid var(--r8-border); margin-bottom: 1.5rem; }
+.toolbtn {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  color: var(--r8-text-dim); font-family: var(--font-subhead);
+  font-size: 1rem; letter-spacing: 0.09em;
+  padding: 0.6rem 1.1rem; cursor: pointer;
+}
+.toolbtn:hover { color: var(--r8-text); }
+.toolbtn.active { color: var(--r8-white); border-bottom-color: var(--r8-red); font-weight: 700; }
+
+.view[hidden] { display: none; }
+
+/* ======================== KPIs ====================== */
+.kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.1rem; }
+.kpi-card {
+  background: var(--r8-panel); border: 1px solid var(--r8-border);
+  padding: 1.1rem 1rem; text-align: center; position: relative; overflow: hidden;
+}
+.kpi-card::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(242,242,242,0.07), transparent 70%);
+}
+.kpi-card > * { position: relative; }
+.kpi-card.accent { border-left: 3px solid var(--r8-red); }
+.kpi-value {
+  display: block; font-family: var(--font-heading);
+  font-size: 1.75rem; font-weight: 700; color: var(--r8-white); margin-bottom: 0.2rem;
+}
+.kpi-card.accent .kpi-value { color: var(--r8-red); }
+.kpi-label { font-size: 0.7rem; color: var(--r8-text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ======================= CHARTS ===================== */
+.charts-row { display: grid; grid-template-columns: 1.55fr 1fr; gap: 1rem; }
+.chart-card {
+  background: var(--r8-panel); border: 1px solid var(--r8-border);
+  padding: 1.1rem 1.25rem; min-width: 0;
+}
+.chart-card h2 {
+  font-family: var(--font-subhead); font-size: 0.95rem; font-weight: 600;
+  letter-spacing: 0.09em; color: var(--r8-white); margin-bottom: 1.1rem;
+}
+
+.bar-chart {
+  display: flex; align-items: flex-end; gap: 4px;
+  border-bottom: 1px solid var(--r8-border-hover);
+  height: 190px; padding-bottom: 4px;
+}
+.bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; }
+.bar-value { font-size: 0.62rem; color: var(--r8-text-muted); margin-bottom: 0.2rem; }
+.bar {
+  width: 100%; background: var(--r8-white); opacity: 0.7;
+  transition: height 0.35s ease, opacity 0.15s;
+}
+.bar:hover { opacity: 1; }
+.bar.bar-accent { background: var(--r8-red); opacity: 0.85; }
+.bar.bar-accent:hover { opacity: 1; }
+.bar-labels { display: flex; gap: 4px; margin-top: 0.45rem; }
+.bar-labels span { flex: 1; text-align: center; font-size: 0.6rem; font-weight: 600; color: var(--r8-text-muted); min-width: 0; }
+
+.horiz-bars { display: flex; flex-direction: column; gap: 0.55rem; }
+.horiz-bar-row { display: flex; align-items: center; gap: 0.5rem; }
+.horiz-bar-label { font-size: 0.68rem; color: var(--r8-text-muted); width: 116px; flex-shrink: 0; text-align: right; line-height: 1.25; }
+.horiz-bar-track { flex: 1; height: 20px; background: var(--r8-border); min-width: 0; }
+.horiz-bar-fill { height: 100%; background: var(--r8-white); opacity: 0.75; transition: width 0.35s ease; }
+.horiz-bar-fill.accent { background: var(--r8-red); opacity: 0.9; }
+.horiz-bar-count { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; color: var(--r8-white); width: 28px; text-align: right; }
+
+.chart-note { font-size: 0.74rem; color: var(--r8-text-dim); line-height: 1.65; margin-top: 1rem; border-left: 2px solid var(--r8-red); padding-left: 0.75rem; }
+
+/* ==================== APP APPROVAL ================== */
+.tab-bar { display: flex; gap: 0; margin-bottom: 1.2rem; border-bottom: 1px solid var(--r8-border); flex-wrap: wrap; }
+.tab {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  color: var(--r8-text-dim); font-family: var(--font-subhead);
+  font-size: 0.9rem; letter-spacing: 0.06em; padding: 0.55rem 0.95rem; cursor: pointer;
+}
+.tab:hover { color: var(--r8-text); }
+.tab.active { color: var(--r8-white); border-bottom-color: var(--r8-red); font-weight: 700; }
+.tab .cnt { color: var(--r8-text-dim); font-size: 0.78rem; }
+
+.summary-bar { display: flex; gap: 0.6rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.summary-pill {
+  display: flex; align-items: baseline; gap: 0.4rem;
+  background: #1b1c1c; border: 1px solid var(--r8-border);
+  padding: 0.45rem 0.85rem; border-radius: 3px;
+}
+.pill-count { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; line-height: 1; }
+.pill-label { font-size: 0.68rem; color: var(--r8-text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.summary-pill.high .pill-count    { color: var(--risk-high); }
+.summary-pill.medium .pill-count  { color: var(--risk-med); }
+.summary-pill.low .pill-count     { color: var(--risk-low); }
+.summary-pill.unknown .pill-count { color: var(--risk-unk); }
+.summary-pill.total .pill-count   { color: var(--r8-white); }
+
+.app-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.app-card { background: #1e1f1f; border: 1px solid var(--r8-border); border-radius: 4px; }
+.app-card.border-high    { border-left: 4px solid var(--risk-high); }
+.app-card.border-medium  { border-left: 4px solid var(--risk-med); }
+.app-card.border-low     { border-left: 4px solid var(--risk-low); }
+.app-card.border-unknown { border-left: 4px solid var(--risk-unk); }
+
+.app-header {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.85rem 1.25rem; cursor: pointer; width: 100%;
+  background: none; border: 0; text-align: left; color: inherit; font: inherit;
+}
+.app-header:hover { background: #232424; }
+.app-card.open .app-header { background: var(--r8-dark); }
+.app-name { display: block; font-family: var(--font-subhead); font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; color: var(--r8-pure-white); }
+.app-meta { display: block; font-size: 0.72rem; color: var(--r8-text-dim); margin-top: 0.15rem; }
+.app-id { min-width: 0; }
+.app-spacer { flex: 1; }
+.risk-badge {
+  font-family: var(--font-subhead); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; padding: 0.2rem 0.6rem; border-radius: 2px;
+  border: 1px solid; white-space: nowrap;
+}
+.risk-badge.high    { color: var(--risk-high); border-color: var(--risk-high); background: rgba(255,0,0,0.09); }
+.risk-badge.medium  { color: var(--risk-med);  border-color: var(--risk-med);  background: rgba(246,173,85,0.09); }
+.risk-badge.low     { color: var(--risk-low);  border-color: var(--risk-low);  background: rgba(104,211,145,0.09); }
+.risk-badge.unknown { color: var(--risk-unk);  border-color: var(--risk-unk);  background: rgba(202,202,202,0.07); }
+.chevron { color: var(--r8-text-dim); font-size: 0.8rem; transition: transform 0.2s; }
+.app-card.open .chevron { transform: rotate(180deg); }
+
+.app-detail { display: none; padding: 0 1.25rem 1.1rem; }
+.app-card.open .app-detail { display: block; }
+
+.risk-reason { font-size: 0.78rem; color: var(--r8-text-muted); font-style: italic; padding: 0.75rem 0 0.9rem; }
+
+table.factors { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+table.factors th {
+  text-align: left; font-family: var(--font-subhead);
+  font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--r8-text-dim); font-weight: 600;
+  padding: 0.4rem 0.6rem 0.4rem 0; border-bottom: 1px solid var(--r8-border);
+}
+table.factors td { padding: 0.45rem 0.6rem 0.45rem 0; border-bottom: 1px solid #262727; vertical-align: top; color: var(--r8-text-muted); }
+table.factors tr:last-child td { border-bottom: 0; }
+table.factors .f-name { color: var(--r8-text); width: 30%; }
+table.factors .f-src { font-size: 0.68rem; color: var(--r8-text-dim); white-space: nowrap; }
+.escalates { color: var(--risk-high); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap; }
+
+.fpill {
+  display: inline-block; font-size: 0.64rem; font-weight: 700;
+  letter-spacing: 0.05em; padding: 0.1rem 0.45rem; border: 1px solid; border-radius: 2px; white-space: nowrap;
+}
+.fpill.high    { color: var(--risk-high); border-color: var(--risk-high); }
+.fpill.medium  { color: var(--risk-med);  border-color: var(--risk-med); }
+.fpill.low     { color: var(--risk-low);  border-color: var(--risk-low); }
+.fpill.unknown { color: var(--risk-unk);  border-color: var(--risk-unk); }
+
+.app-actions { display: flex; gap: 0.5rem; padding-top: 1rem; flex-wrap: wrap; align-items: center; }
+.btn {
+  font-family: var(--font-body); font-size: 0.76rem; font-weight: 600;
+  padding: 0.4rem 0.9rem; border-radius: 2px; cursor: pointer;
+  background: none; border: 1px solid;
+}
+.btn-approve  { color: var(--risk-low); border-color: var(--risk-low); }
+.btn-approve:hover  { background: rgba(104,211,145,0.12); }
+.btn-restrict { color: var(--risk-high); border-color: var(--risk-high); }
+.btn-restrict:hover { background: rgba(255,0,0,0.12); }
+.btn-analyze  { color: var(--r8-white); border-color: var(--r8-text-dim); }
+.btn-analyze:hover  { background: rgba(242,242,242,0.08); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.decided { font-size: 0.74rem; color: var(--r8-text-dim); font-style: italic; }
+.decided b { font-style: normal; }
+.decided.approve b { color: var(--risk-low); }
+.decided.restrict b { color: var(--risk-high); }
+
+/* ---- what actually happens after a decision ---- */
+.outcome { margin-top: 1rem; border: 1px solid var(--r8-border); background: #171818; border-left: 3px solid; }
+.outcome.approve  { border-left-color: var(--risk-low); }
+.outcome.restrict { border-left-color: var(--risk-high); }
+.outcome-head {
+  display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+  padding: 0.7rem 1rem 0.55rem;
+  font-family: var(--font-subhead); font-size: 0.82rem;
+  letter-spacing: 0.1em; font-weight: 700;
+}
+.outcome.approve  .outcome-head { color: var(--risk-low); }
+.outcome.restrict .outcome-head { color: var(--risk-high); }
+.outcome-head .stamp { font-family: var(--font-body); font-size: 0.68rem; font-weight: 400; letter-spacing: 0; color: var(--r8-text-dim); margin-left: auto; }
+.outcome ul { list-style: none; padding: 0 1rem 0.85rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.outcome li {
+  display: flex; gap: 0.7rem; align-items: baseline;
+  font-size: 0.78rem; color: var(--r8-text-muted); line-height: 1.5;
+  opacity: 0; animation: fireIn 0.28s ease forwards;
+}
+.outcome li .sys {
+  flex: 0 0 82px; font-family: var(--font-subhead); font-size: 0.7rem;
+  letter-spacing: 0.07em; color: var(--r8-white); text-transform: uppercase;
+}
+.outcome li .sys::before { content: "\2192  "; color: var(--r8-text-dim); }
+.outcome li b { color: var(--r8-white); font-weight: 600; }
+@keyframes fireIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .outcome li { animation: none; opacity: 1; } }
+.outcome-foot { padding: 0 1rem 0.85rem; font-size: 0.72rem; color: var(--r8-text-dim); font-style: italic; }
+.btn-undo { color: var(--r8-text-dim); border-color: var(--r8-border-hover); }
+.btn-undo:hover { background: rgba(242,242,242,0.06); color: var(--r8-white); }
+
+.empty { color: var(--r8-text-dim); font-size: 0.82rem; padding: 2rem 0; text-align: center; }
+
+/* analysing state */
+.analysing { display: flex; align-items: center; gap: 0.6rem; font-size: 0.76rem; color: var(--r8-text-dim); padding: 0.9rem 0; }
+.spinner {
+  width: 13px; height: 13px; border: 2px solid var(--r8-border);
+  border-top-color: var(--r8-red); border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .bar, .horiz-bar-fill { transition: none; } }
+
+/* ======================= FOOTER ===================== */
+footer { border-top: 1px solid var(--r8-border); padding: 1.3rem 2rem; }
+.footer-content { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.footer-name { font-family: var(--font-subhead); font-size: 0.75rem; color: var(--r8-text-muted); letter-spacing: 0.1em; }
+.footer-divider { width: 1px; height: 14px; background: var(--r8-border); }
+.footer-tagline { font-size: 0.72rem; color: var(--r8-text-dim); }
+.footer-link { font-size: 0.75rem; color: var(--r8-text-muted); text-decoration: none; margin-left: auto; }
+.footer-link:hover { color: var(--r8-red); }
+
+@media (max-width: 760px) {
+  header, .demobar, main, footer { padding-left: 1rem; padding-right: 1rem; }
+  .kpi-row { grid-template-columns: 1fr; }
+  .charts-row { grid-template-columns: 1fr; }
+  .horiz-bar-label { width: 90px; }
+  table.factors .f-src { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="header-left">
+      <a href="./index.html" class="back-link">
+        <svg class="back-logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="8"  r="4" fill="#FF0000"/>
+          <circle cx="8"  cy="32" r="4" fill="#FF0000"/>
+          <circle cx="40" cy="32" r="4" fill="#FF0000"/>
+          <circle cx="24" cy="24" r="5" fill="#131414"/>
+          <line x1="24" y1="12" x2="24" y2="19" stroke="#FF0000" stroke-width="2"/>
+          <line x1="11.5" y1="30" x2="19.5" y2="26" stroke="#FF0000" stroke-width="2"/>
+          <line x1="36.5" y1="30" x2="28.5" y2="26" stroke="#FF0000" stroke-width="2"/>
+        </svg>
+        Project Nexus
+      </a>
+      <div>
+        <h1 id="view-title">Helpdesk Analytics</h1>
+        <p class="subtitle" id="view-sub">Tech support ticket metrics</p>
+      </div>
+    </div>
+    <div class="header-actions" id="analytics-actions">
+      <div class="toggle-group">
+        <button type="button" class="toggle-btn active" data-gran="week">Week</button>
+        <button type="button" class="toggle-btn" data-gran="month">Month</button>
+      </div>
+      <button type="button" class="btn-refresh" id="refresh-btn">Refresh</button>
+    </div>
+  </div>
+</header>
+
+<div class="demobar">
+  <div class="demobar-inner">
+    <span class="demotag">RECREATION</span>
+    <p>This is a rebuilt interface, not the application. Project Nexus is internal and none of it is
+    published here. Every app, ticket and number below is invented &mdash; the buttons work, but nothing
+    connects to anything. <a href="./index.html">Back to ryanruddock.com</a></p>
+  </div>
+</div>
+
+<main>
+
+  <div class="toolbar">
+    <button type="button" class="toolbtn active" data-view="analytics">Helpdesk Analytics</button>
+    <button type="button" class="toolbtn" data-view="apps">App Approval Dashboard</button>
+  </div>
+
+  <!-- ===================== ANALYTICS ===================== -->
+  <section class="view" id="view-analytics">
+    <p class="section-label">Queue &mdash; last 90 days</p>
+
+    <div class="kpi-row">
+      <div class="kpi-card"><span class="kpi-value" id="kpi-total">384</span><span class="kpi-label">Total Tickets</span></div>
+      <div class="kpi-card accent"><span class="kpi-value" id="kpi-resp">1h 48m</span><span class="kpi-label">Avg Response</span></div>
+      <div class="kpi-card accent"><span class="kpi-value" id="kpi-res">9h 12m</span><span class="kpi-label">Avg Resolution</span></div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <h2>Ticket Volume</h2>
+        <div class="bar-chart" id="volume-chart"></div>
+        <div class="bar-labels" id="volume-labels"></div>
+      </div>
+      <div class="chart-card">
+        <h2>By Ticket Type</h2>
+        <div class="horiz-bars" id="type-chart"></div>
+      </div>
+    </div>
+
+    <p class="chart-note"><b>This is the chart that justified the project.</b> App approval requests were
+    the largest single category &mdash; larger than general support &mdash; and every one was a manual
+    research job. That is the number that turns "we should automate this" into a measured cost per week.
+    The volume spike is an onboarding wave: twenty new hires asking for the same eight apps, which is an
+    argument for a self-service catalog rather than a ticket queue.</p>
+  </section>
+
+  <!-- ==================== APP APPROVAL ==================== -->
+  <section class="view" id="view-apps" hidden>
+    <div class="tab-bar" id="tab-bar">
+      <button type="button" class="tab active" data-tab="unapproved">Unapproved Apps <span class="cnt" id="c-unapproved"></span></button>
+      <button type="button" class="tab" data-tab="approved">Approved <span class="cnt" id="c-approved"></span></button>
+      <button type="button" class="tab" data-tab="restricted">Restricted <span class="cnt" id="c-restricted"></span></button>
+    </div>
+
+    <div class="summary-bar">
+      <div class="summary-pill high"><span class="pill-count" id="s-high">0</span><span class="pill-label">High</span></div>
+      <div class="summary-pill medium"><span class="pill-count" id="s-medium">0</span><span class="pill-label">Medium</span></div>
+      <div class="summary-pill low"><span class="pill-count" id="s-low">0</span><span class="pill-label">Low</span></div>
+      <div class="summary-pill unknown"><span class="pill-count" id="s-unknown">0</span><span class="pill-label">Unassessed</span></div>
+      <div class="summary-pill total"><span class="pill-count" id="s-devices">0</span><span class="pill-label">Devices affected</span></div>
+    </div>
+
+    <div class="app-list" id="app-list"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-content">
+    <span class="footer-name">PROJECT NEXUS</span>
+    <span class="footer-divider"></span>
+    <span class="footer-tagline">Interface recreation &middot; invented data &middot; no live integrations</span>
+    <a class="footer-link" href="./index.html">ryanruddock.com &rarr;</a>
+  </div>
+</footer>
+
+<script>
+/* ---------------------------------------------------------------
+   Everything below is demo scaffolding. No network calls are made.
+   --------------------------------------------------------------- */
+
+var VOLUME = {
+  week:  { labels: ["W1","W2","W3","W4","W5","W6","W7","W8","W9","W10","W11","W12"],
+           data:  [22,28,31,26,44,61,38,29,24,33,27,21], peak: 5 },
+  month: { labels: ["FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP"],
+           data:  [41,52,68,112,74,49,41,36], peak: 3 }
+};
+
+var TYPES = [
+  { name: "App Approval Request",  n: 148, accent: true },
+  { name: "IT Support — General",  n: 105 },
+  { name: "Access Request",        n: 68 },
+  { name: "Software/Service Issue",n: 51 },
+  { name: "Google Group Request",  n: 29 },
+  { name: "API Key Request",       n: 18 },
+  { name: "Other",                 n: 11 }
+];
+
+/* ten factors, matching the production engine's source list */
+function F(name, rating, detail, source, escalates) {
+  return { name: name, rating: rating, detail: detail, source: source, escalates: !!escalates };
+}
+
+var APPS = [
+  {
+    id: "clipvault", name: "ClipVault Pro 3.4", kind: "Clipboard manager",
+    devices: 6, requests: 2, state: "unapproved", level: "unknown", assessed: false,
+    reason: "Escalated by corporate entity: publisher's parent is registered in a restricted jurisdiction, so the remaining factors cannot lower the rating.",
+    assessedLevel: "high",
+    factors: [
+      F("High-Risk Corporate Entity","high","Parent company registered in a jurisdiction on the restricted list","corp registry",true),
+      F("CISA Known Exploited Vulns","low","No entries in the KEV catalog","CISA KEV",true),
+      F("Known CVEs","medium","2 medium CVEs, both patched before 3.4","NIST NVD"),
+      F("AI Safety Assessment","medium","Reads the system clipboard continuously and syncs to vendor storage","Bedrock"),
+      F("AI-Verified Publisher","medium","Listed publisher does not match the signing certificate holder","Bedrock"),
+      F("AI-Researched Jurisdiction","high","Data processed outside the US, no stated residency guarantee","Bedrock"),
+      F("App Store Presence","unknown","Not distributed through the App Store, direct download only","App Store API"),
+      F("Homebrew Package","low","Present as a cask, actively updated","Homebrew"),
+      F("Privacy & Data Practices","high","Terms permit sharing user content with third parties","ToS;DR"),
+      F("Official Repository","unknown","Closed source, no public repository to inspect","GitHub")
+    ]
+  },
+  {
+    id: "meetnotes", name: "MeetNotes AI 2.1", kind: "Meeting transcription",
+    devices: 11, requests: 5, state: "unapproved", level: "unknown", assessed: false,
+    reason: "No escalating factor. Records meeting audio and processes it off-device, which is a real exposure but a manageable one with a signed agreement.",
+    assessedLevel: "medium",
+    factors: [
+      F("High-Risk Corporate Entity","low","US-registered, no restricted ownership found","corp registry",true),
+      F("CISA Known Exploited Vulns","low","No entries in the KEV catalog","CISA KEV",true),
+      F("Known CVEs","low","No CVEs recorded against any version","NIST NVD"),
+      F("AI Safety Assessment","medium","Captures meeting audio, transcribes server-side, 30-day retention","Bedrock"),
+      F("AI-Verified Publisher","low","Publisher matches signing certificate and domain registration","Bedrock"),
+      F("AI-Researched Jurisdiction","low","US-only processing, residency stated in the terms","Bedrock"),
+      F("App Store Presence","low","Present and reviewed, privacy nutrition label published","App Store API"),
+      F("Homebrew Package","unknown","Not distributed via Homebrew","Homebrew"),
+      F("Privacy & Data Practices","medium","Training on customer data permitted unless opted out","ToS;DR"),
+      F("Official Repository","unknown","Closed source","GitHub")
+    ]
+  },
+  {
+    id: "pixelpack", name: "PixelPacker 4.2", kind: "Image compression",
+    devices: 3, requests: 1, state: "unapproved", level: "unknown", assessed: false,
+    reason: "Open source, local-only processing, actively maintained. Nothing leaves the device.",
+    assessedLevel: "low",
+    factors: [
+      F("High-Risk Corporate Entity","low","Independent maintainer, no corporate owner","corp registry",true),
+      F("CISA Known Exploited Vulns","low","No entries in the KEV catalog","CISA KEV",true),
+      F("Known CVEs","low","One low CVE, patched in 4.0","NIST NVD"),
+      F("AI Safety Assessment","low","Processes images locally, makes no network calls","Bedrock"),
+      F("AI-Verified Publisher","low","Publisher identity matches repository owner","Bedrock"),
+      F("AI-Researched Jurisdiction","low","No data leaves the device, jurisdiction not applicable","Bedrock"),
+      F("App Store Presence","unknown","Distributed through Homebrew and GitHub releases","App Store API"),
+      F("Homebrew Package","low","Maintained cask, updated within the last month","Homebrew"),
+      F("Privacy & Data Practices","low","MIT licence, no telemetry, no terms to accept","ToS;DR"),
+      F("Official Repository","low","Public repository, active commits, 40+ contributors","GitHub")
+    ]
+  },
+  {
+    id: "tunnelgo", name: "TunnelGo VPN 7.0", kind: "Consumer VPN",
+    devices: 2, requests: 0, state: "unapproved", level: "unknown", assessed: false,
+    reason: "Escalated by KEV: a vulnerability in this product is being actively exploited in the wild, which makes the rest of the analysis irrelevant.",
+    assessedLevel: "high",
+    factors: [
+      F("High-Risk Corporate Entity","medium","Ownership structure is opaque across three holding companies","corp registry",true),
+      F("CISA Known Exploited Vulns","high","Listed in the KEV catalog, exploited in the wild","CISA KEV",true),
+      F("Known CVEs","high","4 CVEs, one critical and unpatched","NIST NVD"),
+      F("AI Safety Assessment","high","Installs a system-level network extension and a root certificate","Bedrock"),
+      F("AI-Verified Publisher","unknown","Could not establish a verifiable publisher identity","Bedrock"),
+      F("AI-Researched Jurisdiction","medium","Exit nodes span jurisdictions with no consistent policy","Bedrock"),
+      F("App Store Presence","unknown","Removed from the App Store in 2024","App Store API"),
+      F("Homebrew Package","unknown","Not present","Homebrew"),
+      F("Privacy & Data Practices","high","Logging policy contradicts itself between the terms and the site","ToS;DR"),
+      F("Official Repository","unknown","Closed source","GitHub")
+    ]
+  },
+  {
+    id: "notewell", name: "NoteWell 5.8", kind: "Notes and docs",
+    devices: 64, requests: 0, state: "approved", level: "low", assessed: true,
+    reason: "Approved in the Q2 review cycle. Next reassessment in 41 days.",
+    assessedLevel: "low", factors: []
+  },
+  {
+    id: "packetpeek", name: "PacketPeek 2.2", kind: "Network analyser",
+    devices: 0, requests: 0, state: "restricted", level: "high", assessed: true,
+    reason: "Restricted in the Q1 cycle. Captures traffic fleet-wide; an approved alternative is published in the catalog.",
+    assessedLevel: "high", factors: []
+  }
+];
+
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ------------------------- analytics ------------------------- */
+var gran = "week";
+
+function renderVolume() {
+  var v = VOLUME[gran];
+  var max = Math.max.apply(null, v.data);
+  $("volume-chart").innerHTML = v.data.map(function (n, i) {
+    var h = Math.round((n / max) * 100);
+    return '<div class="bar-group">'
+         +   '<span class="bar-value">' + n + '</span>'
+         +   '<span class="bar' + (i === v.peak ? " bar-accent" : "") + '" style="height:' + h + '%" title="' + n + ' tickets"></span>'
+         + '</div>';
+  }).join("");
+  $("volume-labels").innerHTML = v.labels.map(function (l) { return "<span>" + l + "</span>"; }).join("");
+  $("kpi-total").textContent = v.data.reduce(function (a, b) { return a + b; }, 0);
+}
+
+function renderTypes() {
+  var max = TYPES[0].n;
+  $("type-chart").innerHTML = TYPES.map(function (t) {
+    return '<div class="horiz-bar-row">'
+         +   '<span class="horiz-bar-label">' + esc(t.name) + '</span>'
+         +   '<span class="horiz-bar-track"><span class="horiz-bar-fill' + (t.accent ? " accent" : "")
+         +     '" style="width:' + Math.round((t.n / max) * 100) + '%"></span></span>'
+         +   '<span class="horiz-bar-count">' + t.n + '</span>'
+         + '</div>';
+  }).join("");
+}
+
+/* ------------------------ app approval ----------------------- */
+var tab = "unapproved";
+
+function setTab(t) {
+  tab = t;
+  document.querySelectorAll(".tab").forEach(function (x) {
+    x.classList.toggle("active", x.getAttribute("data-tab") === t);
+  });
+  renderApps();
+}
+
+function visible() { return APPS.filter(function (a) { return a.state === tab; }); }
+
+function renderSummary() {
+  var un = APPS.filter(function (a) { return a.state === "unapproved"; });
+  var c = { high: 0, medium: 0, low: 0, unknown: 0 }, dev = 0;
+  un.forEach(function (a) { c[a.level]++; dev += a.devices; });
+  $("s-high").textContent = c.high;
+  $("s-medium").textContent = c.medium;
+  $("s-low").textContent = c.low;
+  $("s-unknown").textContent = c.unknown;
+  $("s-devices").textContent = dev;
+  ["unapproved","approved","restricted"].forEach(function (t) {
+    $("c-" + t).textContent = "(" + APPS.filter(function (a) { return a.state === t; }).length + ")";
+  });
+}
+
+function factorRows(a) {
+  return a.factors.map(function (f) {
+    return '<tr>'
+         +   '<td class="f-name">' + esc(f.name)
+         +     (f.escalates ? ' <span class="escalates">&#9650; CAN ESCALATE</span>' : "")
+         +   '</td>'
+         +   '<td><span class="fpill ' + f.rating + '">' + f.rating.toUpperCase() + '</span></td>'
+         +   '<td>' + esc(f.detail) + '</td>'
+         +   '<td class="f-src">' + esc(f.source) + '</td>'
+         + '</tr>';
+  }).join("");
+}
+
+function renderApps() {
+  var list = visible();
+  if (!list.length) { $("app-list").innerHTML = '<p class="empty">Nothing in this tab.</p>'; return; }
+
+  $("app-list").innerHTML = list.map(function (a) {
+    var detail;
+    if (a.state !== "unapproved") {
+      detail = '<p class="risk-reason">' + esc(a.reason) + '</p>'
+             + (a.outcome ? outcomeHtml(a.outcome) : "")
+             + (a.outcome ? '<div class="app-actions"><button type="button" class="btn btn-undo" data-act="undo" data-id="' + a.id + '">Undo this decision</button></div>' : "");
+    } else if (!a.assessed) {
+      detail = '<p class="risk-reason">Not yet assessed. Ten sources are checked before a decision is available.</p>'
+             + '<div class="app-actions"><button type="button" class="btn btn-analyze" data-act="analyze" data-id="' + a.id + '">Run assessment</button></div>';
+    } else {
+      detail = '<p class="risk-reason">' + esc(a.reason) + '</p>'
+             + '<table class="factors"><thead><tr><th>Factor</th><th>Rating</th><th>Finding</th><th>Source</th></tr></thead>'
+             + '<tbody>' + factorRows(a) + '</tbody></table>'
+             + '<div class="app-actions">'
+             +   '<button type="button" class="btn btn-approve" data-act="approve" data-id="' + a.id + '">Approve</button>'
+             +   '<button type="button" class="btn btn-restrict" data-act="restrict" data-id="' + a.id + '">Restrict</button>'
+             +   '<span class="decided">Decision is written to the wiki and pushed to devices.</span>'
+             + '</div>';
+    }
+
+    return '<div class="app-card border-' + a.level + (a.open ? " open" : "") + '" data-card="' + a.id + '">'
+         +   '<button type="button" class="app-header" data-act="toggle" data-id="' + a.id + '">'
+         +     '<span class="app-id"><span class="app-name">' + esc(a.name) + '</span>'
+         +     '<span class="app-meta">' + esc(a.kind) + ' &middot; ' + a.devices + ' device' + (a.devices === 1 ? "" : "s")
+         +       (a.requests ? ' &middot; ' + a.requests + ' request' + (a.requests === 1 ? "" : "s") : "") + '</span></span>'
+         +     '<span class="app-spacer"></span>'
+         +     '<span class="risk-badge ' + a.level + '">' + (a.assessed ? a.level.toUpperCase() : "UNASSESSED") + '</span>'
+         +     '<span class="chevron">&#9660;</span>'
+         +   '</button>'
+         +   '<div class="app-detail">' + detail + '</div>'
+         + '</div>';
+  }).join("");
+  renderSummary();
+}
+
+function byId(id) { for (var i = 0; i < APPS.length; i++) if (APPS[i].id === id) return APPS[i]; }
+
+function reviewDate() {
+  var d = new Date(); d.setDate(d.getDate() + 90);
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+/* What the production system actually did once a human clicked the button.
+   Nothing fires here — this is the chain of consequences, spelled out. */
+function buildOutcome(a, kind) {
+  var dev = a.devices, req = a.requests;
+  var plural = function (n, one, many) { return n + " " + (n === 1 ? one : many); };
+
+  if (kind === "approve") {
+    return {
+      kind: "approve",
+      lines: [
+        ["Jamf Pro",  "Published to the <b>app catalog</b>. Installable from Self Service, no ticket needed."],
+        ["Jamf Pro",  "Cleared from the unapproved-software extension attribute, so it stops being reported on " + plural(dev, "device", "devices") + "."],
+        ["Wiki.js",   "Approved software page updated &mdash; entry written with the rating, the date and the reviewer."],
+        ["Helpdesk",  req ? plural(req, "open request", "open requests") + " answered automatically and closed." : "No open requests to answer."],
+        ["Postgres",  "Decision stored with all ten factor findings attached, so the reasoning survives the person who made it."],
+        ["Review",    "Reassessment scheduled for <b>" + reviewDate() + "</b>. An approval nobody re-checks is just a list of things that were once fine."]
+      ],
+      foot: "This is what the single click did. The approved list and the enforced reality stay the same thing because the same action writes both."
+    };
+  }
+  return {
+    kind: "restrict",
+    lines: [
+      ["Jamf Pro",  "Added to <b>restricted software</b>. Removed from " + plural(dev, "device", "devices") + " at next check-in."],
+      ["Jamf Pro",  "Blocked from the app catalog so it cannot be re-installed from Self Service."],
+      ["Wiki.js",   "Listed as restricted on the approved software page, <b>with the reasoning</b> &mdash; not just a refusal."],
+      ["Helpdesk",  req ? plural(req, "request", "requests") + " answered with the reason and a working alternative from the catalog." : "No open requests to answer."],
+      ["Postgres",  "Escalating factor recorded for audit &mdash; the thing an assessor asks about later."],
+      ["Review",    "Revisit on <b>" + reviewDate() + "</b>, in case the vendor fixes what got it restricted."]
+    ],
+    foot: "Restriction without an alternative just gets routed around. Publishing the replacement in the same action is what makes it stick."
+  };
+}
+
+function outcomeHtml(o) {
+  return '<div class="outcome ' + o.kind + '">'
+       +   '<div class="outcome-head">' + (o.kind === "approve" ? "&#10003; APPROVED" : "&#9888; RESTRICTED")
+       +     '<span class="stamp">what this click would have done</span></div>'
+       +   '<ul>' + o.lines.map(function (l, i) {
+              return '<li style="animation-delay:' + (i * 0.09).toFixed(2) + 's">'
+                   +   '<span class="sys">' + l[0] + '</span><span>' + l[1] + '</span></li>';
+            }).join("") + '</ul>'
+       +   '<p class="outcome-foot">' + o.foot + '</p>'
+       + '</div>';
+}
+
+document.addEventListener("click", function (e) {
+  var t = e.target.closest ? e.target.closest("[data-act]") : null;
+
+  if (t) {
+    var a = byId(t.getAttribute("data-id"));
+    var act = t.getAttribute("data-act");
+
+    if (act === "toggle") { a.open = !a.open; renderApps(); return; }
+
+    if (act === "analyze") {
+      var card = document.querySelector('[data-card="' + a.id + '"] .app-detail');
+      card.innerHTML = '<div class="analysing"><span class="spinner"></span>'
+                     + 'Checking 10 sources &mdash; CISA KEV, NIST NVD, App Store, Homebrew, ToS;DR, GitHub, corporate registry, and three AI assessments&hellip;</div>';
+      setTimeout(function () { a.assessed = true; a.level = a.assessedLevel; a.open = true; renderApps(); }, 1400);
+      return;
+    }
+
+    if (act === "approve" || act === "restrict") {
+      a.prev = { state: a.state, reason: a.reason };
+      a.state = (act === "approve") ? "approved" : "restricted";
+      a.outcome = buildOutcome(a, act);
+      a.reason = (act === "approve")
+        ? "Approved just now, on the strength of ten checked sources."
+        : "Restricted just now. " + a.reason;
+      a.open = true;
+      setTab(a.state);
+      return;
+    }
+
+    if (act === "undo") {
+      a.state = a.prev ? a.prev.state : "unapproved";
+      a.reason = a.prev ? a.prev.reason : a.reason;
+      a.outcome = null; a.open = true;
+      setTab(a.state);
+      return;
+    }
+  }
+
+  var tb = e.target.closest ? e.target.closest(".tab") : null;
+  if (tb) { setTab(tb.getAttribute("data-tab")); return; }
+
+  var g = e.target.closest ? e.target.closest(".toggle-btn") : null;
+  if (g) {
+    gran = g.getAttribute("data-gran");
+    document.querySelectorAll(".toggle-btn").forEach(function (x) { x.classList.toggle("active", x === g); });
+    renderVolume();
+    return;
+  }
+
+  var vb = e.target.closest ? e.target.closest(".toolbtn") : null;
+  if (vb) {
+    var v = vb.getAttribute("data-view");
+    if (location.hash !== "#" + v) { location.hash = v; } else { showView(v); }
+    return;
+  }
+
+  if (e.target.id === "refresh-btn") {
+    var b = e.target; b.disabled = true; b.textContent = "Refreshing…";
+    setTimeout(function () { b.disabled = false; b.textContent = "Refresh"; renderVolume(); }, 900);
+  }
+});
+
+function showView(v) {
+  var btn = document.querySelector('.toolbtn[data-view="' + v + '"]');
+  if (!btn) { v = "analytics"; btn = document.querySelector('.toolbtn[data-view="analytics"]'); }
+  document.querySelectorAll(".toolbtn").forEach(function (x) { x.classList.toggle("active", x === btn); });
+  $("view-analytics").hidden = (v !== "analytics");
+  $("view-apps").hidden = (v !== "apps");
+  $("analytics-actions").style.visibility = (v === "analytics") ? "visible" : "hidden";
+  $("view-title").textContent = (v === "analytics") ? "Helpdesk Analytics" : "App Approval Dashboard";
+  $("view-sub").textContent = (v === "analytics") ? "Tech support ticket metrics" : "Risk intelligence from 10 sources";
+}
+
+renderVolume();
+renderTypes();
+renderApps();
+showView((location.hash || "").replace("#", "") || "analytics");
+window.addEventListener("hashchange", function () {
+  showView((location.hash || "").replace("#", "") || "analytics");
+});
+</script>
+
+</body>
+</html>

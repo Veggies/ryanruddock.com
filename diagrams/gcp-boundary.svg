@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" font-family="Verdana, Geneva, sans-serif" role="img" aria-label="A CUI boundary folder in Google Cloud. Five constraints inherit from the org node; fifty-four sit on the folder, of which Terraform manages fifty-one and the compliance service owns three that are asserted against a committed baseline. Inside the folder a VPC Service Controls perimeter, a deny-by-default hierarchical firewall and a single shared VPC. Changes arrive only through a pipeline whose plan identity cannot write and whose apply identity is fenced to this folder by an IAM condition.">
+  <rect width="900" height="560" fill="#ffffff"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3366cc"/></marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#cc0000"/></marker>
+  </defs>
+
+  <text x="24" y="30" font-size="15" font-weight="bold" fill="#113366">GCP Assured Workloads — the CUI boundary, as code</text>
+  <text x="24" y="48" font-size="11" fill="#666666">Built on an empty folder, before any workload existed. A constraint costs nothing until something is running under it.</text>
+
+  <!-- org node -->
+  <rect x="300" y="64" width="300" height="46" fill="#f2f2f2" stroke="#888888" stroke-width="2"/>
+  <text x="450" y="84" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">ORGANISATION NODE</text>
+  <text x="450" y="101" font-size="10" fill="#666666" text-anchor="middle">5 pre-existing constraints — 4 inherit untouched, 1 overridden below</text>
+  <line x1="450" y1="110" x2="450" y2="140" stroke="#3366cc" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- the folder -->
+  <rect x="24" y="142" width="852" height="252" fill="#f7faff" stroke="#3366cc" stroke-width="3"/>
+  <rect x="24" y="142" width="852" height="24" fill="#3366cc"/>
+  <text x="36" y="159" font-size="12" font-weight="bold" fill="#ffffff">THE CUI BOUNDARY FOLDER — scope is the folder only; nothing outside it holds regulated data</text>
+
+  <!-- constraints -->
+  <rect x="40" y="180" width="250" height="90" fill="#ffffff" stroke="#3366cc"/>
+  <text x="165" y="199" font-size="11.5" font-weight="bold" fill="#113366" text-anchor="middle">54 org policy constraints</text>
+  <rect x="54" y="210" width="222" height="20" fill="#dbe7f7"/><text x="165" y="224" font-size="10" fill="#113366" text-anchor="middle">51 managed in Terraform</text>
+  <rect x="54" y="234" width="222" height="20" fill="#ffe0e0"/><text x="165" y="248" font-size="10" fill="#8a0000" text-anchor="middle">3 asserted, not managed</text>
+  <text x="165" y="264" font-size="9" fill="#777777" text-anchor="middle">the platform rewrites those three at will</text>
+
+  <!-- perimeter -->
+  <rect x="306" y="180" width="250" height="90" fill="#ffffff" stroke="#cc3399"/>
+  <text x="431" y="199" font-size="11.5" font-weight="bold" fill="#99126f" text-anchor="middle">VPC Service Controls</text>
+  <text x="318" y="218" font-size="10" fill="#5a1140">API-level perimeter around the folder</text>
+  <text x="318" y="234" font-size="10" fill="#5a1140">Admits its own admins from outside —</text>
+  <text x="318" y="249" font-size="10" fill="#5a1140">Terraform runs from a laptop</text>
+  <text x="318" y="264" font-size="9.5" fill="#777777">repair API deliberately excluded</text>
+
+  <!-- firewall -->
+  <rect x="572" y="180" width="288" height="90" fill="#ffffff" stroke="#339933"/>
+  <text x="716" y="199" font-size="11.5" font-weight="bold" fill="#14521a" text-anchor="middle">Hierarchical firewall — deny by default</text>
+  <text x="584" y="218" font-size="10" fill="#143d19">allow: IAP forwarding · LB health checks</text>
+  <text x="584" y="233" font-size="10" fill="#143d19">allow: one egress path, private API access</text>
+  <text x="584" y="249" font-size="10" fill="#8a0000">deny: everything else, both directions</text>
+  <text x="584" y="264" font-size="9.5" fill="#777777">v4 and v6 denies are separate rules</text>
+
+  <!-- inside -->
+  <rect x="40" y="286" width="820" height="46" fill="#ffffff" stroke="#3366cc" stroke-dasharray="5 3"/>
+  <text x="52" y="305" font-size="11" font-weight="bold" fill="#113366">One shared VPC, not per-project VPCs</text>
+  <text x="52" y="322" font-size="10" fill="#556677">Not a security argument — the folder firewall holds either way. One VPC is one flow topology to document, and subnet ranges cannot change after creation.</text>
+
+  <rect x="40" y="342" width="820" height="40" fill="#fffbe6" stroke="#e6a700"/>
+  <text x="52" y="359" font-size="11" font-weight="bold" fill="#663300">A project inside cannot widen this envelope</text>
+  <text x="52" y="375" font-size="10" fill="#5a4600">A project cannot override a folder-level org policy or a hierarchical firewall policy. It defines its own narrower essential set within the envelope.</text>
+
+  <!-- change path -->
+  <rect x="24" y="406" width="530" height="126" fill="#f7f7fb" stroke="#666699" stroke-width="2"/>
+  <rect x="24" y="406" width="530" height="22" fill="#666699"/>
+  <text x="34" y="422" font-size="12" font-weight="bold" fill="#ffffff">THE ONLY WAY IN — the pipeline is the change process</text>
+
+  <rect x="38" y="440" width="104" height="36" fill="#ffffff" stroke="#666699"/>
+  <text x="90" y="456" font-size="10" font-weight="bold" fill="#333366" text-anchor="middle">Merge request</text>
+  <text x="90" y="469" font-size="9" fill="#666666" text-anchor="middle">security impact</text>
+  <line x1="142" y1="458" x2="168" y2="458" stroke="#3366cc" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="170" y="440" width="104" height="36" fill="#eef7ee" stroke="#339933"/>
+  <text x="222" y="456" font-size="10" font-weight="bold" fill="#14521a" text-anchor="middle">plan identity</text>
+  <text x="222" y="469" font-size="9" fill="#14521a" text-anchor="middle">cannot write anything</text>
+  <line x1="274" y1="458" x2="300" y2="458" stroke="#3366cc" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="302" y="440" width="104" height="36" fill="#ffffff" stroke="#666699"/>
+  <text x="354" y="456" font-size="10" font-weight="bold" fill="#333366" text-anchor="middle">code owner</text>
+  <text x="354" y="469" font-size="9" fill="#666666" text-anchor="middle">approves the plan</text>
+  <line x1="406" y1="458" x2="432" y2="458" stroke="#3366cc" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="434" y="440" width="106" height="36" fill="#fff0f0" stroke="#cc0000"/>
+  <text x="487" y="456" font-size="10" font-weight="bold" fill="#8a0000" text-anchor="middle">apply identity</text>
+  <text x="487" y="469" font-size="9" fill="#8a0000" text-anchor="middle">fenced to this folder</text>
+
+  <text x="38" y="496" font-size="9.5" fill="#444444">No credential is stored anywhere — service account keys are disabled org-wide, so the pipeline federates and every token lasts minutes.</text>
+  <text x="38" y="511" font-size="9.5" fill="#444444">The one org-level grant is bound by an IAM condition restricting it to this folder — verified by attempted violation, refused at the org node.</text>
+  <text x="38" y="526" font-size="9.5" fill="#8a0000">Not separation of duties: an author may approve their own change. Saying otherwise in an SSP would be a finding.</text>
+
+  <!-- drift + audit -->
+  <rect x="570" y="406" width="306" height="126" fill="#fff6f6" stroke="#cc0000" stroke-width="2"/>
+  <rect x="570" y="406" width="306" height="22" fill="#cc0000"/>
+  <text x="580" y="422" font-size="12" font-weight="bold" fill="#ffffff">DRIFT DETECTION + AUDIT</text>
+  <text x="582" y="446" font-size="10" fill="#5a0000">Three vendor-owned constraints compared to a</text>
+  <text x="582" y="461" font-size="10" fill="#5a0000">committed baseline. Warns on every plan.</text>
+  <text x="582" y="481" font-size="10" font-weight="bold" fill="#8a0000">Never silence one by updating the baseline.</text>
+  <text x="582" y="496" font-size="9.5" fill="#666666">Vendor loosening a constraint is a compliance event.</text>
+  <text x="582" y="516" font-size="10" fill="#5a0000">Every folder change is an Admin Activity record —</text>
+  <text x="582" y="529" font-size="10" fill="#5a0000">always on, not disableable, sunk off-org.</text>
+  <line x1="554" y1="468" x2="568" y2="468" stroke="#cc0000" stroke-width="2" marker-end="url(#r)"/>
+  <path d="M716 406 L716 394 L450 394" stroke="#cc0000" stroke-width="2" fill="none" marker-end="url(#r)"/>
+</svg>

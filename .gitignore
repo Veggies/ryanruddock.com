@@ -12,3 +12,12 @@ local/guestbook.json
 
 .DS_Store
 tfplan
+
+# ---------------------------------------------------------------
+# Employer material staged here for reference ONLY. This repo is
+# PUBLIC and the deploy workflow syncs the checkout to a public S3
+# bucket. None of this may ever be committed.
+# ---------------------------------------------------------------
+app-main/
+cmmc-gcp-assured-workloads/
+gcp-assuredworkloads-boundary-main/
