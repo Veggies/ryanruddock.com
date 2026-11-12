@@ -154,8 +154,34 @@ a:hover { color: #ff0000; }
 
 /* ---- callouts in the editor: look in blog-post.css; only the editable
    bits need anything extra ---- */
-.callout input.callout-icon { border: 0; background: transparent; padding: 0; font: inherit; font-size: 1.25em; cursor: pointer; }
-.callout input.callout-icon:focus { outline: 1px dotted #999999; }
+.callout button.callout-icon {
+  border: 0; background: transparent; padding: 0; height: 1.6em; border-radius: 3px;
+  font: inherit; font-size: 1.25em; line-height: 1.25; cursor: pointer;
+}
+.callout button.callout-icon:hover { background: rgba(55, 53, 47, 0.08); }
+/* no icon: a faint smiley that only shows on hover, to add one back */
+.callout button.callout-icon.empty { opacity: 0; width: 24px; }
+.callout:hover button.callout-icon.empty { opacity: 0.35; }
+
+/* ---- the emoji picker ---- */
+.emoji-picker {
+  position: fixed; z-index: 1000; width: 312px;
+  background: #ffffff; border: 2px outset #c3d2e2; box-shadow: 3px 3px 0 rgba(0, 0, 60, 0.25);
+  font-family: Verdana, Geneva, sans-serif; font-size: 11px;
+}
+.emoji-picker .ep-bar { display: flex; gap: 4px; padding: 6px; background: #eef4ff; border-bottom: 1px solid #c3d2e2; }
+.emoji-picker .ep-search { flex: 1; min-width: 0; border: 2px inset #bbbbbb; padding: 3px 5px; font: inherit; }
+.emoji-picker .ep-remove { font-size: 10px; padding: 2px 6px; }
+.emoji-picker .ep-body { max-height: 260px; overflow-y: auto; padding: 4px 6px 8px; }
+.emoji-picker .ep-cat { font-size: 9px; font-weight: bold; letter-spacing: 1px; color: #336699; margin: 6px 0 2px; }
+.emoji-picker .ep-grid { display: grid; grid-template-columns: repeat(9, 1fr); }
+.emoji-picker .ep-grid button {
+  border: 0; background: transparent; cursor: pointer; padding: 0; height: 30px;
+  font-size: 20px; line-height: 30px; border-radius: 4px;
+}
+.emoji-picker .ep-grid button:hover,
+.emoji-picker .ep-grid button:focus-visible { background: #fff0fa; outline: 1px solid #cc3399; }
+.emoji-picker .ep-none { color: #777777; font-style: italic; padding: 8px 2px; }
 .callout-text { outline: none; min-height: 1.55em; }
 .callout-text:empty::before { content: attr(data-placeholder); color: #999999; }
 
@@ -392,14 +418,141 @@ body.wide .page { max-width: 1400px; }
       });
   }
 
+  /* ============ the emoji picker ============
+     A Notion-style picker for callout icons: categories, a search over
+     each emoji's keywords, and Remove. The set is chosen by hand and lives
+     here rather than in a third-party picker -- those load as modules and
+     fetch their emoji data at runtime, which cannot carry the integrity
+     hashes this page relies on. One line per category; the first word of
+     each "|"-separated entry is the emoji, the rest are search words. */
+
+  var EMOJI = [
+    ["Callouts", "💡 idea bulb light tip|ℹ️ info information note|⚠️ warning caution alert|🚨 alarm siren danger urgent|❗ exclamation important|❓ question help|✅ done check yes success|❌ no wrong error cross|📌 pin pinned important|📝 note memo write|🔥 fire hot|⭐ star favorite|🎉 party celebrate tada|🚀 rocket launch ship deploy|💬 speech comment chat|🔒 lock secure security private|🐛 bug issue|⏰ alarm clock time deadline|📣 announce megaphone|👉 point right this|🧠 brain think learn|🎯 target goal|🛑 stop|🔑 key secret"],
+    ["Smileys", "😀 grin happy smile|😃 smile happy|😄 smile laugh|😁 grin teeth|😆 laugh|😅 sweat relief|😂 joy tears laugh|🙂 slight smile|😉 wink|😊 blush happy|😇 angel innocent|🥰 love hearts|😍 heart eyes love|🤩 star struck wow|😎 cool sunglasses|🤓 nerd geek|🧐 monocle inspect|🤔 thinking hmm|🤨 raised eyebrow skeptical|😐 neutral|😑 expressionless|😶 speechless|🙄 eye roll|😏 smirk|😬 grimace awkward|😮 open mouth surprise|😲 astonished shock|😳 flushed|🥺 pleading|😢 cry sad|😭 sob crying|😤 triumph huff|😠 angry|😡 rage mad|🤯 mind blown exploding|😱 scream fear|😴 sleep tired|🤒 sick ill|🤢 nausea sick|🥳 party celebrate|🤠 cowboy|🥲 smile tear|🫠 melting|👻 ghost|💀 skull dead|🤖 robot bot|👽 alien|💩 poop"],
+    ["Hands & people", "👍 thumbs up yes like approve|👎 thumbs down no dislike|👏 clap applause|🙌 raised hands hooray|🙏 pray please thanks|👋 wave hello bye|✌️ peace victory|🤞 fingers crossed luck|👌 ok perfect|🤝 handshake deal agree|💪 muscle strong flex|👀 eyes look see|✍️ writing hand|🫡 salute|🤷 shrug dunno|🙋 raise hand|🧑‍💻 technologist developer coder|👨‍🏫 teacher|🦸 hero|🧙 wizard magic"],
+    ["Work & tech", "💻 laptop computer|🖥️ desktop computer monitor|⌨️ keyboard|🖱️ mouse|💾 floppy save disk|🗄️ cabinet archive|📁 folder|📂 open folder|📄 page document|📊 bar chart stats|📈 chart up growth|📉 chart down decline|🗂️ dividers index|📋 clipboard|📎 paperclip attach|🔗 link chain url|🔧 wrench fix tool|🔨 hammer build|🛠️ tools hammer wrench|⚙️ gear settings config|🧰 toolbox|🧪 test tube experiment|🔬 microscope research|🔍 search magnify find|🗝️ old key|🛡️ shield security protect|📦 package box container|🐳 whale docker|☁️ cloud|🌐 globe web internet network|📡 satellite antenna|🔌 plug|🔋 battery|🧱 brick wall firewall|🏗️ construction build|🚢 ship deploy|⚓ anchor|🏷️ label tag|📅 calendar date|🗓️ calendar schedule|⏳ hourglass waiting|⌛ hourglass done time|✉️ envelope mail|📧 email|📮 postbox|📚 books docs|📖 book read|🎓 graduation learn|🏛️ classical building government|💰 money bag|💳 credit card|🧾 receipt|🖨️ printer|📱 phone mobile|☎️ telephone"],
+    ["Symbols", "✔️ check mark|☑️ checkbox|✖️ multiply x|➕ plus add|➖ minus remove|❤️ red heart love|🧡 orange heart|💛 yellow heart|💚 green heart|💙 blue heart|💜 purple heart|🖤 black heart|🤍 white heart|💯 hundred perfect|💥 boom collision|✨ sparkles new shiny|🌟 glowing star|⚡ lightning fast zap|💤 zzz sleep|🔔 bell notification|🔕 bell off mute|♻️ recycle|🚫 prohibited forbidden|⛔ no entry|🔴 red circle|🟠 orange circle|🟡 yellow circle|🟢 green circle|🔵 blue circle|🟣 purple circle|⚫ black circle|⚪ white circle|⬆️ up arrow|⬇️ down arrow|➡️ right arrow|⬅️ left arrow|🔁 repeat loop|🔄 refresh sync|🆕 new|🆗 ok|🆘 sos help|#️⃣ hash number|©️ copyright|™️ trademark"],
+    ["Nature", "🐶 dog puppy|🐱 cat|🐈 cat|🦊 fox|🐻 bear|🐼 panda|🐧 penguin linux|🐦 bird|🦉 owl wise|🐢 turtle slow|🐍 snake python|🐙 octopus|🦀 crab rust|🐝 bee|🦋 butterfly|🐌 snail slow|🦄 unicorn|🌱 seedling grow sprout|🌳 tree|🌵 cactus|🌸 blossom flower|🌻 sunflower|🍀 clover luck|🍁 maple leaf autumn|🌈 rainbow|☀️ sun sunny|🌙 moon night|🌊 wave ocean|❄️ snowflake cold|🔥 fire|🌋 volcano|⛅ cloud sun weather|🌧️ rain"],
+    ["Food & fun", "☕ coffee|🍵 tea|🍕 pizza|🍔 burger|🌮 taco|🍜 noodles ramen|🍩 donut|🍪 cookie|🎂 cake birthday|🍎 apple|🍺 beer|🍷 wine|🎮 game controller gaming|🕹️ joystick arcade|🎲 dice random|🏆 trophy win award|🏅 medal|🥇 gold first|⚽ soccer football|🏀 basketball|🎸 guitar music|🎧 headphones music|🎵 music note|🎨 art palette paint|📷 camera photo|🎬 film movie|🎁 gift present|🎈 balloon"],
+    ["Travel & places", "🏠 house home|🏢 office building|🏡 home garden|🏭 factory|✈️ airplane travel|🚗 car|🚲 bike bicycle|🚆 train|🗺️ map|🧭 compass direction|🏝️ island|⛰️ mountain|🏕️ camping|🗽 statue liberty|🌍 earth world globe|🚦 traffic light|🚧 construction roadwork|⛽ fuel gas"]
+  ].map(function (cat) {
+    return {
+      name: cat[0],
+      items: cat[1].split("|").map(function (entry) {
+        var parts = entry.split(" ");
+        return { e: parts[0], words: parts.join(" ").toLowerCase() };
+      })
+    };
+  });
+
+  var picker = null;      // one picker, reused
+  var pickerDone = null;  // called with the chosen emoji, or "" for Remove
+
+  function closePicker() {
+    if (picker) { picker.hidden = true; }
+    pickerDone = null;
+  }
+
+  function fillPicker(query) {
+    var body = picker.querySelector(".ep-body");
+    body.textContent = "";
+    var q = query.trim().toLowerCase();
+    var seen = {};
+    EMOJI.forEach(function (cat) {
+      var items = cat.items.filter(function (it) {
+        if (q && it.words.indexOf(q) < 0) { return false; }
+        if (q && seen[it.e]) { return false; }   // a search lists each emoji once
+        seen[it.e] = true;
+        return true;
+      });
+      if (!items.length) { return; }
+      if (!q) {
+        var title = document.createElement("div");
+        title.className = "ep-cat";
+        title.textContent = cat.name.toUpperCase();
+        body.appendChild(title);
+      }
+      var grid = document.createElement("div");
+      grid.className = "ep-grid";
+      items.forEach(function (it) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = it.e;
+        btn.title = it.words.split(" ").slice(1, 3).join(" ");
+        btn.addEventListener("click", function () {
+          var done = pickerDone;
+          closePicker();
+          if (done) { done(it.e); }
+        });
+        grid.appendChild(btn);
+      });
+      body.appendChild(grid);
+    });
+    if (!body.children.length) {
+      var none = document.createElement("div");
+      none.className = "ep-none";
+      none.textContent = "No emoji matches “" + query + "”.";
+      body.appendChild(none);
+    }
+  }
+
+  function openPicker(anchor, done) {
+    if (!picker) {
+      picker = document.createElement("div");
+      picker.className = "emoji-picker";
+      picker.innerHTML = '<div class="ep-bar"><input type="text" class="ep-search" placeholder="Search emoji…" aria-label="Search emoji">' +
+        '<button type="button" class="btn ep-remove">Remove</button></div><div class="ep-body"></div>';
+      document.body.appendChild(picker);
+      picker.querySelector(".ep-search").addEventListener("input", function (ev) { fillPicker(ev.target.value); });
+      picker.querySelector(".ep-remove").addEventListener("click", function () {
+        var done = pickerDone;
+        closePicker();
+        if (done) { done(""); }
+      });
+      picker.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape") { ev.stopPropagation(); closePicker(); }
+        // Enter in the search box takes the first match
+        if (ev.key === "Enter" && ev.target.classList.contains("ep-search")) {
+          ev.preventDefault();
+          var first = picker.querySelector(".ep-grid button");
+          if (first) { first.click(); }
+        }
+      });
+      document.addEventListener("mousedown", function (ev) {
+        if (picker && !picker.hidden && !picker.contains(ev.target) && !ev.target.closest(".callout-icon")) {
+          closePicker();
+        }
+      }, true);
+    }
+    pickerDone = done;
+    var search = picker.querySelector(".ep-search");
+    search.value = "";
+    fillPicker("");
+    picker.hidden = false;
+
+    // under the icon, kept on screen
+    var r = anchor.getBoundingClientRect();
+    var w = picker.offsetWidth, h = picker.offsetHeight;
+    var left = Math.min(r.left, window.innerWidth - w - 8);
+    var top = r.bottom + 4;
+    if (top + h > window.innerHeight - 8) { top = Math.max(8, r.top - h - 4); }
+    picker.style.left = Math.max(8, left) + "px";
+    picker.style.top = top + "px";
+    search.focus();
+  }
+
+  window.addEventListener("scroll", closePicker, { passive: true });
+
   /* ============ the Callout block ============
-     Notion's: an emoji you can click to change, and text that takes inline
-     formatting. Saves {emoji, text}; its colour is the Color tune's, like
-     every other text block. Markup and look match blog-render.js. */
+     Notion's: an emoji you pick from the picker above, and text that takes
+     inline formatting. Saves {emoji, text}; its colour is the Color tune's,
+     like every other text block. Markup and look match blog-render.js. */
 
   function Callout(opts) {
     this.data = opts.data || {};
     this.readOnly = opts.readOnly;
+    this.block = opts.block;
+    this.emoji = this.data.emoji != null ? this.data.emoji : "💡";
   }
   Callout.toolbox = {
     title: "Callout",
@@ -410,31 +563,45 @@ body.wide .page { max-width: 1400px; }
     text: { b: true, i: true, u: true, s: true, a: { href: true }, code: true, mark: true, br: true }
   };
   Callout.isReadOnlySupported = true;
+  Callout.prototype.showEmoji = function () {
+    var empty = !this.emoji;
+    this.nodes.icon.textContent = empty ? "🙂" : this.emoji;
+    this.nodes.icon.classList.toggle("empty", empty);
+    this.nodes.icon.title = empty ? "Add an icon" : "Change the icon";
+  };
   Callout.prototype.render = function () {
+    var self = this;
     var box = document.createElement("div");
     box.className = "callout";
 
-    var emoji = document.createElement("input");
-    emoji.className = "callout-icon";
-    emoji.value = this.data.emoji != null ? this.data.emoji : "\ud83d\udca1";
-    emoji.maxLength = 8;
-    emoji.title = "Click to change the emoji (or clear it)";
-    emoji.readOnly = this.readOnly;
-    emoji.addEventListener("focus", function () { emoji.select(); });
+    var icon = document.createElement("button");
+    icon.type = "button";
+    icon.className = "callout-icon";
+    icon.disabled = this.readOnly;
+    icon.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      openPicker(icon, function (chosen) {
+        self.emoji = chosen;
+        self.showEmoji();
+        if (self.block) { self.block.dispatchChange(); }
+        dirty = true;
+      });
+    });
 
     var text = document.createElement("div");
     text.className = "callout-text";
     text.contentEditable = this.readOnly ? "false" : "true";
-    text.dataset.placeholder = "Type something\u2026";
+    text.dataset.placeholder = "Type something…";
     text.innerHTML = this.data.text || "";
 
-    box.appendChild(emoji);
+    box.appendChild(icon);
     box.appendChild(text);
-    this.nodes = { emoji: emoji, text: text };
+    this.nodes = { icon: icon, text: text };
+    this.showEmoji();
     return box;
   };
   Callout.prototype.save = function () {
-    return { emoji: this.nodes.emoji.value.trim(), text: this.nodes.text.innerHTML };
+    return { emoji: this.emoji, text: this.nodes.text.innerHTML };
   };
 
   /* ============ the Color tune ============
