@@ -4,7 +4,7 @@ Fronted by a Lambda function URL. Routes:
   GET  /api/state         -> {"count": N, "entries": [...]}
   POST /api/visit         -> {"count": N}          body: {"visitorId": "..."}
   POST /api/guestbook     -> {"ok": true, "entries": [...]}
-  GET  /api/posts         -> {"posts": [{id, title, when, views}, ...]}
+  GET  /api/posts         -> {"posts": [{id, title, when, excerpt, views}, ...]}
   GET  /api/posts/<id>    -> {"post": {...}, "comments": [...]}
   POST /api/posts/<id>/view      -> {"views": N}   body: {"visitorId": "..."}
   POST /api/posts/<id>/comments  -> {"ok": true, "comments": [...]}
@@ -23,7 +23,7 @@ Single DynamoDB table, item shapes:
   pk="counter" sk="total"          -> count (N)
   pk="visitor" sk=<visitorId>      -> ttl (N), for one-count-per-browser
   pk="entry"   sk=<when>#<uuid>    -> name, site, message, when
-  pk="post"    sk=<post id>        -> title, when, updated, blocks (JSON string)
+  pk="post"    sk=<post id>        -> title, when, updated, excerpt, blocks, style (JSON strings)
   pk="views"   sk=<post id>        -> count (N); apart from the post, which
                                       is rewritten whole on every edit
   pk="viewer"  sk=<post id>#<visitorId> -> ttl (N), one view per browser
@@ -199,7 +199,7 @@ def list_posts():
         TableName=TABLE,
         KeyConditionExpression="pk = :p",
         ExpressionAttributeValues={":p": {"S": "post"}},
-        ProjectionExpression="sk, title, #w",
+        ProjectionExpression="sk, title, #w, excerpt",
         ExpressionAttributeNames={"#w": "when"},   # WHEN is a reserved word
     )
     views = read_all_views()
@@ -207,6 +207,7 @@ def list_posts():
         "id": item["sk"]["S"],
         "title": item.get("title", {}).get("S", ""),
         "when": item.get("when", {}).get("S", ""),
+        "excerpt": item.get("excerpt", {}).get("S", ""),
         "views": views.get(item["sk"]["S"], 0),
     } for item in got.get("Items", [])]
     # ids start with the date but not the time, so sort on the full timestamp
@@ -224,10 +225,11 @@ def read_post(post_id):
         "when": item.get("when", {}).get("S", ""),
         "updated": item.get("updated", {}).get("S", ""),
         "blocks": json.loads(item.get("blocks", {}).get("S", "[]")),
+        "style": json.loads(item.get("style", {}).get("S", "{}")),
     }
 
 
-def save_post(post_id, title, blocks_json):
+def save_post(post_id, title, blocks_json, style_json, excerpt):
     """Create, or overwrite an existing post while keeping its original
     publish time. Returns the id, or None if an edit names a missing post."""
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -249,6 +251,8 @@ def save_post(post_id, title, blocks_json):
             "when": {"S": when},
             "updated": {"S": now},
             "blocks": {"S": blocks_json},
+            "style": {"S": style_json},
+            "excerpt": {"S": excerpt},
         },
     )
     return post_id
@@ -395,8 +399,8 @@ def author_route(method, path, event):
             post_id = data.get("id") or ""
             if post_id and not blog.POST_ID.match(post_id):
                 return respond(400, {"ok": False, "error": "Bad post id."})
-            title, blocks_json = blog.validate_post(data)
-            saved = save_post(post_id, title, blocks_json)
+            title, blocks_json, style_json, excerpt = blog.validate_post(data)
+            saved = save_post(post_id, title, blocks_json, style_json, excerpt)
             if not saved:
                 return respond(404, {"ok": False, "error": "That post no longer exists."})
             return respond(200, {"ok": True, "id": saved})

@@ -23,6 +23,7 @@ from datetime import datetime, timezone
 MAX_TITLE = 140
 MAX_BLOCKS = 400
 MAX_POST_BYTES = 300 * 1024        # DynamoDB items cap at 400 KB
+MAX_EXCERPT = 180
 MAX_IMAGE_BYTES = 4 * 1024 * 1024  # base64 inflates this to ~5.3 MB, under the 6 MB function URL limit
 
 POST_ID = re.compile(r"^\d{4}-\d{2}-\d{2}-[a-f0-9]{6}$")
@@ -41,8 +42,20 @@ MAX_COMMENTS = 300
 VISITOR_ID = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
 COMMENT_ID = re.compile(r"^\d{4}-\d{2}-\d{2}T[\d:.+-]+#[a-f0-9]{8}$")
 
-CALLOUT_TONES = {"info", "tip", "warning", "danger"}
 LIST_STYLES = {"unordered", "ordered", "checklist"}
+
+# Notion's palette, under Notion's own names: a text colour, or the same
+# hue as a background. "default" is no colour.
+HUES = ("gray", "brown", "orange", "yellow", "green", "blue", "purple", "pink", "red")
+COLORS = {"default"} | set(HUES) | {h + "_background" for h in HUES}
+COLORABLE = {"paragraph", "header", "list", "quote", "callout"}
+
+# what callouts were before they took Notion colours
+OLD_CALLOUT_TONES = {"info": "blue_background", "tip": "green_background",
+                     "warning": "yellow_background", "danger": "red_background"}
+
+# the page "Style" menu: font, small text, full width
+FONTS = {"default", "serif", "mono"}
 
 
 class Invalid(ValueError):
@@ -114,12 +127,7 @@ def _block(block):
     elif kind == "quote":
         data = {"text": _text(d.get("text", "")), "caption": _text(d.get("caption", ""), 500)}
     elif kind == "callout":
-        tone = d.get("tone")
-        data = {
-            "emoji": _text(d.get("emoji", ""), 16),
-            "text": _text(d.get("text", "")),
-            "tone": tone if tone in CALLOUT_TONES else "info",
-        }
+        data = {"emoji": _text(d.get("emoji", ""), 16), "text": _text(d.get("text", ""))}
     elif kind == "code":
         data = {"code": _text(d.get("code", ""), 50000)}
     elif kind == "delimiter":
@@ -149,11 +157,55 @@ def _block(block):
     else:
         raise Invalid("Unsupported block type: %s" % str(kind)[:30])
 
-    return {"type": kind, "data": data}
+    out = {"type": kind, "data": data}
+    if kind in COLORABLE:
+        tunes = block.get("tunes") if isinstance(block.get("tunes"), dict) else {}
+        tune = tunes.get("color") if isinstance(tunes.get("color"), dict) else {}
+        color = tune.get("color")
+        if kind == "callout" and color is None:
+            color = OLD_CALLOUT_TONES.get(d.get("tone"))
+        if color in COLORS:
+            out["tunes"] = {"color": {"color": color}}
+    return out
+
+
+def validate_style(value):
+    """The page-level style. Unknown or missing fields fall back to the
+    defaults rather than failing the post."""
+    value = value if isinstance(value, dict) else {}
+    font = value.get("font")
+    return {
+        "font": font if font in FONTS else "default",
+        "small": value.get("small") is True,
+        "wide": value.get("wide") is True,
+    }
+
+
+def excerpt_of(blocks):
+    """Plain text from the first text blocks, for teasers like the homepage's
+    Latest From My Blog. Tags are stripped, so the page shows it as text."""
+    parts = []
+    for block in blocks:
+        if block["type"] in ("paragraph", "quote", "callout"):
+            # a line break separates words; inline tags (<b>, <a>...) do not
+            text = re.sub(r"<br\s*/?>", " ", block["data"].get("text", ""), flags=re.I)
+            text = re.sub(r"<[^>]*>", "", text)
+            text = re.sub(r"&nbsp;", " ", text)
+            text = re.sub(r"&(amp|lt|gt|quot|#39);", lambda m: {"amp": "&", "lt": "<", "gt": ">",
+                                                                 "quot": '"', "#39": "'"}[m.group(1)], text)
+            text = re.sub(r"\s+", " ", text).strip()
+            if text:
+                parts.append(text)
+        if len(" ".join(parts)) >= MAX_EXCERPT:
+            break
+    joined = " ".join(parts)
+    if len(joined) <= MAX_EXCERPT:
+        return joined
+    return joined[:MAX_EXCERPT].rsplit(" ", 1)[0].rstrip(",.;:") + "\u2026"
 
 
 def validate_post(payload):
-    """Return (title, blocks_json) or raise Invalid."""
+    """Return (title, blocks_json, style_json, excerpt) or raise Invalid."""
     title = re.sub(r"\s+", " ", payload.get("title") or "").strip()[:MAX_TITLE]
     if not title:
         raise Invalid("A title is required.")
@@ -164,10 +216,12 @@ def validate_post(payload):
     if len(blocks) > MAX_BLOCKS:
         raise Invalid("The post has too many blocks.")
 
-    cleaned = json.dumps([_block(b) for b in blocks], separators=(",", ":"))
+    validated = [_block(b) for b in blocks]
+    cleaned = json.dumps(validated, separators=(",", ":"))
     if len(cleaned.encode()) > MAX_POST_BYTES:
         raise Invalid("The post is too long (images do not count, text does).")
-    return title, cleaned
+    style = json.dumps(validate_style(payload.get("style")), separators=(",", ":"))
+    return title, cleaned, style, excerpt_of(validated)
 
 
 # --------------------------------------------------------------------------

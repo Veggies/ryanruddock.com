@@ -45,11 +45,15 @@ a:hover { color: #ff0000; }
 
 .page {
   max-width: 820px;
+  transition: max-width 0.15s;
   margin: 0 auto;
   background: #ffffff;
   border: 4px ridge #ffcc00;
   padding: 6px;
 }
+
+/* the post's "Full width" style */
+body.wide .page { max-width: 1240px; }
 
 .banner {
   border: 3px outset #6699ff;
@@ -194,6 +198,7 @@ ul.posts .views-n { color: #cc3300; font-size: 10px; margin-left: 4px; }
   <p class="crumbs">
     &#9664; <a href="./index.html">Back to the homepage</a>
     <span id="crumb-index" hidden> &nbsp;&middot;&nbsp; <a href="./blog.html">All posts</a></span>
+    <span id="crumb-write" hidden> &nbsp;&middot;&nbsp; <a href="./write.html"><b>&#9998; Write a post</b></a></span>
   </p>
 
   <div class="mod" id="view">
@@ -283,6 +288,7 @@ ul.posts .views-n { color: #cc3300; font-size: 10px; margin-left: 4px; }
      buttons and your own comments are marked as the author's. The server
      checks the token; this only decides what to draw. */
   var authorToken = getItem("localStorage", "ryan-blog-token") || getItem("sessionStorage", "ryan-blog-token");
+  if (authorToken) { document.getElementById("crumb-write").hidden = false; }
 
   function pad(n) {
     var s = String(n);
@@ -346,6 +352,7 @@ ul.posts .views-n { color: #cc3300; font-size: 10px; margin-left: 4px; }
         counter.appendChild(el("small", "", "views"));
         bodyEl.appendChild(counter);
         bodyEl.appendChild(BlogRender.renderPost(p));
+        document.body.classList.toggle("wide", Boolean(p.style && p.style.wide === true));
 
         fetch(API + "/api/posts/" + encodeURIComponent(id) + "/view", {
           method: "POST",

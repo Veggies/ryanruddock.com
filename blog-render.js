@@ -10,6 +10,13 @@
 
   var UPLOAD_URL = /^\/uploads\/\d{4}\/\d{2}\/[a-f0-9]{32}\.(jpg|png)$/;
 
+  /* Notion's palette by Notion's names; blog-post.css styles each one.
+     Checked here as well as on the server, so a value is only ever one
+     of these before it reaches an attribute. */
+  var HUES = ["gray", "brown", "orange", "yellow", "green", "blue", "purple", "pink", "red"];
+  var COLORS = ["default"].concat(HUES, HUES.map(function (h) { return h + "_background"; }));
+  var FONTS = ["default", "serif", "mono"];
+
   /* ============ inline text ============
      Text inside a block can carry the editor's inline formatting. That is
      the one place post content becomes HTML, so it goes through DOMPurify
@@ -63,16 +70,23 @@
     return list;
   }
 
-  /* A callout is a highlighted aside, like Notion's. What it receives:
-       data.emoji -- one emoji, may be "" (e.g. "💡")
-       data.text  -- the body; HTML with inline formatting, so it MUST go
-                     through inline(tag, html), never straight to innerHTML
-       data.tone  -- "info" | "tip" | "warning" | "danger"
-     Return one element. Its CSS goes in the "callouts" section of
-     blog-post.css. */
+  /* Notion's callout: an emoji gutter beside the text. Its colour comes
+     from the block's Color tune like any other block -- see colorOf(). */
   function renderCallout(data) {
-    // TODO(ryan): design the callout. Placeholder until then:
-    return inline("p", data.text);
+    var box = el("div", "callout");
+    if (data.emoji) { box.appendChild(el("span", "callout-icon", data.emoji)); }
+    var text = inline("div", data.text);
+    text.className = "callout-text";
+    box.appendChild(text);
+    return box;
+  }
+
+  /* A new callout in Notion starts grey; every other block starts plain. */
+  function colorOf(block) {
+    var tune = block.tunes && block.tunes.color;
+    var color = tune && tune.color;
+    if (COLORS.indexOf(color) >= 0) { return color; }
+    return block.type === "callout" ? "gray_background" : "default";
   }
 
   function renderBlock(block) {
@@ -136,14 +150,33 @@
     }
     wrap.appendChild(el("p", "post-when", when));
 
-    var body = el("div", "post");
+    var body = el("div", "post " + styleClasses(post.style).join(" "));
     (post.blocks || []).forEach(function (block) {
       var node = renderBlock(block);
-      if (node) { body.appendChild(node); }
+      if (!node) { return; }
+      var color = colorOf(block);
+      if (color !== "default" || block.type === "callout") { node.setAttribute("data-ncolor", color); }
+      body.appendChild(node);
     });
     wrap.appendChild(body);
     return wrap;
   }
 
-  window.BlogRender = { renderPost: renderPost, formatDate: formatDate };
+  /* The page Style menu as classes: pg-serif / pg-mono, pg-small. Full
+     width is the page shell's job, so it is left to the caller. */
+  function styleClasses(style) {
+    style = style || {};
+    var out = [];
+    if (FONTS.indexOf(style.font) > 0) { out.push("pg-" + style.font); }
+    if (style.small === true) { out.push("pg-small"); }
+    return out;
+  }
+
+  window.BlogRender = {
+    renderPost: renderPost,
+    formatDate: formatDate,
+    styleClasses: styleClasses,
+    HUES: HUES,
+    COLORS: COLORS
+  };
 })();

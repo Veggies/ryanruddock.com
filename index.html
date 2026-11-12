@@ -653,6 +653,46 @@ hr.fancy {
   font-family: "Comic Sans MS", cursive;
 }
 .linkbar a:hover { border-style: inset; color: #cc0000 !important; }
+.linkbar a.email {
+  border-color: #ffd94d;
+  background: linear-gradient(#ffe680, #ffcc00 55%, #e6a700);
+  color: #663300 !important;
+}
+/* arriving from the "Contact Me!" nav link: make the buttons noticeable */
+#contact:target a { animation: nudge 0.5s ease-in-out 2; }
+@keyframes nudge { 50% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { #contact:target a { animation: none; } }
+
+/* ---- Latest From My Blog ---- */
+.mod > h2 .new-tag { text-shadow: none; }
+a.latest {
+  display: block;
+  text-decoration: none;
+  color: #000000;
+  border: 2px outset #f2c6e3;
+  background: linear-gradient(#ffffff, #fff0fa);
+  padding: 8px 10px;
+}
+a.latest:hover { border-style: inset; }
+a.latest:hover .latest-title { color: #cc0000; }
+.latest-title { display: block; font-family: "Comic Sans MS", cursive; font-size: 15px; font-weight: bold; color: #99126f; }
+.latest-when { display: block; font-size: 10px; color: #777777; margin: 2px 0 5px; }
+.latest-excerpt { display: block; font-size: 11px; line-height: 1.55; color: #333333; }
+.latest-more { display: inline-block; margin-top: 5px; font-size: 11px; font-weight: bold; color: #0000cc; text-decoration: underline; }
+ul.latest-more-posts { list-style: none; margin: 8px 0 0; padding: 0; font-size: 11px; }
+ul.latest-more-posts li { padding: 3px 2px; border-top: 1px dotted #cccccc; }
+ul.latest-more-posts .when { color: #777777; font-size: 10px; }
+.latest-all { margin: 6px 0 0 !important; font-size: 11px; text-align: right; }
+.latest-all a { font-weight: bold; }
+
+/* the author's own way in: shown only when this browser holds the blog token */
+.navlist a.nav-write {
+  border-color: #ee77cc;
+  background-image: linear-gradient(#ffd6f0, #ee77cc 55%, #cc3399);
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #99126f;
+}
+.navlist a.nav-write:visited { color: #ffffff; }
 
 /* ============================ SMALL SCREENS ================= */
 @media (max-width: 640px) {
@@ -707,6 +747,7 @@ hr.fancy {
             <li><a href="#projects">Projects</a></li>
             <li><a href="#trophies">Certifications</a></li>
             <li><a href="./blog.html">My Blog</a></li>
+            <li id="nav-write" hidden><a href="./write.html" class="nav-write">&#9998; Write a Post</a></li>
             <li><a href="#guestbook">Guestbook</a></li>
             <li><a href="#contact">Contact Me!</a></li>
           </ul>
@@ -738,16 +779,32 @@ hr.fancy {
       <details class="mod" id="about" open>
         <summary>&#9658; About Me</summary>
         <div class="body">
-          <p><b>Hi, I'm Ryan Ruddock</b> &mdash; an IT Engineer specializing in endpoint management, identity and
-          access management, and operational documentation. I've owned endpoint fleets, IaC repos for entire
-          development cycles, and internal documentation efforts.</p>
+          <p><b>Hi, I'm Ryan Ruddock</b> &mdash; a DevOps Engineer working in cloud infrastructure, Docker, and
+          Kubernetes. I came to it from IT engineering, where I owned endpoint fleets, identity and access
+          management, and infrastructure as code from first commit to production.</p>
           <p>When I get handed a tough problem, I plan, implement, and solve. When I see a process that happens often
-          and takes too long, I automate it. I strive to make the company feel like IT <i>helps</i> them, not that IT
-          is the thing impeding them.</p>
+          and takes too long, I automate it. I want the platform to feel like something that <i>helps</i> engineers
+          ship, not the thing standing in their way.</p>
           <p style="margin-bottom:0;"><span class="blink">&#9733;</span> Currently: <b>DevOps Engineer at GamePlan Tech</b>.
           <span class="new-tag">NEW!</span></p>
         </div>
       </details>
+
+      <!-- LATEST FROM THE BLOG: filled from the API; stays hidden if there
+           are no posts or the backend is unreachable -->
+      <div class="mod pink" id="m-blog" hidden>
+        <h2>&#9998; Latest From My Blog <span class="new-tag" id="blog-new" hidden>NEW!</span></h2>
+        <div class="body">
+          <a class="latest" id="latest-link" href="./blog.html">
+            <span class="latest-title" id="latest-title"></span>
+            <span class="latest-when" id="latest-when"></span>
+            <span class="latest-excerpt" id="latest-excerpt"></span>
+            <span class="latest-more">Read it &raquo;</span>
+          </a>
+          <ul class="latest-more-posts" id="latest-others"></ul>
+          <p class="latest-all"><a href="./blog.html">&#9733; All posts</a></p>
+        </div>
+      </div>
 
       <!-- WORK HISTORY -->
       <details class="mod" id="jobs" open>
@@ -1097,6 +1154,8 @@ hr.fancy {
 
   <!-- CONTACT -->
   <div id="contact" class="linkbar">
+  <!-- the address is put together by script, so it is never whole in the page source -->
+  <a id="email-me" class="email" href="#contact" hidden>&#128231; Email Me!</a>
   <a href="https://github.com/veggies" target="_blank" rel="noopener">&#128187; My GitHub</a>
   <a href="https://www.linkedin.com/in/ryanruddock/" target="_blank" rel="noopener">&#128188; My LinkedIn</a>
   </div>
@@ -1106,7 +1165,7 @@ hr.fancy {
     <a href="./blog.html">Blog</a> &nbsp;&middot;&nbsp;
     <a href="https://github.com/veggies" target="_blank" rel="noopener">GitHub</a> &nbsp;&middot;&nbsp;
     <a href="https://www.linkedin.com/in/ryanruddock/" target="_blank" rel="noopener">LinkedIn</a><br>
-    Last updated: 09/22/2026 &nbsp;&middot;&nbsp; &copy; Ryan Ruddock
+    Last updated: <span id="last-updated">11/12/2026</span> &nbsp;&middot;&nbsp; &copy; Ryan Ruddock
   </div>
 
 </div>
@@ -1281,6 +1340,87 @@ hr.fancy {
     .then(function (r) { return r.json(); })
     .then(function (d) { showCount(d.count); })
     .catch(hideBackedModules);
+
+  /* ============ contact ============ */
+
+  var emailEl = document.getElementById("email-me");
+  emailEl.href = "mailto:" + ["ryanruddock96", "gmail.com"].join("@") +
+    "?subject=" + encodeURIComponent("Hello from ryanruddock.com");
+  emailEl.hidden = false;
+
+  /* ============ the blog: latest post, ticker, write link ============ */
+
+  function getStored(store, key) {
+    try { return window[store].getItem(key) || ""; } catch (e) { return ""; }
+  }
+
+  // the server checks the token on every write; this only decides what to draw
+  if (getStored("localStorage", "ryan-blog-token") || getStored("sessionStorage", "ryan-blog-token")) {
+    document.getElementById("nav-write").hidden = false;
+  }
+
+  function longDate(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) { return ""; }
+    return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  }
+
+  /* "Last updated" is the newer of when this page was deployed (S3's
+     Last-Modified, which the browser exposes as document.lastModified) and
+     the newest blog post -- so writing a post counts as updating the site. */
+  var lastUpdatedEl = document.getElementById("last-updated");
+  var lastUpdated = new Date(document.lastModified);
+  function showLastUpdated(candidate) {
+    var d = new Date(candidate);
+    if (!isNaN(d) && (isNaN(lastUpdated) || d > lastUpdated)) { lastUpdated = d; }
+    if (!isNaN(lastUpdated)) {
+      lastUpdatedEl.textContent = lastUpdated.toLocaleDateString("en-US",
+        { year: "numeric", month: "2-digit", day: "2-digit" });
+    }
+  }
+  showLastUpdated(null);
+
+  function postHref(p) { return "./blog.html?p=" + encodeURIComponent(p.id); }
+
+  fetch(API + "/api/posts")
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var posts = d.posts || [];
+      if (!posts.length) { return; }
+      var latest = posts[0];
+      showLastUpdated(latest.when);
+
+      document.getElementById("latest-link").href = postHref(latest);
+      document.getElementById("latest-title").textContent = latest.title;
+      document.getElementById("latest-when").textContent = "Posted " + longDate(latest.when);
+      document.getElementById("latest-excerpt").textContent = latest.excerpt || "";
+      // the NEW! tag for a week after posting
+      document.getElementById("blog-new").hidden = (Date.now() - new Date(latest.when)) > 7 * 864e5;
+
+      var others = document.getElementById("latest-others");
+      posts.slice(1, 3).forEach(function (p) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = postHref(p);
+        a.textContent = p.title;
+        li.appendChild(document.createTextNode("\u2605 "));
+        li.appendChild(a);
+        var when = document.createElement("span");
+        when.className = "when";
+        when.textContent = " \u00b7 " + longDate(p.when);
+        li.appendChild(when);
+        others.appendChild(li);
+      });
+      document.getElementById("m-blog").hidden = false;
+
+      // lead the news ticker with it too
+      var ticker = document.querySelector(".ticker span");
+      if (ticker) {
+        ticker.insertBefore(document.createTextNode(
+          "NEW ON THE BLOG: \u201c" + latest.title + "\u201d!! \u00a0\u00a0\u25aa\u00a0\u00a0 "), ticker.firstChild);
+      }
+    })
+    .catch(function () { /* no posts box, no fuss */ });
 
   fetch(API + "/api/state")
     .then(function (r) { return r.json(); })

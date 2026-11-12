@@ -56,7 +56,70 @@
 .post td { border: 1px solid #99bbdd; padding: 4px 6px; vertical-align: top; }
 
 
-/* ---- callouts: see renderCallout() in blog-render.js ---- */
+/* ============ Notion colours ============
+   A block carries data-ncolor="<name>" -- a text colour, or <hue>_background.
+   The same attribute is set in the editor (by the Color tune in write.html)
+   and on the published page (by blog-render.js), so both read these rules.
+   Values are Notion's light-mode palette. */
+
+[data-ncolor="gray"]   { color: #787774; }
+[data-ncolor="brown"]  { color: #9f6b53; }
+[data-ncolor="orange"] { color: #d9730d; }
+[data-ncolor="yellow"] { color: #cb912f; }
+[data-ncolor="green"]  { color: #448361; }
+[data-ncolor="blue"]   { color: #337ea9; }
+[data-ncolor="purple"] { color: #9065b0; }
+[data-ncolor="pink"]   { color: #c14c8a; }
+[data-ncolor="red"]    { color: #d44c47; }
+
+[data-ncolor="gray_background"]   { background: #f1f1ef; }
+[data-ncolor="brown_background"]  { background: #f4eeee; }
+[data-ncolor="orange_background"] { background: #fbecdd; }
+[data-ncolor="yellow_background"] { background: #fbf3db; }
+[data-ncolor="green_background"]  { background: #edf3ec; }
+[data-ncolor="blue_background"]   { background: #e7f3f8; }
+[data-ncolor="purple_background"] { background: #f4f0f7; }
+[data-ncolor="pink_background"]   { background: #f9eef3; }
+[data-ncolor="red_background"]    { background: #fdebec; }
+
+/* a coloured background on an ordinary block: a soft rounded band */
+[data-ncolor$="_background"] { border-radius: 4px; padding: 3px 6px; }
+.post blockquote[data-ncolor$="_background"] { padding: 6px 12px; }
+
+/* ============ callouts ============
+   Notion's: an emoji gutter and the text, on a rounded box. A background
+   colour fills it; "default" or a text colour draws an outline instead. */
+
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  /* comes after the generic background rule above, so this padding wins */
+  padding: 14px 16px 14px 12px;
+  margin: 4px 0 12px;
+  line-height: 1.55;
+}
+.callout[data-ncolor="default"],
+.callout[data-ncolor]:not([data-ncolor$="_background"]) { border-color: rgba(55, 53, 47, 0.16); }
+.callout-icon { flex: 0 0 auto; width: 24px; font-size: 1.25em; line-height: 1.25; text-align: center; }
+.callout-text { flex: 1; min-width: 0; }
+
+/* ============ the page Style menu ============
+   Notion's three fonts plus Small text and Full width. "default" keeps the
+   site's own Verdana and Comic Sans headings. */
+
+.pg-serif, .pg-serif h2, .pg-serif h3, .pg-serif h4 {
+  font-family: "Lyon-Text", Georgia, "YuMincho", "Yu Mincho", "Hiragino Mincho ProN", serif;
+}
+.pg-mono, .pg-mono h2, .pg-mono h3, .pg-mono h4 {
+  font-family: "iawriter-mono", Nitti, Menlo, Courier, monospace;
+}
+.pg-small { font-size: 0.88em; }
+.pg-small h2 { font-size: 1.35em; }
+.pg-small h3 { font-size: 1.15em; }
+.pg-small h4 { font-size: 1em; }
 
 @media (max-width: 640px) {
   .post figure.backdrop img { max-width: 100%; }

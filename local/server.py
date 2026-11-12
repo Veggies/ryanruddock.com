@@ -126,7 +126,7 @@ class Handler(SimpleHTTPRequestHandler):
             with LOCK:
                 posts = load(POSTS_FILE, {})
                 views = load(VIEWS_FILE, {})
-            listing = [{"id": k, "title": v["title"], "when": v["when"],
+            listing = [{"id": k, "title": v["title"], "when": v["when"], "excerpt": v.get("excerpt", ""),
                         "views": len(views.get(k, []))} for k, v in posts.items()]
             listing.sort(key=lambda p: p["when"], reverse=True)
             return self.send_json({"posts": listing})
@@ -140,7 +140,8 @@ class Handler(SimpleHTTPRequestHandler):
             if not post:
                 return self.send_json({"ok": False, "error": "No such post."}, 404)
             return self.send_json({
-                "post": dict(post, id=post_id, blocks=json.loads(post["blocks"])),
+                "post": dict(post, id=post_id, blocks=json.loads(post["blocks"]),
+                             style=json.loads(post.get("style", "{}"))),
                 "comments": comments,
             })
 
@@ -195,7 +196,7 @@ class Handler(SimpleHTTPRequestHandler):
                 post_id = data.get("id") or ""
                 if post_id and not blog.POST_ID.match(post_id):
                     return self.send_json({"ok": False, "error": "Bad post id."}, 400)
-                title, blocks_json = blog.validate_post(data)
+                title, blocks_json, style_json, excerpt = blog.validate_post(data)
                 now = datetime.now(timezone.utc).isoformat(timespec="seconds")
                 with LOCK:
                     posts = load(POSTS_FILE, {})
@@ -203,7 +204,8 @@ class Handler(SimpleHTTPRequestHandler):
                         return self.send_json({"ok": False, "error": "That post no longer exists."}, 404)
                     when = posts[post_id]["when"] if post_id else now
                     post_id = post_id or blog.new_post_id()
-                    posts[post_id] = {"title": title, "when": when, "updated": now, "blocks": blocks_json}
+                    posts[post_id] = {"title": title, "when": when, "updated": now,
+                                      "excerpt": excerpt, "blocks": blocks_json, "style": style_json}
                     save(POSTS_FILE, posts)
                 return self.send_json({"ok": True, "id": post_id})
 

@@ -152,16 +152,46 @@ a:hover { color: #ff0000; }
 .preview > .body { padding: 10px 12px; min-height: 340px; }
 .preview-flag { font-size: 10px; font-weight: bold; color: #99126f; letter-spacing: 1px; margin: 8px 0 0; }
 
-/* ---- the callout block, as it looks while editing ---- */
-.cdx-callout { display: flex; gap: 8px; align-items: flex-start; border: 2px solid; border-radius: 6px; padding: 8px 10px; margin: 6px 0; }
-.cdx-callout[data-tone="info"]    { border-color: #6699ff; background: #eef4ff; }
-.cdx-callout[data-tone="tip"]     { border-color: #339933; background: #eefbee; }
-.cdx-callout[data-tone="warning"] { border-color: #e6a700; background: #fff8dd; }
-.cdx-callout[data-tone="danger"]  { border-color: #cc0000; background: #ffeeee; }
-.cdx-callout__emoji { width: 2em; border: 0; background: transparent; font-size: 18px; text-align: center; padding: 0; }
-.cdx-callout__text { flex: 1; outline: none; min-height: 1.6em; }
-.cdx-callout__text:empty::before { content: attr(data-placeholder); color: #999999; }
-.cdx-callout__tone { font-size: 10px; }
+/* ---- callouts in the editor: look in blog-post.css; only the editable
+   bits need anything extra ---- */
+.callout input.callout-icon { border: 0; background: transparent; padding: 0; font: inherit; font-size: 1.25em; cursor: pointer; }
+.callout input.callout-icon:focus { outline: 1px dotted #999999; }
+.callout-text { outline: none; min-height: 1.55em; }
+.callout-text:empty::before { content: attr(data-placeholder); color: #999999; }
+
+/* the Color menu's swatches: an "A" in the colour, Notion's way */
+.swatch {
+  display: inline-block; width: 20px; height: 20px; line-height: 18px; box-sizing: border-box;
+  text-align: center; font: bold 12px/18px Verdana, sans-serif; border: 1px solid rgba(55, 53, 47, 0.16);
+  border-radius: 3px; padding: 0 !important;
+}
+
+/* headings match blog.html's default; serif and mono override them */
+.sheet:not(.pg-serif):not(.pg-mono) .ce-header { font-family: "Comic Sans MS", cursive; color: #003399; }
+.title-input.pg-serif { font-family: "Lyon-Text", Georgia, serif; }
+.title-input.pg-mono { font-family: "iawriter-mono", Nitti, Menlo, Courier, monospace; }
+
+/* the editor's own menus keep one font whatever the post's style is */
+.sheet .ce-popover, .sheet .ce-inline-toolbar, .sheet .ce-conversion-toolbar { font-family: Verdana, Geneva, sans-serif; font-size: 13px; }
+
+/* ---- the page Style bar ---- */
+.stylebar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 10px; color: #555555; margin-bottom: 6px; }
+.stylebar .lbl { font-weight: bold; color: #003399; letter-spacing: 0.5px; margin-right: 2px; }
+.fontbtn {
+  border: 2px outset #dddddd; background: linear-gradient(#ffffff, #e8e8e8); cursor: pointer;
+  padding: 1px 8px 2px; text-align: center; line-height: 1.1; color: #333333;
+}
+.fontbtn b { display: block; font-size: 15px; font-weight: normal; }
+.fontbtn span { font-size: 9px; }
+.fontbtn[aria-pressed="true"] { border-style: inset; background: #fff0fa; color: #99126f; }
+.fontbtn.f-default b { font-family: Verdana, sans-serif; }
+.fontbtn.f-serif b { font-family: "Lyon-Text", Georgia, serif; }
+.fontbtn.f-mono b { font-family: "iawriter-mono", Nitti, Menlo, Courier, monospace; }
+.stylebar label { cursor: pointer; }
+.stylebar .sep { width: 1px; align-self: stretch; background: #cccccc; margin: 0 4px; }
+
+/* the post's "Full width" style widens the desk too, so you see it */
+body.wide .page { max-width: 1400px; }
 
 @media (max-width: 720px) {
   .desk { flex-direction: column; }
@@ -204,6 +234,15 @@ a:hover { color: #ff0000; }
     </div>
 
     <div class="editor-col">
+      <div class="stylebar" role="group" aria-label="Page style">
+        <span class="lbl">STYLE</span>
+        <button type="button" class="fontbtn f-default" data-font="default" aria-pressed="true"><b>Ag</b><span>Default</span></button>
+        <button type="button" class="fontbtn f-serif" data-font="serif" aria-pressed="false"><b>Ag</b><span>Serif</span></button>
+        <button type="button" class="fontbtn f-mono" data-font="mono" aria-pressed="false"><b>Ag</b><span>Mono</span></button>
+        <span class="sep"></span>
+        <label><input type="checkbox" id="st-small"> Small text</label>
+        <label><input type="checkbox" id="st-wide"> Full width</label>
+      </div>
       <div id="writing">
         <input type="text" class="title-input" id="title" maxlength="140" placeholder="Post title">
         <div class="sheet" id="editor"></div>
@@ -354,11 +393,9 @@ a:hover { color: #ff0000; }
   }
 
   /* ============ the Callout block ============
-     Notion-style: an emoji, a tone that sets the colour, and a line of
-     text that takes inline formatting. Saves {emoji, text, tone}. */
-
-  var TONES = ["info", "tip", "warning", "danger"];
-  var TONE_EMOJI = { info: "ℹ️", tip: "💡", warning: "⚠️", danger: "🚨" };
+     Notion's: an emoji you can click to change, and text that takes inline
+     formatting. Saves {emoji, text}; its colour is the Color tune's, like
+     every other text block. Markup and look match blog-render.js. */
 
   function Callout(opts) {
     this.data = opts.data || {};
@@ -370,59 +407,126 @@ a:hover { color: #ff0000; }
   };
   Callout.sanitize = {
     emoji: false,
-    text: { b: true, i: true, u: true, s: true, a: { href: true }, code: true, mark: true, br: true },
-    tone: false
+    text: { b: true, i: true, u: true, s: true, a: { href: true }, code: true, mark: true, br: true }
   };
   Callout.isReadOnlySupported = true;
   Callout.prototype.render = function () {
-    var tone = TONES.indexOf(this.data.tone) >= 0 ? this.data.tone : "info";
-    var wrap = document.createElement("div");
-    wrap.className = "cdx-callout";
-    wrap.dataset.tone = tone;
+    var box = document.createElement("div");
+    box.className = "callout";
 
     var emoji = document.createElement("input");
-    emoji.className = "cdx-callout__emoji";
-    emoji.value = this.data.emoji != null ? this.data.emoji : TONE_EMOJI[tone];
+    emoji.className = "callout-icon";
+    emoji.value = this.data.emoji != null ? this.data.emoji : "\ud83d\udca1";
     emoji.maxLength = 8;
-    emoji.title = "Emoji (type or paste one, or clear it)";
+    emoji.title = "Click to change the emoji (or clear it)";
     emoji.readOnly = this.readOnly;
+    emoji.addEventListener("focus", function () { emoji.select(); });
 
     var text = document.createElement("div");
-    text.className = "cdx-callout__text";
+    text.className = "callout-text";
     text.contentEditable = this.readOnly ? "false" : "true";
-    text.dataset.placeholder = "Callout text";
+    text.dataset.placeholder = "Type something\u2026";
     text.innerHTML = this.data.text || "";
 
-    var select = document.createElement("select");
-    select.className = "cdx-callout__tone";
-    select.title = "Colour";
-    TONES.forEach(function (t) {
-      var opt = document.createElement("option");
-      opt.value = t;
-      opt.textContent = t;
-      select.appendChild(opt);
-    });
-    select.value = tone;
-    select.disabled = this.readOnly;
-    select.addEventListener("change", function () {
-      // swap the emoji too, unless it was customised
-      if (emoji.value === TONE_EMOJI[wrap.dataset.tone]) { emoji.value = TONE_EMOJI[select.value]; }
-      wrap.dataset.tone = select.value;
-    });
-
-    wrap.appendChild(emoji);
-    wrap.appendChild(text);
-    wrap.appendChild(select);
-    this.nodes = { wrap: wrap, emoji: emoji, text: text };
-    return wrap;
+    box.appendChild(emoji);
+    box.appendChild(text);
+    this.nodes = { emoji: emoji, text: text };
+    return box;
   };
   Callout.prototype.save = function () {
+    return { emoji: this.nodes.emoji.value.trim(), text: this.nodes.text.innerHTML };
+  };
+
+  /* ============ the Color tune ============
+     Notion's block "Color" menu, in each text block's \u22ee\u22ee menu: a
+     text colour or a background. It marks the block with data-ncolor,
+     which blog-post.css colours, and blog-render.js sets the same
+     attribute on the published page. Saves {color}. */
+
+  function ColorTune(opts) {
+    var color = opts.data && opts.data.color;
+    // a new callout starts grey, as in Notion; everything else starts plain
+    this.color = BlogRender.COLORS.indexOf(color) >= 0 ? color
+      : (opts.block && opts.block.name === "callout" ? "gray_background" : "default");
+    this.block = opts.block;
+    this.node = null;
+  }
+  ColorTune.isTune = true;
+  ColorTune.prototype.wrap = function (content) {
+    // Editor.js passes its own .ce-block__content holder, not the tool's
+    // element; the colour belongs on the element, so the same CSS rules
+    // match here and on blog.html (where the element is the block itself)
+    this.node = content.firstElementChild || content;
+    this.node.setAttribute("data-ncolor", this.color);
+    return content;
+  };
+  ColorTune.prototype.set = function (color) {
+    this.color = color;
+    if (this.node) { this.node.setAttribute("data-ncolor", color); }
+    if (this.block) { this.block.dispatchChange(); }
+  };
+  ColorTune.prototype.item = function (color, title) {
+    var self = this;
     return {
-      emoji: this.nodes.emoji.value.trim(),
-      text: this.nodes.text.innerHTML,
-      tone: this.nodes.wrap.dataset.tone
+      icon: '<span class="swatch" data-ncolor="' + color + '">A</span>',
+      title: title,
+      closeOnActivate: true,
+      isActive: function () { return self.color === color; },
+      onActivate: function () { self.set(color); }
     };
   };
+  ColorTune.prototype.render = function () {
+    var self = this;
+    var cap = function (h) { return h.charAt(0).toUpperCase() + h.slice(1); };
+    var items = [self.item("default", "Default")];
+    BlogRender.HUES.forEach(function (h) { items.push(self.item(h, cap(h) + " text")); });
+    items.push({ type: "separator" });
+    BlogRender.HUES.forEach(function (h) { items.push(self.item(h + "_background", cap(h) + " background")); });
+    return {
+      icon: '<svg width="20" height="20" viewBox="0 0 20 20"><path d="M6 15 10 4l4 11M7.4 11.3h5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      title: "Color",
+      children: { items: items }
+    };
+  };
+  ColorTune.prototype.save = function () {
+    return { color: this.color };
+  };
+
+  /* ============ the page Style menu ============ */
+
+  var DEFAULT_STYLE = { font: "default", small: false, wide: false };
+  var pageStyle = Object.assign({}, DEFAULT_STYLE);
+
+  function applyStyle() {
+    var classes = BlogRender.styleClasses(pageStyle);
+    document.getElementById("editor").className = ["sheet"].concat(classes).join(" ");
+    document.getElementById("title").className = ["title-input"].concat(classes).join(" ");
+    document.body.classList.toggle("wide", pageStyle.wide);
+    Array.prototype.forEach.call(document.querySelectorAll(".fontbtn"), function (btn) {
+      btn.setAttribute("aria-pressed", String(btn.dataset.font === pageStyle.font));
+    });
+    document.getElementById("st-small").checked = pageStyle.small;
+    document.getElementById("st-wide").checked = pageStyle.wide;
+  }
+
+  function setStyle(style) {
+    pageStyle = Object.assign({}, DEFAULT_STYLE, style || {});
+    applyStyle();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".fontbtn"), function (btn) {
+    btn.addEventListener("click", function () {
+      pageStyle.font = btn.dataset.font;
+      dirty = true;
+      applyStyle();
+    });
+  });
+  document.getElementById("st-small").addEventListener("change", function (ev) {
+    pageStyle.small = ev.target.checked; dirty = true; applyStyle();
+  });
+  document.getElementById("st-wide").addEventListener("change", function (ev) {
+    pageStyle.wide = ev.target.checked; dirty = true; applyStyle();
+  });
 
   /* ============ the editor ============ */
 
@@ -447,10 +551,12 @@ a:hover { color: #ff0000; }
         data: blocks ? { blocks: blocks } : undefined,
         onChange: function () { dirty = true; },
         tools: {
-          header: { class: Header, inlineToolbar: true, config: { levels: [2, 3, 4], defaultLevel: 2 } },
-          list: { class: EditorjsList, inlineToolbar: true, config: { defaultStyle: "unordered" } },
-          quote: { class: Quote, inlineToolbar: true },
-          callout: { class: Callout, inlineToolbar: true },
+          color: ColorTune,
+          paragraph: { inlineToolbar: true, tunes: ["color"] },
+          header: { class: Header, inlineToolbar: true, tunes: ["color"], config: { levels: [2, 3, 4], defaultLevel: 2 } },
+          list: { class: EditorjsList, inlineToolbar: true, tunes: ["color"], config: { defaultStyle: "unordered" } },
+          quote: { class: Quote, inlineToolbar: true, tunes: ["color"] },
+          callout: { class: Callout, inlineToolbar: true, tunes: ["color"] },
           image: {
             class: ImageTool,
             config: {
@@ -480,6 +586,7 @@ a:hover { color: #ff0000; }
     previewWhen = null;
     showPreview(false);
     titleEl.value = "";
+    setStyle(null);
     viewEl.hidden = true;
     publishEl.innerHTML = "&#9733; Post It!";
     setStatus(statusEl, "", "");
@@ -498,6 +605,7 @@ a:hover { color: #ff0000; }
         previewWhen = d.post.when;
         showPreview(false);
         titleEl.value = d.post.title;
+        setStyle(d.post.style);
         viewEl.href = "./blog.html?p=" + encodeURIComponent(currentId);
         viewEl.hidden = false;
         publishEl.innerHTML = "&#9733; Update Post";
@@ -596,7 +704,8 @@ a:hover { color: #ff0000; }
       body.appendChild(BlogRender.renderPost({
         when: previewWhen || new Date().toISOString(),
         updated: previewWhen ? new Date().toISOString() : "",
-        blocks: out.blocks
+        blocks: out.blocks,
+        style: pageStyle
       }));
       showPreview(true);
     });
@@ -611,7 +720,7 @@ a:hover { color: #ff0000; }
     editor.save()
       .then(function (out) {
         if (!out.blocks.length) { throw new Error("The post is empty."); }
-        return api("POST", "/api/posts", { id: currentId || undefined, title: title, blocks: out.blocks });
+        return api("POST", "/api/posts", { id: currentId || undefined, title: title, blocks: out.blocks, style: pageStyle });
       })
       .then(function (d) {
         var wasNew = !currentId;
