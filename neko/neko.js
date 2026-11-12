@@ -2,10 +2,11 @@
    NEKO  ::  the 1980s desktop cat, chasing the mouse around the
    outside of the page. Sprites: neko/LICENSE.txt.
 
-   The cat lives on a layer *behind* .page, in the starfield. When the
-   mouse is over the page it heads for the nearest point just outside
-   the page's edge; when it has to cross, it runs behind the page and
-   comes out the other side. Stopped against the edge, it claws at it,
+   The cat lives on a layer *behind* .page, in the starfield margins to
+   either side. When the mouse is over the page (or above or below it) the
+   cat heads for the nearer side margin at the mouse's height; when it has
+   to cross, it runs behind the page and comes out the other side. It never
+   goes above or below the page, where it would sit under the content. Stopped against the edge, it claws at it,
    the way the original clawed at window borders.
 
    Only for a fine pointer that can hover, and not with reduced motion.
@@ -54,18 +55,13 @@
     return { left: r.left - HALF - GAP, right: r.right + HALF + GAP, top: r.top - HALF - GAP, bottom: r.bottom + HALF + GAP };
   }
 
-  function inside(z, x, y) {
-    return x > z.left && x < z.right && y > z.top && y < z.bottom;
-  }
-
-  /* the nearest point just outside the zone, for a point inside it */
+  /* where to go for a mouse position: the mouse itself when it is in a side
+     margin, otherwise the nearer side margin at the mouse's height */
   function outside(z, x, y) {
-    if (!inside(z, x, y)) { return { x: x, y: y, side: null }; }
+    if (x <= z.left || x >= z.right) { return { x: x, y: y, side: null }; }
     var options = [
       { d: x - z.left, x: z.left, y: y, side: "left" },
-      { d: z.right - x, x: z.right, y: y, side: "right" },
-      { d: y - z.top, x: x, y: z.top, side: "top" },
-      { d: z.bottom - y, x: x, y: z.bottom, side: "bottom" }
+      { d: z.right - x, x: z.right, y: y, side: "right" }
     ];
     // only sides with room on screen for a cat
     var vw = innerWidth, vh = innerHeight;
