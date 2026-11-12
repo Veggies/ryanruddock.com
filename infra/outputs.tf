@@ -4,7 +4,7 @@ output "api_base_url" {
 }
 
 output "table_name" {
-  description = "DynamoDB table backing the counter and guestbook."
+  description = "DynamoDB table backing the counter, guestbook and blog."
   value       = aws_dynamodb_table.site.name
 }
 

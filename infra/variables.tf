@@ -60,3 +60,23 @@ variable "budget_amount" {
   type        = string
   default     = "5"
 }
+
+variable "site_bucket" {
+  description = "The bucket serving the site. Blog image uploads are written under uploads/ in it."
+  type        = string
+  default     = "www.ryanruddock.com"
+}
+
+variable "author_token_sha256" {
+  description = <<-EOT
+    SHA-256 (hex) of the blog author token. Only the hash is stored, so the
+    token itself never appears in state or in the Lambda's environment.
+    Empty disables every blog write route.
+
+      TOKEN=$(openssl rand -base64 32)
+      printf %s "$TOKEN" | shasum -a 256
+  EOT
+  type        = string
+  default     = ""
+  sensitive   = true
+}

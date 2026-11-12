@@ -11,7 +11,9 @@ you need the account number.
 
 | Thing | Where |
 |---|---|
-| Site content | `index.html`, `nexus.html`, `roadmap.html` at the repo root |
+| Site content | `index.html`, `nexus.html`, `blog.html`, `write.html`, `blog-render.js`, `blog-post.css` at the repo root |
+| Blog posts | DynamoDB, `pk="post"` items in the guestbook table |
+| Blog images | `s3://www.ryanruddock.com/uploads/` -- in the bucket, **not** in git |
 | Page assets | `diagrams/`, `thumbs/`, `fonts/`, `dog.png` — all published |
 | Guestbook + counter infra | `infra/` (Terraform) |
 | Local dev backend | `local/server.py` |
@@ -37,6 +39,11 @@ everything except what is explicitly excluded, so a new top-level directory is
 public the moment you push. `infra/`, `local/`, `*.md` and `.gitignore` are
 excluded — without those, Terraform state would be served from the website.
 **Add an exclude before adding a directory**, not after.
+
+**Blog images live only in the bucket.** They are not in git, so the deploy's
+`--delete` would remove every one of them on the next push if `uploads/*`
+ever came out of the excludes. Keep that exclude. Posts are in DynamoDB with
+point-in-time recovery; images have no backup unless bucket versioning is on.
 
 **A CloudFront invalidation may not evict an object.** On 2026-09-22 two
 `/*` invalidations — one from the deploy, one from a re-run — left two SVGs

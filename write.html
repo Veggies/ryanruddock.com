@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Write - ryanruddock.com</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
+<!-- Pinned versions with integrity hashes: this page holds the author token,
+     so a tampered CDN file must fail to load rather than run. -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.31.7/dist/editorjs.umd.js" integrity="sha384-VCPYJjPO1nUrpiHNQ3xaVEF48GhfB6De5k5JldN/3TwGZru+K+sQt7GQ4jK98z1e" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.9/dist/header.umd.js" integrity="sha384-gsHcARcunRrx+hZA2vZY6ESWTIC8ZJZpyuAjNmKponX5ftG43VHfZ8geURncPDPh" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@2.0.9/dist/editorjs-list.umd.js" integrity="sha384-rgmnoyP4Ld6tRkTXoq965fzulyZZ6NSUYy+JYI4mO9sxaJDrpyjORlNUz5Un2gbn" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.7.6/dist/quote.umd.js" integrity="sha384-z43sl0T5c0VaZ0qANtyMgguU+QmuuzTmE4lWCjGDs2IgVrbQn6ycdbCwemISQxug" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.2/dist/delimiter.umd.js" integrity="sha384-JxFg+sowMd+b7DsI8bCOvXPDtHPiIjXxSMk9WXaGWpDtSwzzMIb+tGwkaAh9qMgB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/code@2.9.4/dist/code.umd.js" integrity="sha384-pmKzfNHAxgIHBx/Nzm5HVAQyKQwkM/Mpcm2NSVPojR03VCm4g2kYBgzY9FsE4cXa" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@2.4.6/dist/table.umd.js" integrity="sha384-EfF1OR87CAWMq8G2qxUxrFwwFX/9ZdVg0qyxuHTZyNKfzjAi+OS1qYg12c2oWzjI" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@1.5.2/dist/inline-code.umd.js" integrity="sha384-+3JnsZ5Ef/PXN4aILTy12X6yX8sSVv213uEX7F8ab9j3aBMj/7sypQGQad44v5jo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.4.0/dist/marker.umd.js" integrity="sha384-xCW2AjuNs2r576ct9AvLo3Knz4N5tsszNVGXueZc7eI1iTEL0NSFy47G1er+diE+" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.10.3/dist/image.umd.js" integrity="sha384-x+8X+am+peBvhMXyUZDpid1xuh/eJzrRGmPT7082F3Q4BL+GFvqjtx+b/MavaMhc" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.17/dist/purify.min.js" integrity="sha384-P0JNneQf81HOl9VwNXK76cQ9VMD6Nfsnepxb0cCOg8+UzEdzgPHAPV4wVQrvYQSx" crossorigin="anonymous"></script>
+<!-- the same renderer and styles blog.html uses, so Preview is exact -->
+<script src="./blog-render.js"></script>
+<link rel="stylesheet" href="./blog-post.css">
+<style>
+/* ============================================================
+   THE WRITING DESK  ::  author-only, not linked from the site
+   ============================================================ */
+
+body {
+  margin: 0;
+  padding: 12px 8px 30px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  font-family: Verdana, Geneva, "MS Sans Serif", sans-serif;
+  font-size: 12px;
+  color: #000000;
+  background: #110033 linear-gradient(#000055, #110033) fixed;
+}
+
+[hidden] { display: none !important; }
+a { color: #0000cc; }
+a:hover { color: #ff0000; }
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 4px ridge #ffcc00;
+  padding: 6px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background-image: linear-gradient(#5588dd, #3366cc 60%, #224499);
+  padding: 6px 8px;
+  color: #ffffff;
+}
+.bar h1 {
+  margin: 0 auto 0 0;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 16px;
+  text-shadow: 1px 1px 0 #113377;
+}
+.bar a { color: #ffff99; font-size: 11px; }
+
+.btn {
+  border: 2px outset #dddddd;
+  background: linear-gradient(#ffffff, #cccccc);
+  color: #000000;
+  font-family: "MS Sans Serif", Verdana, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.btn:hover { border-style: inset; color: #cc0000; }
+.btn[disabled] { opacity: 0.55; cursor: default; }
+.btn.go {
+  border-color: #ffd94d;
+  background: linear-gradient(#ffe680, #ffcc00 55%, #e6a700);
+  color: #663300;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 13px;
+  padding: 4px 18px;
+}
+.btn.danger { color: #990000; }
+
+.panel { background: #eef4ff; border: 2px inset #cccccc; padding: 10px; margin-top: 6px; }
+.panel label { display: block; font-size: 10px; font-weight: bold; color: #003399; margin-bottom: 3px; letter-spacing: 0.5px; }
+.panel input[type="password"], .title-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px inset #bbbbbb;
+  background: #ffffff;
+  font-family: Verdana, sans-serif;
+  padding: 5px;
+}
+.hint { font-size: 10px; color: #555555; margin: 6px 0 0; line-height: 1.5; }
+
+.desk { display: flex; gap: 6px; margin-top: 6px; align-items: flex-start; }
+.posts-col { width: 220px; flex-shrink: 0; }
+.editor-col { flex: 1; min-width: 0; }
+
+.posts-col h2 {
+  margin: 0;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 12px;
+  color: #ffffff;
+  background-image: linear-gradient(#ee77cc, #cc3399 60%, #99126f);
+  padding: 4px 8px;
+}
+.posts-list { list-style: none; margin: 0; padding: 0; border: 2px solid #cc3399; border-top: 0; max-height: 70vh; overflow-y: auto; }
+.posts-list li { padding: 6px 8px; border-bottom: 1px dotted #aaaaaa; font-size: 11px; }
+.posts-list li:last-child { border-bottom: 0; }
+.posts-list li.current { background: #fff0fa; }
+.posts-list .t { font-weight: bold; display: block; margin-bottom: 3px; word-wrap: break-word; }
+.posts-list .when { color: #777777; font-size: 10px; }
+.posts-list .acts { margin-top: 4px; }
+.posts-list .acts .btn { font-size: 10px; padding: 1px 6px; }
+
+.title-input { font-family: "Comic Sans MS", cursive; font-size: 20px; color: #003399; border-width: 0 0 2px; border-style: solid; border-color: #99bbdd; background: transparent; padding: 6px 2px; }
+.title-input:focus { outline: none; border-color: #cc3399; }
+
+/* Editor.js hangs its + and drag handle (about 60px together) off the left
+   edge of the text, so the left padding has to be wider than that. When the
+   editor is narrow it moves them to the right edge instead -- it marks that
+   with .codex-editor--narrow -- and the padding swaps sides to follow. */
+.sheet { border: 2px inset #cccccc; background: #ffffff; padding: 10px 14px 4px 72px; margin-top: 8px; min-height: 360px; font-size: 14px; line-height: 1.6; }
+.sheet:has(.codex-editor--narrow) { padding-left: 14px; }
+.sheet .ce-block__content, .sheet .ce-toolbar__content { max-width: none; }
+
+.actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.status { font-size: 11px; font-weight: bold; }
+.status.ok  { color: #007700; }
+.status.err { color: #cc0000; }
+
+/* ---- preview: the same pink box blog.html puts a post in ---- */
+.preview { border: 2px solid #cc3399; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+.preview > h2 {
+  margin: 0;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 13px;
+  color: #ffffff;
+  background-image: linear-gradient(#ee77cc, #cc3399 60%, #99126f);
+  padding: 4px 8px;
+  text-shadow: 1px 1px 0 #113377;
+}
+.preview > .body { padding: 10px 12px; min-height: 340px; }
+.preview-flag { font-size: 10px; font-weight: bold; color: #99126f; letter-spacing: 1px; margin: 8px 0 0; }
+
+/* ---- the callout block, as it looks while editing ---- */
+.cdx-callout { display: flex; gap: 8px; align-items: flex-start; border: 2px solid; border-radius: 6px; padding: 8px 10px; margin: 6px 0; }
+.cdx-callout[data-tone="info"]    { border-color: #6699ff; background: #eef4ff; }
+.cdx-callout[data-tone="tip"]     { border-color: #339933; background: #eefbee; }
+.cdx-callout[data-tone="warning"] { border-color: #e6a700; background: #fff8dd; }
+.cdx-callout[data-tone="danger"]  { border-color: #cc0000; background: #ffeeee; }
+.cdx-callout__emoji { width: 2em; border: 0; background: transparent; font-size: 18px; text-align: center; padding: 0; }
+.cdx-callout__text { flex: 1; outline: none; min-height: 1.6em; }
+.cdx-callout__text:empty::before { content: attr(data-placeholder); color: #999999; }
+.cdx-callout__tone { font-size: 10px; }
+
+@media (max-width: 720px) {
+  .desk { flex-direction: column; }
+  .posts-col { width: auto; align-self: stretch; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="bar">
+    <h1>&#9998; The Writing Desk</h1>
+    <a href="./blog.html" target="_blank" rel="noopener">View the blog &#8599;</a>
+    <button type="button" class="btn" id="logout" hidden>Log out</button>
+  </div>
+
+  <!-- ============ login ============ -->
+  <form class="panel" id="login" autocomplete="off">
+    <label for="token">AUTHOR TOKEN</label>
+    <input type="password" id="token" required autocomplete="current-password">
+    <p class="hint">
+      <label style="display:inline;font-weight:normal;color:#000000;letter-spacing:0;">
+        <input type="checkbox" id="remember" checked> Remember on this browser
+      </label>
+    </p>
+    <div class="actions">
+      <button type="submit" class="btn go" id="login-btn">Unlock</button>
+      <span class="status" id="login-status" role="status"></span>
+    </div>
+  </form>
+
+  <!-- ============ the desk ============ -->
+  <div class="desk" id="desk" hidden>
+
+    <div class="posts-col">
+      <button type="button" class="btn go" id="new-post" style="width:100%;margin-bottom:6px;">&#10010; New Post</button>
+      <h2>&#9733; Your Posts</h2>
+      <ul class="posts-list" id="posts"></ul>
+    </div>
+
+    <div class="editor-col">
+      <div id="writing">
+        <input type="text" class="title-input" id="title" maxlength="140" placeholder="Post title">
+        <div class="sheet" id="editor"></div>
+      </div>
+      <div id="previewing" hidden>
+        <p class="preview-flag">&#9670; PREVIEW &mdash; THIS IS EXACTLY HOW IT WILL LOOK ON THE BLOG</p>
+        <div class="preview">
+          <h2 id="preview-title"></h2>
+          <div class="body" id="preview-body"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn" id="preview-btn">&#128065; Preview</button>
+        <button type="button" class="btn go" id="publish">&#9733; Post It!</button>
+        <span class="status" id="status" role="status"></span>
+        <a id="view-link" href="#" target="_blank" rel="noopener" hidden>View post &#8599;</a>
+      </div>
+      <p class="hint">Click <b>+</b> or type <b>/</b> on an empty line for headings, callouts, quotes, lists,
+      checklists, images, tables, code and dividers. Select text for bold, italic, links, highlight and inline code.
+      Drag or paste an image to upload it.</p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var API_BASE_URL = "https://lf55pi6yjah4v6g4sqd42x7bue0mtwaw.lambda-url.us-east-1.on.aws";
+  var IS_LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])?$/.test(location.hostname);
+  var API = IS_LOCAL ? "" : API_BASE_URL;
+
+  var TOKEN_KEY = "ryan-blog-token";
+  var token = "";
+
+  /* ============ storage: a private window may refuse it ============ */
+
+  function stored() {
+    try {
+      var kept = localStorage.getItem(TOKEN_KEY);
+      if (kept) { return { value: kept, remember: true }; }
+      return { value: sessionStorage.getItem(TOKEN_KEY) || "", remember: false };
+    } catch (e) {
+      return { value: "", remember: false };
+    }
+  }
+  function store(value, remember) {
+    try { (remember ? localStorage : sessionStorage).setItem(TOKEN_KEY, value); }
+    catch (e) { /* it just will not be remembered */ }
+  }
+  function forget() {
+    try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); }
+    catch (e) { /* nothing to clear */ }
+  }
+
+  /* ============ api ============ */
+
+  function api(method, path, body) {
+    return fetch(API + path, {
+      method: method,
+      headers: body
+        ? { "Content-Type": "application/json", "Authorization": "Bearer " + token }
+        : { "Authorization": "Bearer " + token },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (r.status === 401) { lock("Your token was rejected. Unlock again."); }
+        if (!r.ok || d.ok === false) { throw new Error(d.error || ("Request failed (" + r.status + ").")); }
+        return d;
+      });
+    });
+  }
+
+  function setStatus(el, text, kind) {
+    el.textContent = text;
+    el.className = "status" + (kind ? " " + kind : "");
+  }
+
+  /* ============ images: shrink in the browser, then upload ============
+     Re-drawing through a canvas does three jobs: it keeps uploads well under
+     the function URL's 6 MB request limit, it turns HEIC/WebP/GIF into a type
+     the server accepts, and it drops EXIF metadata -- including the GPS
+     location a phone photo carries. */
+
+  var MAX_EDGE = 2000;
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("This browser cannot open that image.")); };
+      img.src = url;
+    });
+  }
+
+  function toBlob(canvas, type, quality) {
+    return new Promise(function (resolve) { canvas.toBlob(resolve, type, quality); });
+  }
+
+  function shrink(file) {
+    return loadImage(file).then(function (img) {
+      var scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+      var canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.naturalWidth * scale);
+      canvas.height = Math.round(img.naturalHeight * scale);
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // screenshots stay PNG so text stays crisp, unless that comes out huge
+      if (file.type === "image/png") {
+        return toBlob(canvas, "image/png").then(function (png) {
+          if (png && png.size < 3 * 1024 * 1024) { return png; }
+          return toBlob(canvas, "image/jpeg", 0.88);
+        });
+      }
+      // JPEG has no transparency; paint white underneath anything that had it
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      return toBlob(canvas, "image/jpeg", 0.88);
+    });
+  }
+
+  function base64Of(blob) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result).split(",")[1]); };
+      reader.onerror = function () { reject(new Error("Could not read the image.")); };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function uploadImage(file) {
+    return shrink(file)
+      .then(function (blob) {
+        return base64Of(blob).then(function (data) {
+          return api("POST", "/api/uploads", { type: blob.type, data: data });
+        });
+      })
+      .then(function (d) { return { success: 1, file: { url: d.url } }; })
+      .catch(function (err) {
+        setStatus(statusEl, err.message || "Upload failed.", "err");
+        return { success: 0 };
+      });
+  }
+
+  /* ============ the Callout block ============
+     Notion-style: an emoji, a tone that sets the colour, and a line of
+     text that takes inline formatting. Saves {emoji, text, tone}. */
+
+  var TONES = ["info", "tip", "warning", "danger"];
+  var TONE_EMOJI = { info: "ℹ️", tip: "💡", warning: "⚠️", danger: "🚨" };
+
+  function Callout(opts) {
+    this.data = opts.data || {};
+    this.readOnly = opts.readOnly;
+  }
+  Callout.toolbox = {
+    title: "Callout",
+    icon: '<svg width="17" height="15" viewBox="0 0 17 15"><rect x="1" y="1" width="15" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="5.5" cy="7.5" r="1.6" fill="currentColor"/><path d="M9 6h4M9 9h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+  };
+  Callout.sanitize = {
+    emoji: false,
+    text: { b: true, i: true, u: true, s: true, a: { href: true }, code: true, mark: true, br: true },
+    tone: false
+  };
+  Callout.isReadOnlySupported = true;
+  Callout.prototype.render = function () {
+    var tone = TONES.indexOf(this.data.tone) >= 0 ? this.data.tone : "info";
+    var wrap = document.createElement("div");
+    wrap.className = "cdx-callout";
+    wrap.dataset.tone = tone;
+
+    var emoji = document.createElement("input");
+    emoji.className = "cdx-callout__emoji";
+    emoji.value = this.data.emoji != null ? this.data.emoji : TONE_EMOJI[tone];
+    emoji.maxLength = 8;
+    emoji.title = "Emoji (type or paste one, or clear it)";
+    emoji.readOnly = this.readOnly;
+
+    var text = document.createElement("div");
+    text.className = "cdx-callout__text";
+    text.contentEditable = this.readOnly ? "false" : "true";
+    text.dataset.placeholder = "Callout text";
+    text.innerHTML = this.data.text || "";
+
+    var select = document.createElement("select");
+    select.className = "cdx-callout__tone";
+    select.title = "Colour";
+    TONES.forEach(function (t) {
+      var opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      select.appendChild(opt);
+    });
+    select.value = tone;
+    select.disabled = this.readOnly;
+    select.addEventListener("change", function () {
+      // swap the emoji too, unless it was customised
+      if (emoji.value === TONE_EMOJI[wrap.dataset.tone]) { emoji.value = TONE_EMOJI[select.value]; }
+      wrap.dataset.tone = select.value;
+    });
+
+    wrap.appendChild(emoji);
+    wrap.appendChild(text);
+    wrap.appendChild(select);
+    this.nodes = { wrap: wrap, emoji: emoji, text: text };
+    return wrap;
+  };
+  Callout.prototype.save = function () {
+    return {
+      emoji: this.nodes.emoji.value.trim(),
+      text: this.nodes.text.innerHTML,
+      tone: this.nodes.wrap.dataset.tone
+    };
+  };
+
+  /* ============ the editor ============ */
+
+  var editor = null;
+  var currentId = "";
+  var dirty = false;
+
+  var loginEl   = document.getElementById("login");
+  var deskEl    = document.getElementById("desk");
+  var titleEl   = document.getElementById("title");
+  var statusEl  = document.getElementById("status");
+  var publishEl = document.getElementById("publish");
+  var viewEl    = document.getElementById("view-link");
+  var postsEl   = document.getElementById("posts");
+
+  function makeEditor(blocks) {
+    var setup = function () {
+      editor = new EditorJS({
+        holder: "editor",
+        placeholder: "Start writing… (type / for blocks)",
+        autofocus: !blocks,
+        data: blocks ? { blocks: blocks } : undefined,
+        onChange: function () { dirty = true; },
+        tools: {
+          header: { class: Header, inlineToolbar: true, config: { levels: [2, 3, 4], defaultLevel: 2 } },
+          list: { class: EditorjsList, inlineToolbar: true, config: { defaultStyle: "unordered" } },
+          quote: { class: Quote, inlineToolbar: true },
+          callout: { class: Callout, inlineToolbar: true },
+          image: {
+            class: ImageTool,
+            config: {
+              uploader: {
+                uploadByFile: uploadImage,
+                // only images uploaded here are allowed in a post
+                uploadByUrl: function () { return Promise.resolve({ success: 0 }); }
+              }
+            }
+          },
+          table: { class: Table, inlineToolbar: true },
+          code: CodeTool,
+          delimiter: Delimiter,
+          marker: Marker,
+          inlineCode: InlineCode
+        }
+      });
+      return editor.isReady.then(function () { dirty = false; });
+    };
+    if (editor) { editor.destroy(); editor = null; }
+    return setup();
+  }
+
+  function startNew() {
+    if (dirty && !confirm("Discard your unsaved changes?")) { return; }
+    currentId = "";
+    previewWhen = null;
+    showPreview(false);
+    titleEl.value = "";
+    viewEl.hidden = true;
+    publishEl.innerHTML = "&#9733; Post It!";
+    setStatus(statusEl, "", "");
+    markCurrent();
+    makeEditor(null);
+  }
+
+  function openPost(id) {
+    if (dirty && !confirm("Discard your unsaved changes?")) { return; }
+    setStatus(statusEl, "Loading…", "");
+    fetch(API + "/api/posts/" + encodeURIComponent(id))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.post) { throw new Error(d.error || "Could not load that post."); }
+        currentId = d.post.id;
+        previewWhen = d.post.when;
+        showPreview(false);
+        titleEl.value = d.post.title;
+        viewEl.href = "./blog.html?p=" + encodeURIComponent(currentId);
+        viewEl.hidden = false;
+        publishEl.innerHTML = "&#9733; Update Post";
+        markCurrent();
+        return makeEditor(d.post.blocks).then(function () {
+          setStatus(statusEl, "Editing “" + d.post.title + "”", "");
+        });
+      })
+      .catch(function (err) { setStatus(statusEl, err.message, "err"); });
+  }
+
+  function deletePost(id, title) {
+    if (!confirm("Delete “" + title + "”? This cannot be undone.")) { return; }
+    api("POST", "/api/posts/delete", { id: id })
+      .then(function () {
+        if (id === currentId) { dirty = false; startNew(); }
+        setStatus(statusEl, "Deleted “" + title + "”.", "ok");
+        loadPosts();
+      })
+      .catch(function (err) { setStatus(statusEl, err.message, "err"); });
+  }
+
+  function markCurrent() {
+    Array.prototype.forEach.call(postsEl.children, function (li) {
+      li.classList.toggle("current", li.dataset.id === currentId);
+    });
+  }
+
+  function loadPosts() {
+    fetch(API + "/api/posts")
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        postsEl.textContent = "";
+        if (!d.posts || !d.posts.length) {
+          var none = document.createElement("li");
+          none.textContent = "Nothing yet.";
+          postsEl.appendChild(none);
+          return;
+        }
+        d.posts.forEach(function (p) {
+          var li = document.createElement("li");
+          li.dataset.id = p.id;
+          var t = document.createElement("span");
+          t.className = "t";
+          t.textContent = p.title;
+          var when = document.createElement("span");
+          when.className = "when";
+          when.textContent = new Date(p.when).toLocaleDateString();
+          var acts = document.createElement("div");
+          acts.className = "acts";
+          var edit = document.createElement("button");
+          edit.type = "button";
+          edit.className = "btn";
+          edit.textContent = "Edit";
+          edit.addEventListener("click", function () { openPost(p.id); });
+          var del = document.createElement("button");
+          del.type = "button";
+          del.className = "btn danger";
+          del.textContent = "Delete";
+          del.addEventListener("click", function () { deletePost(p.id, p.title); });
+          acts.appendChild(edit);
+          acts.appendChild(del);
+          li.appendChild(t);
+          li.appendChild(when);
+          li.appendChild(acts);
+          postsEl.appendChild(li);
+        });
+        markCurrent();
+      })
+      .catch(function () { setStatus(statusEl, "Could not load your posts.", "err"); });
+  }
+
+  /* ============ preview ============
+     Renders what the editor holds right now, through blog-render.js --
+     nothing is saved or sent. Uploaded images already have their real
+     URLs, so they show up too. */
+
+  var writingEl    = document.getElementById("writing");
+  var previewingEl = document.getElementById("previewing");
+  var previewBtn   = document.getElementById("preview-btn");
+  var previewWhen  = null;   // the open post's real publish date, if it has one
+
+  function showPreview(on) {
+    writingEl.hidden = on;
+    previewingEl.hidden = !on;
+    previewBtn.innerHTML = on ? "&#9998; Back to Editing" : "&#128065; Preview";
+  }
+
+  previewBtn.addEventListener("click", function () {
+    if (!previewingEl.hidden) { showPreview(false); return; }
+    editor.save().then(function (out) {
+      var title = titleEl.value.trim() || "(no title yet)";
+      document.getElementById("preview-title").textContent = "\u270e " + title;
+      var body = document.getElementById("preview-body");
+      body.textContent = "";
+      body.appendChild(BlogRender.renderPost({
+        when: previewWhen || new Date().toISOString(),
+        updated: previewWhen ? new Date().toISOString() : "",
+        blocks: out.blocks
+      }));
+      showPreview(true);
+    });
+  });
+
+  publishEl.addEventListener("click", function () {
+    var title = titleEl.value.trim();
+    if (!title) { setStatus(statusEl, "Give the post a title first.", "err"); titleEl.focus(); return; }
+
+    publishEl.disabled = true;
+    setStatus(statusEl, "Posting…", "");
+    editor.save()
+      .then(function (out) {
+        if (!out.blocks.length) { throw new Error("The post is empty."); }
+        return api("POST", "/api/posts", { id: currentId || undefined, title: title, blocks: out.blocks });
+      })
+      .then(function (d) {
+        var wasNew = !currentId;
+        currentId = d.id;
+        previewWhen = previewWhen || new Date().toISOString();
+        dirty = false;
+        viewEl.href = "./blog.html?p=" + encodeURIComponent(currentId);
+        viewEl.hidden = false;
+        publishEl.innerHTML = "&#9733; Update Post";
+        setStatus(statusEl, wasNew ? "Posted! It is live." : "Updated! The changes are live.", "ok");
+        loadPosts();
+      })
+      .catch(function (err) { setStatus(statusEl, err.message || "Could not post.", "err"); })
+      .finally(function () { publishEl.disabled = false; });
+  });
+
+  titleEl.addEventListener("input", function () { dirty = true; });
+  document.getElementById("new-post").addEventListener("click", startNew);
+
+  window.addEventListener("beforeunload", function (ev) {
+    if (dirty) { ev.preventDefault(); ev.returnValue = ""; }
+  });
+
+  /* ============ lock / unlock ============ */
+
+  function unlock() {
+    loginEl.hidden = true;
+    deskEl.hidden = false;
+    document.getElementById("logout").hidden = false;
+    loadPosts();
+    if (!editor) { makeEditor(null); }
+  }
+
+  function lock(message) {
+    token = "";
+    forget();
+    loginEl.hidden = false;
+    deskEl.hidden = true;
+    document.getElementById("logout").hidden = true;
+    setStatus(document.getElementById("login-status"), message || "", message ? "err" : "");
+  }
+
+  function tryToken(candidate, remember) {
+    token = candidate;
+    return api("POST", "/api/auth", {}).then(function () {
+      store(candidate, remember);
+      unlock();
+    });
+  }
+
+  loginEl.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var btn = document.getElementById("login-btn");
+    var status = document.getElementById("login-status");
+    btn.disabled = true;
+    setStatus(status, "Checking…", "");
+    tryToken(document.getElementById("token").value.trim(), document.getElementById("remember").checked)
+      .then(function () { document.getElementById("token").value = ""; })
+      .catch(function (err) { setStatus(status, err.message, "err"); token = ""; })
+      .finally(function () { btn.disabled = false; });
+  });
+
+  document.getElementById("logout").addEventListener("click", function () {
+    if (dirty && !confirm("Discard your unsaved changes?")) { return; }
+    dirty = false;
+    lock("");
+  });
+
+  var saved = stored();
+  if (saved.value) {
+    tryToken(saved.value, saved.remember).catch(function () { /* lock() already showed why */ });
+  }
+})();
+</script>
+
+</body>
+</html>

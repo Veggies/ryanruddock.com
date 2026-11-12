@@ -1,0 +1,63 @@
+/* ============================================================
+   How a post looks. Shared by blog.html and write.html's Preview,
+   alongside blog-render.js, which builds the markup these target.
+   ============================================================ */
+
+.post-when { font-size: 10px; color: #777777; margin: 0 0 10px; }
+.post { font-size: 13px; line-height: 1.65; overflow-wrap: break-word; }
+.post p { margin: 0 0 12px; }
+.post h2, .post h3, .post h4 { font-family: "Comic Sans MS", cursive; color: #003399; margin: 18px 0 8px; line-height: 1.25; }
+.post h2 { font-size: 20px; }
+.post h3 { font-size: 16px; }
+.post h4 { font-size: 14px; }
+.post ul, .post ol { margin: 0 0 12px; padding-left: 24px; }
+.post li { margin-bottom: 3px; }
+.post ul.checklist { list-style: none; padding-left: 4px; }
+.post ul.checklist .box { font-family: "MS Sans Serif", Verdana, sans-serif; margin-right: 6px; }
+.post ul.checklist li.done > .item { color: #777777; text-decoration: line-through; }
+.post blockquote {
+  margin: 0 0 12px;
+  padding: 6px 12px;
+  border-left: 5px solid #cc3399;
+  background: #fff0fa;
+  font-style: italic;
+}
+.post blockquote cite { display: block; margin-top: 4px; font-size: 11px; font-style: normal; color: #99126f; }
+.post blockquote cite::before { content: "\2014\00a0"; }
+.post pre {
+  margin: 0 0 12px;
+  padding: 8px;
+  border: 2px inset #cccccc;
+  background: #000000;
+  color: #00ff00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-x: auto;
+}
+.post code { font-family: "Courier New", Courier, monospace; background: #eef4ff; padding: 0 3px; }
+.post pre code { background: none; padding: 0; }
+.post mark { background: #ffff66; }
+.post hr {
+  height: 4px;
+  border: 0;
+  margin: 16px 0;
+  background: linear-gradient(90deg, #ffffff, #3366cc, #cc3399, #ffcc00, #3366cc, #ffffff);
+}
+.post figure { margin: 0 0 12px; text-align: center; }
+.post figure img { display: block; margin: 0 auto; height: auto; }
+.post figure.border img { border: 3px double #3366cc; padding: 3px; }
+.post figure.backdrop { background: #eef4ff; padding: 10px; }
+.post figure.backdrop img { max-width: 60%; }
+.post figure.stretched img { width: 100%; }
+.post figcaption { font-size: 10px; color: #555555; margin-top: 4px; }
+.post table { border-collapse: collapse; width: 100%; margin: 0 0 12px; font-size: 11px; }
+.post th { background: #ccddff; border: 1px solid #3366cc; text-align: left; padding: 3px 6px; }
+.post td { border: 1px solid #99bbdd; padding: 4px 6px; vertical-align: top; }
+
+
+/* ---- callouts: see renderCallout() in blog-render.js ---- */
+
+@media (max-width: 640px) {
+  .post figure.backdrop img { max-width: 100%; }
+}

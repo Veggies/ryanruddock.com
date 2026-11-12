@@ -9,6 +9,10 @@ crash.log
 # local dev server state
 local/counter.json
 local/guestbook.json
+local/posts.json
+local/views.json
+local/comments.json
+local/uploads/
 
 .DS_Store
 tfplan

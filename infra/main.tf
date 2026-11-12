@@ -87,10 +87,40 @@ data "aws_iam_policy_document" "fn" {
       "dynamodb:GetItem",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
       "dynamodb:Query",
     ]
 
     resources = [aws_dynamodb_table.site.arn]
+  }
+
+  statement {
+    sid    = "BlogImageUploads"
+    effect = "Allow"
+
+    # write-only, and only under uploads/ -- the function can add images but
+    # cannot read, overwrite the site's pages, or touch anything else
+    actions   = ["s3:PutObject"]
+    resources = ["arn:aws:s3:::${var.site_bucket}/uploads/*"]
+  }
+
+  statement {
+    sid    = "BlogImageEncryption"
+    effect = "Allow"
+
+    # Only matters if the site bucket encrypts with a customer-managed KMS
+    # key; with S3-managed encryption it is never exercised. The condition
+    # means a key can be used only by S3 on the function's behalf, and S3 is
+    # already limited to uploads/ above -- so this works whichever encryption
+    # the bucket has, without anyone needing to look it up.
+    actions   = ["kms:GenerateDataKey"]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["s3.${var.region}.amazonaws.com"]
+    }
   }
 }
 
@@ -120,7 +150,7 @@ resource "aws_lambda_function" "fn" {
   handler       = "handler.handler"
   runtime       = "python3.12"
   architectures = ["arm64"] # cheaper per GB-second than x86_64
-  memory_size   = 128
+  memory_size   = 256       # decoding a 4 MB image upload needs more headroom than 128
   timeout       = 10
 
   filename         = data.archive_file.fn.output_path
@@ -130,7 +160,9 @@ resource "aws_lambda_function" "fn" {
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.site.name
+      TABLE_NAME          = aws_dynamodb_table.site.name
+      SITE_BUCKET         = var.site_bucket
+      AUTHOR_TOKEN_SHA256 = var.author_token_sha256
     }
   }
 
@@ -143,13 +175,15 @@ resource "aws_lambda_function" "fn" {
 }
 
 resource "aws_lambda_function_url" "fn" {
-  function_name      = aws_lambda_function.fn.function_name
-  authorization_type = "NONE" # a public guestbook is public by definition
+  function_name = aws_lambda_function.fn.function_name
+  # a public guestbook is public by definition; blog writes check a bearer
+  # token inside the handler instead
+  authorization_type = "NONE"
 
   cors {
     allow_origins = var.allowed_origins
     allow_methods = ["GET", "POST"]
-    allow_headers = ["content-type"]
+    allow_headers = ["content-type", "authorization"]
     max_age       = 3600
   }
 }
