@@ -639,7 +639,21 @@ hr.fancy {
 }
 .footer a { font-weight: bold; }
 
-.linkbar { text-align: center; margin-bottom: 6px; }
+.linkbar {
+  text-align: center;
+  margin-bottom: 6px;
+  padding: 6px 4px 4px;
+  border: 2px dashed transparent;
+  border-radius: 10px;
+}
+.linkbar .lbl {
+  display: block;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 12px;
+  font-weight: bold;
+  color: #003399;
+  margin-bottom: 3px;
+}
 .linkbar a {
   display: inline-block;
   border: 2px outset #99ccff;
@@ -658,10 +672,16 @@ hr.fancy {
   background: linear-gradient(#ffe680, #ffcc00 55%, #e6a700);
   color: #663300 !important;
 }
-/* arriving from the "Contact Me!" nav link: make the buttons noticeable */
-#contact:target a { animation: nudge 0.5s ease-in-out 2; }
-@keyframes nudge { 50% { transform: translateY(-4px); } }
-@media (prefers-reduced-motion: reduce) { #contact:target a { animation: none; } }
+/* "Contact Me!" in the nav: the bar lights up so it is obvious where you
+   landed. A class, not :target, so it replays on every click. */
+.linkbar.flash {
+  animation: contact-flash 2.4s ease-out;
+}
+@keyframes contact-flash {
+  0%, 60% { background: #fff6bf; border-color: #ffcc00; box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.45); }
+  100%    { background: transparent; border-color: transparent; box-shadow: 0 0 0 4px rgba(255, 204, 0, 0); }
+}
+
 
 /* ---- Latest From My Blog ---- */
 .mod > h2 .new-tag { text-shadow: none; }
@@ -1154,6 +1174,7 @@ ul.latest-more-posts .when { color: #777777; font-size: 10px; }
 
   <!-- CONTACT -->
   <div id="contact" class="linkbar">
+  <span class="lbl">&#128236; Contact Me!</span>
   <!-- the address is put together by script, so it is never whole in the page source -->
   <a id="email-me" class="email" href="#contact" hidden>&#128231; Email Me!</a>
   <a href="https://github.com/veggies" target="_blank" rel="noopener">&#128187; My GitHub</a>
@@ -1341,7 +1362,32 @@ ul.latest-more-posts .when { color: #777777; font-size: 10px; }
     .then(function (d) { showCount(d.count); })
     .catch(hideBackedModules);
 
-  /* ============ contact ============ */
+  /* ============ contact ============
+     The nav link scrolls the bar into view only when it is off screen, and
+     lights it up on every click -- a plain #contact jump does nothing the
+     second time, because the hash has not changed. It leaves the address
+     alone, so a reload or a shared link does not replay the highlight. */
+
+  var contactEl = document.getElementById("contact");
+
+  function flashContact() {
+    var r = contactEl.getBoundingClientRect();
+    if (r.top < 0 || r.bottom > window.innerHeight) {
+      var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      contactEl.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+    }
+    contactEl.classList.remove("flash");
+    void contactEl.offsetWidth;          // restart the animation if it is mid-play
+    contactEl.classList.add("flash");
+  }
+  contactEl.addEventListener("animationend", function (ev) {
+    if (ev.target === contactEl) { contactEl.classList.remove("flash"); }
+  });
+
+  document.querySelector('.navlist a[href="#contact"]').addEventListener("click", function (ev) {
+    ev.preventDefault();
+    flashContact();
+  });
 
   var emailEl = document.getElementById("email-me");
   emailEl.href = "mailto:" + ["ryanruddock96", "gmail.com"].join("@") +
