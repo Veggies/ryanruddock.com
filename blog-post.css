@@ -82,13 +82,34 @@
 [data-ncolor="pink_background"]   { background: #f9eef3; }
 [data-ncolor="red_background"]    { background: #fdebec; }
 
+/* Gradients: each hue from Notion's background tint to a deeper shade of
+   it, then multi-colour blends. Text stays the default colour on all. */
+[data-ncolor="gray_gradient"]   { background: linear-gradient(135deg, #f1f1ef, #dcdad5); }
+[data-ncolor="brown_gradient"]  { background: linear-gradient(135deg, #f4eeee, #e6d3c7); }
+[data-ncolor="orange_gradient"] { background: linear-gradient(135deg, #fbecdd, #f9cf9f); }
+[data-ncolor="yellow_gradient"] { background: linear-gradient(135deg, #fbf3db, #f6dd8c); }
+[data-ncolor="green_gradient"]  { background: linear-gradient(135deg, #edf3ec, #c6e2c1); }
+[data-ncolor="blue_gradient"]   { background: linear-gradient(135deg, #e7f3f8, #bcdcf2); }
+[data-ncolor="purple_gradient"] { background: linear-gradient(135deg, #f4f0f7, #dccaee); }
+[data-ncolor="pink_gradient"]   { background: linear-gradient(135deg, #f9eef3, #f2c9df); }
+[data-ncolor="red_gradient"]    { background: linear-gradient(135deg, #fdebec, #f6c3c6); }
+
+[data-ncolor="sunset_gradient"] { background: linear-gradient(135deg, #ffe3b3, #ffc2c9 55%, #e6c9f2); }
+[data-ncolor="ocean_gradient"]  { background: linear-gradient(135deg, #d6f5f2, #c9e3fb 55%, #d3d6fb); }
+[data-ncolor="aurora_gradient"] { background: linear-gradient(135deg, #d8f8e6, #d3ebfd 50%, #ead8fb); }
+[data-ncolor="candy_gradient"]  { background: linear-gradient(135deg, #ffd6ec, #fde7f3 45%, #d9e4ff); }
+[data-ncolor="gold_gradient"]   { background: linear-gradient(135deg, #fff6d6, #ffe08a 55%, #ffcf5c); }
+
 /* a coloured background on an ordinary block: a soft rounded band */
-[data-ncolor$="_background"] { border-radius: 4px; padding: 3px 6px; }
-.post blockquote[data-ncolor$="_background"] { padding: 6px 12px; }
+[data-ncolor$="_background"],
+[data-ncolor$="_gradient"] { border-radius: 4px; padding: 3px 6px; }
+.post blockquote[data-ncolor$="_background"],
+.post blockquote[data-ncolor$="_gradient"] { padding: 6px 12px; }
 
 /* ============ callouts ============
    Notion's: an emoji gutter and the text, on a rounded box. A background
-   colour fills it; "default" or a text colour draws an outline instead. */
+   colour or gradient fills it; "default" or a text colour draws an
+   outline instead. */
 
 .callout {
   display: flex;
@@ -102,7 +123,7 @@
   line-height: 1.55;
 }
 .callout[data-ncolor="default"],
-.callout[data-ncolor]:not([data-ncolor$="_background"]) { border-color: rgba(55, 53, 47, 0.16); }
+.callout[data-ncolor]:not([data-ncolor$="_background"]):not([data-ncolor$="_gradient"]) { border-color: rgba(55, 53, 47, 0.16); }
 .callout-icon { flex: 0 0 auto; width: 24px; font-size: 1.25em; line-height: 1.25; text-align: center; }
 .callout-text { flex: 1; min-width: 0; }
 

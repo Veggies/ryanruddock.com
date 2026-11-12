@@ -45,9 +45,12 @@ COMMENT_ID = re.compile(r"^\d{4}-\d{2}-\d{2}T[\d:.+-]+#[a-f0-9]{8}$")
 LIST_STYLES = {"unordered", "ordered", "checklist"}
 
 # Notion's palette, under Notion's own names: a text colour, or the same
-# hue as a background. "default" is no colour.
+# hue as a background. "default" is no colour. On top of Notion's: each hue
+# as a soft gradient, and a few multi-colour gradients.
 HUES = ("gray", "brown", "orange", "yellow", "green", "blue", "purple", "pink", "red")
-COLORS = {"default"} | set(HUES) | {h + "_background" for h in HUES}
+BLENDS = ("sunset", "ocean", "aurora", "candy", "gold")
+COLORS = ({"default"} | set(HUES) | {h + "_background" for h in HUES}
+          | {h + "_gradient" for h in HUES + BLENDS})
 COLORABLE = {"paragraph", "header", "list", "quote", "callout"}
 
 # what callouts were before they took Notion colours

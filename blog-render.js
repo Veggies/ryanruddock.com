@@ -14,7 +14,12 @@
      Checked here as well as on the server, so a value is only ever one
      of these before it reaches an attribute. */
   var HUES = ["gray", "brown", "orange", "yellow", "green", "blue", "purple", "pink", "red"];
-  var COLORS = ["default"].concat(HUES, HUES.map(function (h) { return h + "_background"; }));
+  var BLENDS = ["sunset", "ocean", "aurora", "candy", "gold"];   // multi-colour gradients
+  var COLORS = ["default"].concat(
+    HUES,
+    HUES.map(function (h) { return h + "_background"; }),
+    HUES.concat(BLENDS).map(function (h) { return h + "_gradient"; })
+  );
   var FONTS = ["default", "serif", "mono"];
 
   /* ============ inline text ============
@@ -177,6 +182,7 @@
     formatDate: formatDate,
     styleClasses: styleClasses,
     HUES: HUES,
+    BLENDS: BLENDS,
     COLORS: COLORS
   };
 })();

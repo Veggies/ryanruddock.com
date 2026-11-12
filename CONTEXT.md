@@ -55,6 +55,15 @@ sed -i '' -E "s#blog-render\.js\?v=[0-9a-f]+#blog-render.js?v=$R#; s#blog-post\.
 sed -i '' -E "s#neko/neko\.js\?v=[0-9a-f]+#neko/neko.js?v=$N#" index.html blog.html
 ```
 
+`emoji/emoji-data.json` (the callout emoji picker's data, built by
+`local/build_emoji.py`) is loaded by `write.html` with the same kind of hash
+in its `EMOJI_URL`; bump it after a rebuild:
+
+```sh
+E=$(shasum emoji/emoji-data.json | cut -c1-8)
+sed -i '' -E "s#emoji-data\.json\?v=[0-9a-f]+#emoji-data.json?v=$E#" write.html
+```
+
 **Blog images live only in the bucket.** They are not in git, so the deploy's
 `--delete` would remove every one of them on the next push if `uploads/*`
 ever came out of the excludes. Keep that exclude. Posts are in DynamoDB with
