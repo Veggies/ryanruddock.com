@@ -40,16 +40,19 @@ public the moment you push. `infra/`, `local/`, `*.md` and `.gitignore` are
 excluded — without those, Terraform state would be served from the website.
 **Add an exclude before adding a directory**, not after.
 
-**Shared blog files are versioned by content hash.** On 2026-11-12 the
+**Shared scripts and styles are versioned by content hash.** On 2026-11-12 the
 deploy left `blog-render.js` and `blog-post.css` stale at the edge while the
 pages that load them updated -- the new editor against the old renderer is a
 broken editor. `blog.html` and `write.html` now load both with `?v=<first 8
 hex of shasum>`; query strings are part of the cache key here, so a new hash
-is a new object. **After editing either file, bump the hash in both pages:**
+is a new object. The same happened to `neko/neko.js` the next day, so
+`index.html` and `blog.html` version it too. **After editing any of the
+three, bump the hashes:**
 
 ```sh
-R=$(shasum blog-render.js | cut -c1-8); C=$(shasum blog-post.css | cut -c1-8)
+R=$(shasum blog-render.js | cut -c1-8); C=$(shasum blog-post.css | cut -c1-8); N=$(shasum neko/neko.js | cut -c1-8)
 sed -i '' -E "s#blog-render\.js\?v=[0-9a-f]+#blog-render.js?v=$R#; s#blog-post\.css\?v=[0-9a-f]+#blog-post.css?v=$C#" blog.html write.html
+sed -i '' -E "s#neko/neko\.js\?v=[0-9a-f]+#neko/neko.js?v=$N#" index.html blog.html
 ```
 
 **Blog images live only in the bucket.** They are not in git, so the deploy's
