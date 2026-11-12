@@ -36,6 +36,12 @@ body {
   background-attachment: scroll, scroll, scroll, scroll, scroll, fixed;
 }
 
+/* wide enough for the cat (neko/neko.js): room above and below the page
+   for it to walk around the border, not just beside it */
+@media (min-width: 980px) {
+  body { padding-top: 44px; padding-bottom: 56px; }
+}
+
 img { max-width: 100%; }
 [hidden] { display: none !important; }
 
@@ -480,6 +486,6 @@ ul.posts .views-n { color: #cc3300; font-size: 10px; margin-left: 4px; }
 </script>
 
 <!-- the cat that chases your mouse around the page -->
-<script src="./neko/neko.js?v=356c7701"></script>
+<script src="./neko/neko.js?v=6131336b"></script>
 </body>
 </html>

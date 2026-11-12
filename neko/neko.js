@@ -2,12 +2,13 @@
    NEKO  ::  the 1980s desktop cat, chasing the mouse around the
    outside of the page. Sprites: neko/LICENSE.txt.
 
-   The cat lives on a layer *behind* .page, in the starfield margins to
-   either side. When the mouse is over the page (or above or below it) the
-   cat heads for the nearer side margin at the mouse's height; when it has
-   to cross, it runs behind the page and comes out the other side. It never
-   goes above or below the page, where it would sit under the content. Stopped against the edge, it claws at it,
-   the way the original clawed at window borders.
+   The page's gold border is a wall. The cat lives in the starfield
+   around it and never crosses the page: to reach the other side it
+   walks around a corner, choosing the shorter way among the corners
+   that are on screen. When none are -- the page is taller than the
+   window -- the other side is out of reach, so it waits on its own
+   side at the mouse's height and claws at the border, the way the
+   original clawed at window edges.
 
    Only for a fine pointer that can hover, and not with reduced motion.
    ============================================================ */
@@ -48,37 +49,93 @@
     "will-change:transform;";
   document.body.appendChild(cat);
 
-  /* ============ geometry: the page's edge, grown by half a cat ============ */
+  /* ============ geometry: the page's border is a wall ============ */
 
+  /* the page grown by half a cat: the cat's centre stays outside this */
   function zone() {
     var r = page.getBoundingClientRect();
     return { left: r.left - HALF - GAP, right: r.right + HALF + GAP, top: r.top - HALF - GAP, bottom: r.bottom + HALF + GAP };
   }
 
-  /* where to go for a mouse position: the mouse itself when it is in a side
-     margin, otherwise the nearer side margin at the mouse's height */
-  function outside(z, x, y) {
-    if (x <= z.left || x >= z.right) { return { x: x, y: y, side: null }; }
-    var options = [
-      { d: x - z.left, x: z.left, y: y, side: "left" },
-      { d: z.right - x, x: z.right, y: y, side: "right" }
-    ];
-    // only sides with room on screen for a cat
-    var vw = innerWidth, vh = innerHeight;
-    options = options.filter(function (o) {
-      return o.x >= HALF && o.x <= vw - HALF && o.y >= HALF && o.y <= vh - HALF;
-    });
-    if (!options.length) { return null; }
-    options.sort(function (a, b) { return a.d - b.d; });
-    return options[0];
+  function onScreen(p) {
+    return p.x >= HALF && p.x <= innerWidth - HALF && p.y >= HALF && p.y <= innerHeight - HALF;
   }
 
   function clampToScreen(p) {
-    return {
-      x: Math.min(innerWidth - HALF, Math.max(HALF, p.x)),
-      y: Math.min(innerHeight - HALF, Math.max(HALF, p.y)),
-      side: p.side
-    };
+    return { x: Math.min(innerWidth - HALF, Math.max(HALF, p.x)), y: Math.min(innerHeight - HALF, Math.max(HALF, p.y)) };
+  }
+
+  /* Does a straight run from a to b go through the page? Liang-Barsky
+     clipping against the zone shrunk by a hair, so running along an edge
+     or touching a corner does not count. */
+  function crosses(z, a, b) {
+    var e = 0.5;
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var p = [-dx, dx, -dy, dy];
+    var q = [a.x - (z.left + e), (z.right - e) - a.x, a.y - (z.top + e), (z.bottom - e) - a.y];
+    var t0 = 0, t1 = 1;
+    for (var i = 0; i < 4; i++) {
+      if (p[i] === 0) {
+        if (q[i] < 0) { return false; }          // parallel to this edge and outside it
+      } else {
+        var t = q[i] / p[i];
+        if (p[i] < 0) { if (t > t1) { return false; } if (t > t0) { t0 = t; } }
+        else { if (t < t0) { return false; } if (t < t1) { t1 = t; } }
+      }
+    }
+    return t0 < t1;
+  }
+
+  /* a point inside the zone, moved to the nearest edge that is on screen */
+  function pushOut(z, p) {
+    if (!(p.x > z.left && p.x < z.right && p.y > z.top && p.y < z.bottom)) { return p; }
+    var options = [
+      { x: z.left, y: p.y, d: p.x - z.left },
+      { x: z.right, y: p.y, d: z.right - p.x },
+      { x: p.x, y: z.top, d: p.y - z.top },
+      { x: p.x, y: z.bottom, d: z.bottom - p.y }
+    ].filter(onScreen);
+    options.sort(function (a, b) { return a.d - b.d; });
+    return options[0] || null;
+  }
+
+  /* The next place to run to on the way from `from` to `to`, going around
+     the page by its on-screen corners; null when there is no way round.
+     Shortest path over at most six points, so a plain O(n^2) Dijkstra. */
+  function nextStep(z, from, to) {
+    if (!crosses(z, from, to)) { return to; }
+    var corners = [
+      { x: z.left - 1, y: z.top - 1 }, { x: z.right + 1, y: z.top - 1 },
+      { x: z.left - 1, y: z.bottom + 1 }, { x: z.right + 1, y: z.bottom + 1 }
+    ].filter(onScreen);
+    var nodes = [from].concat(corners, [to]);
+    var n = nodes.length, goal = n - 1;
+    var dist = [], prev = [], done = [];
+    for (var i = 0; i < n; i++) { dist.push(Infinity); prev.push(-1); done.push(false); }
+    dist[0] = 0;
+    for (var k = 0; k < n; k++) {
+      var u = -1;
+      for (var j = 0; j < n; j++) { if (!done[j] && (u < 0 || dist[j] < dist[u])) { u = j; } }
+      if (u < 0 || dist[u] === Infinity) { break; }
+      done[u] = true;
+      for (var v = 0; v < n; v++) {
+        if (done[v] || crosses(z, nodes[u], nodes[v])) { continue; }
+        var d = dist[u] + Math.hypot(nodes[v].x - nodes[u].x, nodes[v].y - nodes[u].y);
+        if (d < dist[v]) { dist[v] = d; prev[v] = u; }
+      }
+    }
+    if (dist[goal] === Infinity) { return null; }
+    var step = goal;
+    while (prev[step] !== 0) { step = prev[step]; }
+    return nodes[step];
+  }
+
+  /* Out of reach: wait on the cat's own side, level with the target. */
+  function ownSide(z, cx, cy, to) {
+    if (cx <= z.left) { return { x: z.left, y: to.y }; }
+    if (cx >= z.right) { return { x: z.right, y: to.y }; }
+    if (cy <= z.top) { return { x: to.x, y: z.top }; }
+    return { x: to.x, y: z.bottom };
   }
 
   /* no room beside the page (a narrow window): no cat */
@@ -149,12 +206,23 @@
     cat.style.display = "";
 
     var z = zone();
-    var target = mouse ? outside(z, mouse.x, mouse.y) : { x: x, y: y };
-    if (!target) { target = { x: x, y: y }; }
-    target = clampToScreen(target);
 
-    var dx = target.x - x, dy = target.y - y;
-    var dist = Math.sqrt(dx * dx + dy * dy);
+    // scrolling can slide the page over a resting cat: step back out
+    var here = pushOut(z, { x: x, y: y });
+    if (!here) { cat.style.display = "none"; return; }
+    x = here.x;
+    y = here.y;
+
+    var target = mouse ? pushOut(z, clampToScreen(mouse)) : null;
+    if (!target) { target = { x: x, y: y }; }
+
+    var way = nextStep(z, { x: x, y: y }, target);
+    if (!way) {
+      target = clampToScreen(ownSide(z, x, y, target));
+      way = nextStep(z, { x: x, y: y }, target) || target;
+    }
+
+    var dist = Math.hypot(target.x - x, target.y - y);
 
     if (dist > NEAR) {
       // woken from a nap or an activity: startled for a moment first
@@ -165,10 +233,15 @@
         alert--;
         show("awake");
       } else {
-        var step = Math.min(STEP, dist);
-        x += dx / dist * step;
-        y += dy / dist * step;
-        show(heading(dx, dy) + (frame % 2 ? "1" : "2"));
+        // toward the next corner (or the target itself when nothing is in the way)
+        var dx = way.x - x, dy = way.y - y;
+        var leg = Math.hypot(dx, dy);
+        if (leg > 0) {
+          var step = Math.min(STEP, leg);
+          x += dx / leg * step;
+          y += dy / leg * step;
+          show(heading(dx, dy) + (frame % 2 ? "1" : "2"));
+        }
       }
     } else {
       // settle exactly onto the target so clawing lines up with the edge
