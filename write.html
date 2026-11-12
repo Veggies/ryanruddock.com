@@ -20,8 +20,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.10.3/dist/image.umd.js" integrity="sha384-x+8X+am+peBvhMXyUZDpid1xuh/eJzrRGmPT7082F3Q4BL+GFvqjtx+b/MavaMhc" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.17/dist/purify.min.js" integrity="sha384-P0JNneQf81HOl9VwNXK76cQ9VMD6Nfsnepxb0cCOg8+UzEdzgPHAPV4wVQrvYQSx" crossorigin="anonymous"></script>
 <!-- the same renderer and styles blog.html uses, so Preview is exact -->
-<script src="./blog-render.js?v=d611d04f"></script>
-<link rel="stylesheet" href="./blog-post.css?v=2ee712f5">
+<script src="./blog-render.js?v=f1fbc200"></script>
+<link rel="stylesheet" href="./blog-post.css?v=abf88e91">
 <style>
 /* ============================================================
    THE WRITING DESK  ::  author-only, not linked from the site
@@ -165,19 +165,23 @@ a:hover { color: #ff0000; }
 
 /* ---- the emoji picker ---- */
 .emoji-picker {
-  position: fixed; z-index: 1000; width: 312px;
+  position: fixed; z-index: 1000; width: 340px;
   background: #ffffff; border: 2px outset #c3d2e2; box-shadow: 3px 3px 0 rgba(0, 0, 60, 0.25);
   font-family: Verdana, Geneva, sans-serif; font-size: 11px;
 }
 .emoji-picker .ep-bar { display: flex; gap: 4px; padding: 6px; background: #eef4ff; border-bottom: 1px solid #c3d2e2; }
 .emoji-picker .ep-search { flex: 1; min-width: 0; border: 2px inset #bbbbbb; padding: 3px 5px; font: inherit; }
 .emoji-picker .ep-remove { font-size: 10px; padding: 2px 6px; }
-.emoji-picker .ep-body { max-height: 260px; overflow-y: auto; padding: 4px 6px 8px; }
+.emoji-picker .ep-tone { border: 2px outset #dddddd; background: #ffffff; cursor: pointer; font-size: 16px; line-height: 1; padding: 0 3px; }
+.emoji-picker .ep-tones { display: flex; justify-content: space-around; padding: 4px 6px; background: #fff0fa; border-bottom: 1px solid #c3d2e2; }
+.emoji-picker .ep-tones button { border: 0; background: transparent; font-size: 20px; cursor: pointer; border-radius: 4px; padding: 2px 4px; }
+.emoji-picker .ep-tones button:hover { background: #ffd6f0; }
+.emoji-picker .ep-body { height: 300px; overflow-y: auto; padding: 4px 6px 8px; }
 .emoji-picker .ep-cat { font-size: 9px; font-weight: bold; letter-spacing: 1px; color: #336699; margin: 6px 0 2px; }
 .emoji-picker .ep-grid { display: grid; grid-template-columns: repeat(9, 1fr); }
 .emoji-picker .ep-grid button {
-  border: 0; background: transparent; cursor: pointer; padding: 0; height: 30px;
-  font-size: 20px; line-height: 30px; border-radius: 4px;
+  border: 0; background: transparent; cursor: pointer; padding: 0; height: 32px;
+  font-size: 21px; line-height: 32px; border-radius: 4px;
 }
 .emoji-picker .ep-grid button:hover,
 .emoji-picker .ep-grid button:focus-visible { background: #fff0fa; outline: 1px solid #cc3399; }
@@ -419,114 +423,214 @@ body.wide .page { max-width: 1400px; }
   }
 
   /* ============ the emoji picker ============
-     A Notion-style picker for callout icons: categories, a search over
-     each emoji's keywords, and Remove. The set is chosen by hand and lives
-     here rather than in a third-party picker -- those load as modules and
-     fetch their emoji data at runtime, which cannot carry the integrity
-     hashes this page relies on. One line per category; the first word of
-     each "|"-separated entry is the emoji, the rest are search words. */
+     Notion-style: every emoji, by Unicode's categories, with keyword
+     search, a skin-tone choice and a Recently used row. The data is
+     emoji/emoji-data.json -- built from emojibase by local/build_emoji.py
+     and served from this site, not a CDN, so this page (the one holding
+     the author token) still loads nothing it cannot verify. It is fetched
+     the first time the picker opens. After rebuilding it, bump the ?v=. */
 
-  var EMOJI = [
-    ["Callouts", "💡 idea bulb light tip|ℹ️ info information note|⚠️ warning caution alert|🚨 alarm siren danger urgent|❗ exclamation important|❓ question help|✅ done check yes success|❌ no wrong error cross|📌 pin pinned important|📝 note memo write|🔥 fire hot|⭐ star favorite|🎉 party celebrate tada|🚀 rocket launch ship deploy|💬 speech comment chat|🔒 lock secure security private|🐛 bug issue|⏰ alarm clock time deadline|📣 announce megaphone|👉 point right this|🧠 brain think learn|🎯 target goal|🛑 stop|🔑 key secret"],
-    ["Smileys", "😀 grin happy smile|😃 smile happy|😄 smile laugh|😁 grin teeth|😆 laugh|😅 sweat relief|😂 joy tears laugh|🙂 slight smile|😉 wink|😊 blush happy|😇 angel innocent|🥰 love hearts|😍 heart eyes love|🤩 star struck wow|😎 cool sunglasses|🤓 nerd geek|🧐 monocle inspect|🤔 thinking hmm|🤨 raised eyebrow skeptical|😐 neutral|😑 expressionless|😶 speechless|🙄 eye roll|😏 smirk|😬 grimace awkward|😮 open mouth surprise|😲 astonished shock|😳 flushed|🥺 pleading|😢 cry sad|😭 sob crying|😤 triumph huff|😠 angry|😡 rage mad|🤯 mind blown exploding|😱 scream fear|😴 sleep tired|🤒 sick ill|🤢 nausea sick|🥳 party celebrate|🤠 cowboy|🥲 smile tear|🫠 melting|👻 ghost|💀 skull dead|🤖 robot bot|👽 alien|💩 poop"],
-    ["Hands & people", "👍 thumbs up yes like approve|👎 thumbs down no dislike|👏 clap applause|🙌 raised hands hooray|🙏 pray please thanks|👋 wave hello bye|✌️ peace victory|🤞 fingers crossed luck|👌 ok perfect|🤝 handshake deal agree|💪 muscle strong flex|👀 eyes look see|✍️ writing hand|🫡 salute|🤷 shrug dunno|🙋 raise hand|🧑‍💻 technologist developer coder|👨‍🏫 teacher|🦸 hero|🧙 wizard magic"],
-    ["Work & tech", "💻 laptop computer|🖥️ desktop computer monitor|⌨️ keyboard|🖱️ mouse|💾 floppy save disk|🗄️ cabinet archive|📁 folder|📂 open folder|📄 page document|📊 bar chart stats|📈 chart up growth|📉 chart down decline|🗂️ dividers index|📋 clipboard|📎 paperclip attach|🔗 link chain url|🔧 wrench fix tool|🔨 hammer build|🛠️ tools hammer wrench|⚙️ gear settings config|🧰 toolbox|🧪 test tube experiment|🔬 microscope research|🔍 search magnify find|🗝️ old key|🛡️ shield security protect|📦 package box container|🐳 whale docker|☁️ cloud|🌐 globe web internet network|📡 satellite antenna|🔌 plug|🔋 battery|🧱 brick wall firewall|🏗️ construction build|🚢 ship deploy|⚓ anchor|🏷️ label tag|📅 calendar date|🗓️ calendar schedule|⏳ hourglass waiting|⌛ hourglass done time|✉️ envelope mail|📧 email|📮 postbox|📚 books docs|📖 book read|🎓 graduation learn|🏛️ classical building government|💰 money bag|💳 credit card|🧾 receipt|🖨️ printer|📱 phone mobile|☎️ telephone"],
-    ["Symbols", "✔️ check mark|☑️ checkbox|✖️ multiply x|➕ plus add|➖ minus remove|❤️ red heart love|🧡 orange heart|💛 yellow heart|💚 green heart|💙 blue heart|💜 purple heart|🖤 black heart|🤍 white heart|💯 hundred perfect|💥 boom collision|✨ sparkles new shiny|🌟 glowing star|⚡ lightning fast zap|💤 zzz sleep|🔔 bell notification|🔕 bell off mute|♻️ recycle|🚫 prohibited forbidden|⛔ no entry|🔴 red circle|🟠 orange circle|🟡 yellow circle|🟢 green circle|🔵 blue circle|🟣 purple circle|⚫ black circle|⚪ white circle|⬆️ up arrow|⬇️ down arrow|➡️ right arrow|⬅️ left arrow|🔁 repeat loop|🔄 refresh sync|🆕 new|🆗 ok|🆘 sos help|#️⃣ hash number|©️ copyright|™️ trademark"],
-    ["Nature", "🐶 dog puppy|🐱 cat|🐈 cat|🦊 fox|🐻 bear|🐼 panda|🐧 penguin linux|🐦 bird|🦉 owl wise|🐢 turtle slow|🐍 snake python|🐙 octopus|🦀 crab rust|🐝 bee|🦋 butterfly|🐌 snail slow|🦄 unicorn|🌱 seedling grow sprout|🌳 tree|🌵 cactus|🌸 blossom flower|🌻 sunflower|🍀 clover luck|🍁 maple leaf autumn|🌈 rainbow|☀️ sun sunny|🌙 moon night|🌊 wave ocean|❄️ snowflake cold|🔥 fire|🌋 volcano|⛅ cloud sun weather|🌧️ rain"],
-    ["Food & fun", "☕ coffee|🍵 tea|🍕 pizza|🍔 burger|🌮 taco|🍜 noodles ramen|🍩 donut|🍪 cookie|🎂 cake birthday|🍎 apple|🍺 beer|🍷 wine|🎮 game controller gaming|🕹️ joystick arcade|🎲 dice random|🏆 trophy win award|🏅 medal|🥇 gold first|⚽ soccer football|🏀 basketball|🎸 guitar music|🎧 headphones music|🎵 music note|🎨 art palette paint|📷 camera photo|🎬 film movie|🎁 gift present|🎈 balloon"],
-    ["Travel & places", "🏠 house home|🏢 office building|🏡 home garden|🏭 factory|✈️ airplane travel|🚗 car|🚲 bike bicycle|🚆 train|🗺️ map|🧭 compass direction|🏝️ island|⛰️ mountain|🏕️ camping|🗽 statue liberty|🌍 earth world globe|🚦 traffic light|🚧 construction roadwork|⛽ fuel gas"]
-  ].map(function (cat) {
-    return {
-      name: cat[0],
-      items: cat[1].split("|").map(function (entry) {
-        var parts = entry.split(" ");
-        return { e: parts[0], words: parts.join(" ").toLowerCase() };
-      })
-    };
-  });
+  var EMOJI_URL = "./emoji/emoji-data.json?v=9e6f7ea2";
+  var QUICK = ["💡", "ℹ️", "⚠️", "🚨", "❗", "❓", "✅", "❌", "📌", "📝", "🔥", "⭐", "🎉", "🚀", "💬", "🔒", "🐛", "⏰", "📣", "👉", "🧠", "🎯", "🛑", "🔑"];
+  var RECENT_KEY = "ryan-blog-recent-emoji";
+  var TONE_KEY = "ryan-blog-emoji-tone";
+  var TONE_HANDS = ["✋", "✋🏻", "✋🏼", "✋🏽", "✋🏾", "✋🏿"];
 
+  var emojiData = null;   // promise of {groups, byEmoji}
   var picker = null;      // one picker, reused
   var pickerDone = null;  // called with the chosen emoji, or "" for Remove
+  var tone = Number(getStore(TONE_KEY)) || 0;
+
+  function getStore(key) { try { return localStorage.getItem(key) || ""; } catch (e) { return ""; } }
+  function setStore(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* not remembered */ } }
+
+  /* An emoji newer than this device's emoji font draws as a box, or as its
+     parts side by side. Only recent versions are worth testing: draw it,
+     and keep it if it came out in colour and about one emoji wide. */
+  var probe = null, probeWidth = 0;
+  function drawable(ch) {
+    if (!probe) {
+      probe = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+      probe.canvas.width = probe.canvas.height = 32;
+      probe.font = "24px sans-serif";
+      probe.textBaseline = "top";
+      probeWidth = probe.measureText("😀").width;
+    }
+    if (probe.measureText(ch).width > probeWidth * 1.4) { return false; }
+    probe.clearRect(0, 0, 32, 32);
+    probe.fillText(ch, 0, 0);
+    var px = probe.getImageData(0, 0, 32, 32).data;
+    for (var i = 0; i < px.length; i += 4) {
+      if (px[i + 3] > 0 && (Math.abs(px[i] - px[i + 1]) > 20 || Math.abs(px[i + 1] - px[i + 2]) > 20)) { return true; }
+    }
+    return false;
+  }
+
+  function loadEmoji() {
+    if (!emojiData) {
+      emojiData = fetch(EMOJI_URL)
+        .then(function (r) { if (!r.ok) { throw new Error("emoji data " + r.status); } return r.json(); })
+        .then(function (doc) {
+          var byEmoji = {};
+          var groups = doc.groups.map(function (g) {
+            var items = g[1].filter(function (row) { return row[2] < 13 || drawable(row[0]); })
+              .map(function (row) {
+                var it = { e: row[0], words: row[1], skins: row[3] || null };
+                byEmoji[it.e] = it;
+                return it;
+              });
+            return { name: g[0], items: items };
+          });
+          return { groups: groups, byEmoji: byEmoji };
+        });
+      emojiData.catch(function () { emojiData = null; });   // let the next open retry
+    }
+    return emojiData;
+  }
+
+  function withTone(it) { return tone && it.skins ? it.skins[tone - 1] : it.e; }
+
+  function recent() {
+    try { return JSON.parse(getStore(RECENT_KEY) || "[]").slice(0, 18); } catch (e) { return []; }
+  }
+  function remember(ch) {
+    var list = recent().filter(function (x) { return x !== ch; });
+    list.unshift(ch);
+    setStore(RECENT_KEY, JSON.stringify(list.slice(0, 18)));
+  }
 
   function closePicker() {
-    if (picker) { picker.hidden = true; }
+    if (picker) { picker.hidden = true; picker.querySelector(".ep-tones").hidden = true; }
     pickerDone = null;
+  }
+
+  function choose(ch) {
+    var done = pickerDone;
+    if (ch) { remember(ch); }
+    closePicker();
+    if (done) { done(ch); }
+  }
+
+  function section(body, title, chars, labels) {
+    if (!chars.length) { return; }
+    if (title) {
+      var t = document.createElement("div");
+      t.className = "ep-cat";
+      t.textContent = title.toUpperCase();
+      body.appendChild(t);
+    }
+    var grid = document.createElement("div");
+    grid.className = "ep-grid";
+    chars.forEach(function (ch, i) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = ch;
+      if (labels && labels[i]) { btn.title = labels[i]; }
+      btn.addEventListener("click", function () { choose(ch); });
+      grid.appendChild(btn);
+    });
+    body.appendChild(grid);
   }
 
   function fillPicker(query) {
     var body = picker.querySelector(".ep-body");
-    body.textContent = "";
-    var q = query.trim().toLowerCase();
-    var seen = {};
-    EMOJI.forEach(function (cat) {
-      var items = cat.items.filter(function (it) {
-        if (q && it.words.indexOf(q) < 0) { return false; }
-        if (q && seen[it.e]) { return false; }   // a search lists each emoji once
-        seen[it.e] = true;
-        return true;
-      });
-      if (!items.length) { return; }
-      if (!q) {
-        var title = document.createElement("div");
-        title.className = "ep-cat";
-        title.textContent = cat.name.toUpperCase();
-        body.appendChild(title);
-      }
-      var grid = document.createElement("div");
-      grid.className = "ep-grid";
-      items.forEach(function (it) {
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = it.e;
-        btn.title = it.words.split(" ").slice(1, 3).join(" ");
-        btn.addEventListener("click", function () {
-          var done = pickerDone;
-          closePicker();
-          if (done) { done(it.e); }
+    loadEmoji().then(function (data) {
+      body.textContent = "";
+      var q = query.trim().toLowerCase();
+      var label = function (it) { return it.words.split(" ").slice(0, 4).join(" "); };
+
+      if (q) {
+        // every word must appear, in any order: "flag united states" finds
+        // "flag: United States", "cat face" finds "grinning cat face"
+        var terms = q.split(/[\s:,]+/).filter(Boolean);
+        var hits = [];
+        data.groups.forEach(function (g) {
+          g.items.forEach(function (it) {
+            if (terms.every(function (t) { return it.words.indexOf(t) >= 0; })) { hits.push(it); }
+          });
         });
-        grid.appendChild(btn);
-      });
-      body.appendChild(grid);
+        section(body, hits.length > 200 ? "First 200 matches" : "", hits.slice(0, 200).map(withTone), hits.slice(0, 200).map(label));
+      } else {
+        section(body, "Recently used", recent());
+        var quick = QUICK.map(function (ch) { return data.byEmoji[ch]; }).filter(Boolean);
+        section(body, "Callouts", quick.map(withTone), quick.map(label));
+        data.groups.forEach(function (g) {
+          section(body, g.name, g.items.map(withTone), g.items.map(label));
+        });
+      }
+      if (!body.children.length) {
+        var none = document.createElement("div");
+        none.className = "ep-none";
+        none.textContent = "No emoji matches “" + query + "”.";
+        body.appendChild(none);
+      }
+    }, function () {
+      body.textContent = "";
+      var err = document.createElement("div");
+      err.className = "ep-none";
+      err.textContent = "Could not load the emoji list. Close and try again.";
+      body.appendChild(err);
     });
-    if (!body.children.length) {
-      var none = document.createElement("div");
-      none.className = "ep-none";
-      none.textContent = "No emoji matches “" + query + "”.";
-      body.appendChild(none);
-    }
+  }
+
+  function showTone() {
+    picker.querySelector(".ep-tone").textContent = TONE_HANDS[tone];
+  }
+
+  function buildPicker() {
+    picker = document.createElement("div");
+    picker.className = "emoji-picker";
+    picker.innerHTML =
+      '<div class="ep-bar">' +
+        '<input type="text" class="ep-search" placeholder="Search all emoji…" aria-label="Search emoji">' +
+        '<button type="button" class="ep-tone" title="Skin tone"></button>' +
+        '<button type="button" class="btn ep-remove">Remove</button>' +
+      '</div>' +
+      '<div class="ep-tones" hidden></div>' +
+      '<div class="ep-body"><div class="ep-none">Loading emoji…</div></div>';
+    document.body.appendChild(picker);
+
+    var tones = picker.querySelector(".ep-tones");
+    TONE_HANDS.forEach(function (hand, i) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = hand;
+      btn.title = ["Default", "Light", "Medium-light", "Medium", "Medium-dark", "Dark"][i] + " skin tone";
+      btn.addEventListener("click", function () {
+        tone = i;
+        setStore(TONE_KEY, String(i));
+        tones.hidden = true;
+        showTone();
+        fillPicker(picker.querySelector(".ep-search").value);
+      });
+      tones.appendChild(btn);
+    });
+    picker.querySelector(".ep-tone").addEventListener("click", function () { tones.hidden = !tones.hidden; });
+
+    picker.querySelector(".ep-search").addEventListener("input", function (ev) { fillPicker(ev.target.value); });
+    picker.querySelector(".ep-remove").addEventListener("click", function () { choose(""); });
+    picker.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape") { ev.stopPropagation(); closePicker(); }
+      // Enter in the search box takes the first match
+      if (ev.key === "Enter" && ev.target.classList.contains("ep-search")) {
+        ev.preventDefault();
+        var first = picker.querySelector(".ep-grid button");
+        if (first) { first.click(); }
+      }
+    });
+    document.addEventListener("mousedown", function (ev) {
+      if (picker && !picker.hidden && !picker.contains(ev.target) && !ev.target.closest(".callout-icon")) {
+        closePicker();
+      }
+    }, true);
   }
 
   function openPicker(anchor, done) {
-    if (!picker) {
-      picker = document.createElement("div");
-      picker.className = "emoji-picker";
-      picker.innerHTML = '<div class="ep-bar"><input type="text" class="ep-search" placeholder="Search emoji…" aria-label="Search emoji">' +
-        '<button type="button" class="btn ep-remove">Remove</button></div><div class="ep-body"></div>';
-      document.body.appendChild(picker);
-      picker.querySelector(".ep-search").addEventListener("input", function (ev) { fillPicker(ev.target.value); });
-      picker.querySelector(".ep-remove").addEventListener("click", function () {
-        var done = pickerDone;
-        closePicker();
-        if (done) { done(""); }
-      });
-      picker.addEventListener("keydown", function (ev) {
-        if (ev.key === "Escape") { ev.stopPropagation(); closePicker(); }
-        // Enter in the search box takes the first match
-        if (ev.key === "Enter" && ev.target.classList.contains("ep-search")) {
-          ev.preventDefault();
-          var first = picker.querySelector(".ep-grid button");
-          if (first) { first.click(); }
-        }
-      });
-      document.addEventListener("mousedown", function (ev) {
-        if (picker && !picker.hidden && !picker.contains(ev.target) && !ev.target.closest(".callout-icon")) {
-          closePicker();
-        }
-      }, true);
-    }
+    if (!picker) { buildPicker(); }
     pickerDone = done;
     var search = picker.querySelector(".ep-search");
     search.value = "";
+    showTone();
     fillPicker("");
     picker.hidden = false;
 
@@ -541,7 +645,10 @@ body.wide .page { max-width: 1400px; }
     search.focus();
   }
 
-  window.addEventListener("scroll", closePicker, { passive: true });
+  window.addEventListener("scroll", function (ev) {
+    // scrolling the emoji list itself must not close the picker
+    if (picker && !picker.contains(ev.target)) { closePicker(); }
+  }, { passive: true, capture: true });
 
   /* ============ the Callout block ============
      Notion's: an emoji you pick from the picker above, and text that takes
@@ -605,7 +712,7 @@ body.wide .page { max-width: 1400px; }
   };
 
   /* ============ the Color tune ============
-     Notion's block "Color" menu, in each text block's \u22ee\u22ee menu: a
+     Notion's block "Color" menu (plus gradients), in each text block's \u22ee\u22ee menu: a
      text colour or a background. It marks the block with data-ncolor,
      which blog-post.css colours, and blog-render.js sets the same
      attribute on the published page. Saves {color}. */
@@ -649,6 +756,8 @@ body.wide .page { max-width: 1400px; }
     BlogRender.HUES.forEach(function (h) { items.push(self.item(h, cap(h) + " text")); });
     items.push({ type: "separator" });
     BlogRender.HUES.forEach(function (h) { items.push(self.item(h + "_background", cap(h) + " background")); });
+    items.push({ type: "separator" });
+    BlogRender.HUES.concat(BlogRender.BLENDS).forEach(function (h) { items.push(self.item(h + "_gradient", cap(h) + " gradient")); });
     return {
       icon: '<svg width="20" height="20" viewBox="0 0 20 20"><path d="M6 15 10 4l4 11M7.4 11.3h5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       title: "Color",
